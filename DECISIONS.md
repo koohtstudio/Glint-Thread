@@ -38,3 +38,5 @@ One line each: decision, then reason.
 - `@sanity/icons` v5 changed its export shape (one module per icon); Studio icons were dropped rather than pinning an old major, Sanity's defaults are used.
 - A root `sanity.config.ts` re-exports `sanity/sanity.config.ts` so the Sanity CLI finds it for schema extract and TypeGen (`npm run typegen` writes `sanity.types.ts`).
 - In Sanity mode, null stock uses DEV_DEFAULT_STOCK outside production and is treated as untracked in production; the launch check blocks launch while any stock is null.
+- OG images are generated with next/og in Instrument Serif; the OFL-licensed TTFs are vendored in assets/fonts because the OG renderer cannot read the woff2 files next/font serves.
+- robots.txt also disallows /dev, /newsletter and /search (internal, transactional or thin pages) in addition to the PRD list.

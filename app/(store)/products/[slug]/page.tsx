@@ -10,7 +10,6 @@ import {
 import { toCard } from '@/lib/data/derive'
 import type { Product, ProductCard as ProductCardData } from '@/lib/data/types'
 import { pageMetadata, productJsonLd } from '@/lib/seo'
-import { absoluteUrl } from '@/lib/public-env'
 import { t } from '@/lib/i18n'
 import { Breadcrumbs } from '@/components/content/breadcrumbs'
 import { JsonLd } from '@/components/content/json-ld'
@@ -33,12 +32,11 @@ export async function generateMetadata({
   const { slug } = await params
   const p = await getProductBySlug(slug)
   if (!p) return {}
-  const img = p.images.find((i) => !i.lowRes) ?? p.images[0]
+  // The Open Graph image comes from ./opengraph-image.tsx (the product on its mat).
   return pageMetadata({
     title: p.seo.title ?? p.title,
     description: p.seo.description ?? p.shortDescription,
     path: `/products/${p.slug}`,
-    images: [{ url: absoluteUrl(img.src), width: img.width, height: img.height, alt: img.alt }],
   })
 }
 

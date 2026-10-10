@@ -10,6 +10,6 @@ Status: [x] done, [~] in progress, [ ] to do. Mirrors the milestones in PROMPTS.
 - [x] M6 Pages: home, listings, PDP, bag, search, success, order status, content pages, 404/error
 - [x] M7 Commerce: quote, checkout, webhook, emails, newsletter, contact, order status, ship-order, rate limits
 - [x] M8 Sanity: schemas, Studio, desk structure, price input, margin badge, mark shipped, adapter, revalidate, typegen, seed
-- [~] M9 SEO, a11y, perf, security: metadata, JSON-LD, sitemap, robots, OG, CSP, server-only, reduced motion
-- [ ] M10 QA: vitest, playwright e2e, screenshots, two review passes, Lighthouse + axe
+- [x] M9 SEO, a11y, perf, security: metadata, JSON-LD, sitemap, robots, OG, CSP, server-only, reduced motion
+- [~] M10 QA: vitest, playwright e2e, screenshots, two review passes, Lighthouse + axe
 - [ ] M11 Handover: README, check-launch, final report
