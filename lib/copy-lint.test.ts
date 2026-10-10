@@ -30,7 +30,7 @@ const sources = {
 }
 const all = Object.entries(sources)
   .flatMap(([name, value]) => strings(value, name))
-  .filter((s) => !/^images\//.test(s.text))
+  .filter((s) => !/^images\//.test(s.text) && !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(s.text))
 
 const BANNED: [RegExp, string][] = [
   [/\belevat(e|es|ed|ing)\b/i, 'elevate'],
