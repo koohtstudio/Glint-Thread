@@ -1,0 +1,13 @@
+catalog/
+PRD.md
+PROMPTS.md
+.next/
+node_modules/
+public/catalog/
+.generated/
+screenshots/
+sanity/extract.json
+sanity.types.ts
+*.md
+lib/data/generated/
+package-lock.json

@@ -1,0 +1,5281 @@
+{
+  "store": {
+    "name": "Glint & Thread",
+    "currency": "CAD",
+    "locale": "en-CA",
+    "country": "CA"
+  },
+  "departments": [
+    {
+      "slug": "jewellery",
+      "title": "Jewellery",
+      "order": 1,
+      "blurb": "Gold-tone, silver-tone and stainless steel pieces that look expensive and aren't."
+    },
+    {
+      "slug": "hair",
+      "title": "Hair",
+      "order": 2,
+      "blurb": "Claw clips, headbands and ties for good hair days and the other ones."
+    },
+    {
+      "slug": "bags",
+      "title": "Bags",
+      "order": 3,
+      "blurb": "Mini bags and pouches that carry the essentials and nothing you'll regret."
+    },
+    {
+      "slug": "hats-scarves",
+      "title": "Hats & Scarves",
+      "order": 4,
+      "blurb": "Berets, baker boy caps and blanket scarves for a Canadian fall that means it."
+    },
+    {
+      "slug": "socks",
+      "title": "Socks",
+      "order": 5,
+      "blurb": "Strawberries, teddies, stripes and pineapples. Mix three, save more."
+    },
+    {
+      "slug": "loungewear",
+      "title": "Loungewear",
+      "order": 6,
+      "blurb": "Soft pyjama sets and fleece-lined thermals for staying in on purpose."
+    },
+    {
+      "slug": "beauty",
+      "title": "Beauty Tools",
+      "order": 7,
+      "blurb": "The small tools that do the fiddly work."
+    },
+    {
+      "slug": "charms",
+      "title": "Charms & Keychains",
+      "order": 8,
+      "blurb": "Little things to clip on, hang off and make your keys easier to find."
+    }
+  ],
+  "categories": [
+    {
+      "slug": "earrings",
+      "title": "Earrings",
+      "department": "jewellery"
+    },
+    {
+      "slug": "necklaces",
+      "title": "Necklaces",
+      "department": "jewellery"
+    },
+    {
+      "slug": "bracelets",
+      "title": "Bracelets",
+      "department": "jewellery"
+    },
+    {
+      "slug": "claw-clips",
+      "title": "Claw Clips & Clips",
+      "department": "hair"
+    },
+    {
+      "slug": "headbands",
+      "title": "Headbands",
+      "department": "hair"
+    },
+    {
+      "slug": "hair-ties",
+      "title": "Hair Ties",
+      "department": "hair"
+    },
+    {
+      "slug": "brushes",
+      "title": "Brushes",
+      "department": "hair"
+    },
+    {
+      "slug": "mini-bags",
+      "title": "Mini Bags",
+      "department": "bags"
+    },
+    {
+      "slug": "pouches",
+      "title": "Pouches & Purses",
+      "department": "bags"
+    },
+    {
+      "slug": "hats",
+      "title": "Hats & Berets",
+      "department": "hats-scarves"
+    },
+    {
+      "slug": "scarves",
+      "title": "Scarves",
+      "department": "hats-scarves"
+    },
+    {
+      "slug": "ankle-socks",
+      "title": "Ankle Socks",
+      "department": "socks"
+    },
+    {
+      "slug": "crew-socks",
+      "title": "Crew Socks",
+      "department": "socks"
+    },
+    {
+      "slug": "pyjamas",
+      "title": "Pyjamas",
+      "department": "loungewear"
+    },
+    {
+      "slug": "thermals",
+      "title": "Thermals",
+      "department": "loungewear"
+    },
+    {
+      "slug": "beauty-tools",
+      "title": "Beauty Tools",
+      "department": "beauty"
+    },
+    {
+      "slug": "keychains",
+      "title": "Keychains & Bag Charms",
+      "department": "charms"
+    }
+  ],
+  "collections": [
+    {
+      "slug": "new-in",
+      "title": "New In",
+      "rule": "all products, newest first"
+    },
+    {
+      "slug": "under-15",
+      "title": "Gifts Under $15",
+      "rule": "price <= 1500"
+    },
+    {
+      "slug": "gold-tone-edit",
+      "title": "The Gold-Tone Edit",
+      "rule": "tag gold-tone"
+    },
+    {
+      "slug": "fall-edit",
+      "title": "Sweater Weather",
+      "rule": "tag fall-edit or winter"
+    },
+    {
+      "slug": "talismans",
+      "title": "Talismans & Evil Eye",
+      "rule": "tag evil-eye or talisman"
+    },
+    {
+      "slug": "gift-shop",
+      "title": "The Gift Shop",
+      "rule": "tag gift or gift-under-15"
+    }
+  ],
+  "promotions": [
+    {
+      "id": "socks-mix-match",
+      "title": "Mix & Match Socks",
+      "type": "tiered_percent_category",
+      "appliesTo": {
+        "categories": [
+          "ankle-socks",
+          "crew-socks"
+        ]
+      },
+      "tiers": [
+        {
+          "minQty": 3,
+          "percentOff": 20
+        },
+        {
+          "minQty": 6,
+          "percentOff": 30
+        }
+      ],
+      "badge": "3+ pairs save 20%",
+      "active": true
+    },
+    {
+      "id": "earrings-b2g1",
+      "title": "Earrings: Buy 2, Get 1 Free",
+      "type": "buy_x_get_y_cheapest_free",
+      "appliesTo": {
+        "categories": [
+          "earrings"
+        ],
+        "excludeSlugs": [
+          "mystery-earring-trio"
+        ]
+      },
+      "buyQty": 2,
+      "getQty": 1,
+      "badge": "Buy 2, get 1 free",
+      "active": true
+    }
+  ],
+  "promoCodes": [
+    {
+      "code": "WELCOME10",
+      "type": "percent_off_order",
+      "percentOff": 10,
+      "firstOrderOnly": true,
+      "note": "Given after newsletter sign-up; applies after automatic promotions",
+      "active": true
+    }
+  ],
+  "shipping": {
+    "country": "CA",
+    "freeShippingThresholdCents": 6000,
+    "methods": [
+      {
+        "id": "standard",
+        "label": "Standard (Canada Post, tracked)",
+        "priceCents": 899,
+        "freeOverThreshold": true,
+        "eta": "3 to 7 business days"
+      },
+      {
+        "id": "expedited",
+        "label": "Expedited (Canada Post, tracked)",
+        "priceCents": 1599,
+        "freeOverThreshold": false,
+        "eta": "2 to 4 business days"
+      },
+      {
+        "id": "pickup",
+        "label": "Local pickup",
+        "priceCents": 0,
+        "freeOverThreshold": false,
+        "eta": "Ready in 1 to 2 business days",
+        "enabled": false
+      }
+    ]
+  },
+  "tax": {
+    "defaultMode": "none",
+    "note": "Small supplier (under $30,000 taxable sales over four consecutive quarters) does not have to register for GST/HST. Switch to 'table' or 'stripe' after registering. Verify with an accountant.",
+    "ratesAsOf": "2026",
+    "provinces": {
+      "AB": {
+        "GST": 5
+      },
+      "BC": {
+        "GST": 5,
+        "PST": 7
+      },
+      "MB": {
+        "GST": 5,
+        "RST": 7
+      },
+      "NB": {
+        "HST": 15
+      },
+      "NL": {
+        "HST": 15
+      },
+      "NS": {
+        "HST": 14
+      },
+      "NT": {
+        "GST": 5
+      },
+      "NU": {
+        "GST": 5
+      },
+      "ON": {
+        "HST": 13
+      },
+      "PE": {
+        "HST": 15
+      },
+      "QC": {
+        "GST": 5,
+        "QST": 9.975
+      },
+      "SK": {
+        "GST": 5,
+        "PST": 6
+      },
+      "YT": {
+        "GST": 5
+      }
+    }
+  },
+  "products": [
+    {
+      "slug": "golden-hour-textured-hoops",
+      "sku": "GT-EAR-001",
+      "title": "Golden Hour Textured Hoops",
+      "department": "jewellery",
+      "category": "earrings",
+      "priceCents": 1199,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "Big, glinting gold-tone hoops with a fine textured finish that catches every light.",
+      "description": "These are the hoops you reach for when the outfit is simple and the mood isn't. A wide, softly textured band throws light like a late-afternoon sun, and the large silhouette reads polished from across the room. Light enough for a full day; bold enough for the night after it.",
+      "details": [
+        "Gold-tone finish over base metal",
+        "Large hoop silhouette",
+        "Hinged hoop closure",
+        "Sold as one pair on a gift-ready card"
+      ],
+      "careGuide": "jewellery-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-EAR-001",
+          "priceCents": 1199,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/golden-hour-textured-hoops-01.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "cbb88fe9-4ece-4369-8632-ddcaf1a33628.JPG",
+          "alt": "Golden Hour Textured Hoops"
+        },
+        {
+          "file": "images/golden-hour-textured-hoops-02.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "0592d93a-1e31-4a9d-ad09-b681e17628c8.JPG",
+          "alt": "Golden Hour Textured Hoops, view 2"
+        },
+        {
+          "file": "images/golden-hour-textured-hoops-03.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "a607943b-3089-435a-a266-4a3679fb0d68.JPG",
+          "alt": "Golden Hour Textured Hoops, view 3"
+        },
+        {
+          "file": "images/golden-hour-textured-hoops-04.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "109aa96f-5343-4643-9bd8-c19e655fd0a1.JPG",
+          "alt": "Golden Hour Textured Hoops, view 4"
+        }
+      ],
+      "tags": [
+        "gold-tone",
+        "hoops",
+        "statement",
+        "gift-under-15"
+      ],
+      "featured": true,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [
+        "Hoop diameter in cm",
+        "Closure type (hinged vs. post)"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "everyday-hoop-earrings",
+      "sku": "GT-EAR-002",
+      "title": "Everyday Hoop Earrings",
+      "department": "jewellery",
+      "category": "earrings",
+      "priceCents": 999,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "The hoop wardrobe: classic, etched and textured in gold-tone and silver-tone.",
+      "description": "Every jewellery box needs a reliable hoop, and most need three. Pick your finish and your size: crisp silver-tone circles, etched gold-tone statements, or a slim everyday pair that goes from errands to dinner without a second thought.",
+      "details": [
+        "Gold-tone or silver-tone finish over base metal",
+        "Sold as one pair",
+        "Sizes vary by style"
+      ],
+      "careGuide": "jewellery-care",
+      "optionNames": [
+        "Style"
+      ],
+      "variants": [
+        {
+          "title": "Large Etched Gold-Tone",
+          "options": {
+            "Style": "Large Etched Gold-Tone"
+          },
+          "sku": "GT-EAR-002-LGG",
+          "priceCents": 999,
+          "stock": null
+        },
+        {
+          "title": "Large Silver-Tone",
+          "options": {
+            "Style": "Large Silver-Tone"
+          },
+          "sku": "GT-EAR-002-LGS",
+          "priceCents": 999,
+          "stock": null
+        },
+        {
+          "title": "Medium Textured Gold-Tone",
+          "options": {
+            "Style": "Medium Textured Gold-Tone"
+          },
+          "sku": "GT-EAR-002-MDG",
+          "priceCents": 999,
+          "stock": null
+        },
+        {
+          "title": "Medium Silver-Tone",
+          "options": {
+            "Style": "Medium Silver-Tone"
+          },
+          "sku": "GT-EAR-002-MDS",
+          "priceCents": 999,
+          "stock": null
+        },
+        {
+          "title": "Small Silver-Tone",
+          "options": {
+            "Style": "Small Silver-Tone"
+          },
+          "sku": "GT-EAR-002-SMS",
+          "priceCents": 999,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/everyday-hoop-earrings-01.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "61a9ac0b-5315-4e06-96dc-44ca19266d4b.JPG",
+          "alt": "Everyday Hoop Earrings"
+        }
+      ],
+      "tags": [
+        "hoops",
+        "gold-tone",
+        "silver-tone",
+        "gift-under-15"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": "Group shot only. Reshoot each style on black.",
+      "verify": [
+        "Exact styles and counts per style",
+        "Diameters"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "gold-ribbon-bow-drop-earrings",
+      "sku": "GT-EAR-003",
+      "title": "Gold-Tone Ribbon Bow Drops",
+      "department": "jewellery",
+      "category": "earrings",
+      "priceCents": 1299,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A sculpted gold-tone bow with long, liquid tails. The romantic trend, done with restraint.",
+      "description": "Bows are everywhere this season, but most of them are fussy. This one is pared back: a loose, hand-drawn loop that falls into two fluid tails. Wear it with a slicked bun and let it do the talking.",
+      "details": [
+        "Gold-tone finish over base metal",
+        "Post back",
+        "Drop length approx. 4 to 5 cm",
+        "Sold as shown on a gift-ready card"
+      ],
+      "careGuide": "jewellery-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-EAR-003",
+          "priceCents": 1299,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/gold-ribbon-bow-drop-earrings-01.jpg",
+          "width": 270,
+          "height": 337,
+          "source": "crop:ear-bow-drop",
+          "alt": "Gold-Tone Ribbon Bow Drops"
+        },
+        {
+          "file": "images/gold-ribbon-bow-drop-earrings-02.jpg",
+          "width": 1085,
+          "height": 1449,
+          "source": "a0be5514-8746-450f-b17a-e2da60f45cbe.JPG",
+          "alt": "Gold-Tone Ribbon Bow Drops, view 2"
+        },
+        {
+          "file": "images/gold-ribbon-bow-drop-earrings-03.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "d0b9a87b-964a-4dbd-a437-751e123b53a0.JPG",
+          "alt": "Gold-Tone Ribbon Bow Drops, view 3"
+        }
+      ],
+      "tags": [
+        "gold-tone",
+        "bow",
+        "statement"
+      ],
+      "featured": true,
+      "excludedFromPromotions": false,
+      "photoNote": "Cropped from group shot (low resolution). Reshoot individually.",
+      "verify": [
+        "Drop length"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "oversized-open-heart-earrings",
+      "sku": "GT-EAR-004",
+      "title": "Oversized Open Heart Earrings",
+      "department": "jewellery",
+      "category": "earrings",
+      "priceCents": 1499,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A big, hand-drawn gold-tone heart that wears its heart on your ear.",
+      "description": "Unapologetically large and surprisingly light. The open, slightly asymmetric heart outline looks hand-drawn in polished gold-tone, so it reads more art piece than novelty. Our pick for date nights, gallery nights and nights you just want to be looked at.",
+      "details": [
+        "Gold-tone finish over base metal",
+        "Post back",
+        "Oversized open heart silhouette",
+        "Sold as shown on a gift-ready card"
+      ],
+      "careGuide": "jewellery-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-EAR-004",
+          "priceCents": 1499,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/oversized-open-heart-earrings-01.jpg",
+          "width": 385,
+          "height": 481,
+          "source": "crop:ear-open-heart",
+          "alt": "Oversized Open Heart Earrings"
+        },
+        {
+          "file": "images/gold-ribbon-bow-drop-earrings-02.jpg",
+          "width": 1085,
+          "height": 1449,
+          "source": "a0be5514-8746-450f-b17a-e2da60f45cbe.JPG",
+          "alt": "Oversized Open Heart Earrings, view 2"
+        },
+        {
+          "file": "images/gold-ribbon-bow-drop-earrings-03.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "d0b9a87b-964a-4dbd-a437-751e123b53a0.JPG",
+          "alt": "Oversized Open Heart Earrings, view 3"
+        }
+      ],
+      "tags": [
+        "gold-tone",
+        "heart",
+        "statement",
+        "gift"
+      ],
+      "featured": true,
+      "excludedFromPromotions": false,
+      "photoNote": "Cropped from group shot (low resolution). Reshoot individually.",
+      "verify": [
+        "Size in cm",
+        "Weight per earring"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "puffy-teardrop-studs",
+      "sku": "GT-EAR-005",
+      "title": "Puffy Gold-Tone Teardrop Studs",
+      "department": "jewellery",
+      "category": "earrings",
+      "priceCents": 1199,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "Smooth, high-shine teardrops with a plump, sculptural shape.",
+      "description": "The puffy drop is the quiet flex of the moment: a glossy, rounded teardrop that looks molten in the light. It sits close to the lobe, so it works with everything from a turtleneck to a slip dress.",
+      "details": [
+        "Gold-tone finish over base metal",
+        "Post back",
+        "Sculptural puffed teardrop",
+        "Sold as shown on a gift-ready card"
+      ],
+      "careGuide": "jewellery-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-EAR-005",
+          "priceCents": 1199,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/puffy-teardrop-studs-01.jpg",
+          "width": 281,
+          "height": 351,
+          "source": "crop:ear-teardrop",
+          "alt": "Puffy Gold-Tone Teardrop Studs"
+        },
+        {
+          "file": "images/gold-ribbon-bow-drop-earrings-02.jpg",
+          "width": 1085,
+          "height": 1449,
+          "source": "a0be5514-8746-450f-b17a-e2da60f45cbe.JPG",
+          "alt": "Puffy Gold-Tone Teardrop Studs, view 2"
+        },
+        {
+          "file": "images/gold-ribbon-bow-drop-earrings-03.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "d0b9a87b-964a-4dbd-a437-751e123b53a0.JPG",
+          "alt": "Puffy Gold-Tone Teardrop Studs, view 3"
+        }
+      ],
+      "tags": [
+        "gold-tone",
+        "studs",
+        "everyday"
+      ],
+      "featured": true,
+      "excludedFromPromotions": false,
+      "photoNote": "Cropped from group shot (low resolution). Reshoot individually.",
+      "verify": [],
+      "status": "active"
+    },
+    {
+      "slug": "two-tone-wide-huggies",
+      "sku": "GT-EAR-006",
+      "title": "Two-Tone Wide Huggie Hoops",
+      "department": "jewellery",
+      "category": "earrings",
+      "priceCents": 1299,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "Chunky, wide huggies that split the difference between gold-tone and silver-tone.",
+      "description": "Can't decide between gold and silver? Don't. These wide, polished huggies blend both tones in one bold band, so they pair with whatever else you're already wearing.",
+      "details": [
+        "Mixed gold-tone and silver-tone finish over base metal",
+        "Wide huggie silhouette",
+        "Sold as shown on a gift-ready card"
+      ],
+      "careGuide": "jewellery-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-EAR-006",
+          "priceCents": 1299,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/two-tone-wide-huggies-01.jpg",
+          "width": 290,
+          "height": 362,
+          "source": "crop:ear-two-tone-huggie",
+          "alt": "Two-Tone Wide Huggie Hoops"
+        },
+        {
+          "file": "images/gold-ribbon-bow-drop-earrings-02.jpg",
+          "width": 1085,
+          "height": 1449,
+          "source": "a0be5514-8746-450f-b17a-e2da60f45cbe.JPG",
+          "alt": "Two-Tone Wide Huggie Hoops, view 2"
+        },
+        {
+          "file": "images/gold-ribbon-bow-drop-earrings-03.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "d0b9a87b-964a-4dbd-a437-751e123b53a0.JPG",
+          "alt": "Two-Tone Wide Huggie Hoops, view 3"
+        }
+      ],
+      "tags": [
+        "two-tone",
+        "huggies",
+        "statement"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": "Cropped from group shot (low resolution). Reshoot individually.",
+      "verify": [
+        "Closure type"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "rope-knot-drop-earrings",
+      "sku": "GT-EAR-007",
+      "title": "Silver-Tone Rope Knot Drops",
+      "department": "jewellery",
+      "category": "earrings",
+      "priceCents": 999,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A twisted rope knot in bright silver-tone. Nautical, but make it evening.",
+      "description": "A loop of textured silver-tone rope, tied into a neat knot. It has the easy charm of a coastal weekend and the polish to wear it into the city on Monday.",
+      "details": [
+        "Silver-tone finish over base metal",
+        "Post back",
+        "Textured rope detail",
+        "Sold as shown on a gift-ready card"
+      ],
+      "careGuide": "jewellery-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-EAR-007",
+          "priceCents": 999,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/rope-knot-drop-earrings-01.jpg",
+          "width": 264,
+          "height": 330,
+          "source": "crop:ear-rope-knot",
+          "alt": "Silver-Tone Rope Knot Drops"
+        },
+        {
+          "file": "images/gold-ribbon-bow-drop-earrings-02.jpg",
+          "width": 1085,
+          "height": 1449,
+          "source": "a0be5514-8746-450f-b17a-e2da60f45cbe.JPG",
+          "alt": "Silver-Tone Rope Knot Drops, view 2"
+        },
+        {
+          "file": "images/gold-ribbon-bow-drop-earrings-03.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "d0b9a87b-964a-4dbd-a437-751e123b53a0.JPG",
+          "alt": "Silver-Tone Rope Knot Drops, view 3"
+        }
+      ],
+      "tags": [
+        "silver-tone",
+        "drops"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": "Cropped from group shot (low resolution). Reshoot individually.",
+      "verify": [],
+      "status": "active"
+    },
+    {
+      "slug": "sculpted-knot-studs",
+      "sku": "GT-EAR-008",
+      "title": "Silver-Tone Sculpted Knot Studs",
+      "department": "jewellery",
+      "category": "earrings",
+      "priceCents": 999,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "Chunky, molten-look knots in high-shine silver-tone.",
+      "description": "A soft, organic knot with the weight of a much pricier piece. Sits right on the lobe and plays well with a second piercing.",
+      "details": [
+        "Silver-tone finish over base metal",
+        "Post back",
+        "Sold as shown on a gift-ready card"
+      ],
+      "careGuide": "jewellery-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-EAR-008",
+          "priceCents": 999,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/sculpted-knot-studs-01.jpg",
+          "width": 267,
+          "height": 333,
+          "source": "crop:ear-silver-knot",
+          "alt": "Silver-Tone Sculpted Knot Studs"
+        },
+        {
+          "file": "images/gold-ribbon-bow-drop-earrings-02.jpg",
+          "width": 1085,
+          "height": 1449,
+          "source": "a0be5514-8746-450f-b17a-e2da60f45cbe.JPG",
+          "alt": "Silver-Tone Sculpted Knot Studs, view 2"
+        },
+        {
+          "file": "images/gold-ribbon-bow-drop-earrings-03.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "d0b9a87b-964a-4dbd-a437-751e123b53a0.JPG",
+          "alt": "Silver-Tone Sculpted Knot Studs, view 3"
+        }
+      ],
+      "tags": [
+        "silver-tone",
+        "studs",
+        "everyday"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": "Cropped from group shot (low resolution). Reshoot individually.",
+      "verify": [],
+      "status": "active"
+    },
+    {
+      "slug": "crystal-bead-stud-trio",
+      "sku": "GT-EAR-009",
+      "title": "Crystal & Bead Stud Trio",
+      "department": "jewellery",
+      "category": "earrings",
+      "priceCents": 999,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "Three pairs on one card: sapphire-blue crystal, gold-tone ball and clear crystal.",
+      "description": "One card, three moods. Wear the clear crystals for work, the blue for a pop of colour, and the gold-tone balls when you want nothing to compete with your outfit. Built for stacking and for gifting.",
+      "details": [
+        "3 pairs of studs",
+        "Gold-tone settings over base metal with glass crystals",
+        "Post backs",
+        "Sold as shown on a gift-ready card"
+      ],
+      "careGuide": "jewellery-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-EAR-009",
+          "priceCents": 999,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/crystal-bead-stud-trio-01.jpg",
+          "width": 287,
+          "height": 358,
+          "source": "crop:ear-stud-trio",
+          "alt": "Crystal & Bead Stud Trio"
+        },
+        {
+          "file": "images/gold-ribbon-bow-drop-earrings-02.jpg",
+          "width": 1085,
+          "height": 1449,
+          "source": "a0be5514-8746-450f-b17a-e2da60f45cbe.JPG",
+          "alt": "Crystal & Bead Stud Trio, view 2"
+        },
+        {
+          "file": "images/gold-ribbon-bow-drop-earrings-03.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "d0b9a87b-964a-4dbd-a437-751e123b53a0.JPG",
+          "alt": "Crystal & Bead Stud Trio, view 3"
+        }
+      ],
+      "tags": [
+        "studs",
+        "set",
+        "gift-under-15"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": "Cropped from group shot (low resolution). Reshoot individually.",
+      "verify": [
+        "Confirm crystals are glass vs. cubic zirconia"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "twisted-mini-hoops-crystal",
+      "sku": "GT-EAR-010",
+      "title": "Twisted Mini Hoops with Crystal",
+      "department": "jewellery",
+      "category": "earrings",
+      "priceCents": 999,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "Small twisted gold-tone hoops topped with a single crystal stud.",
+      "description": "A tiny bit of sparkle, a lot of texture. The twisted hoop hangs from a crystal stud, so it looks like a curated two-piece stack from a single piercing.",
+      "details": [
+        "Gold-tone finish over base metal",
+        "Crystal stud top",
+        "Sold as one pair",
+        "Sold as shown on a gift-ready card"
+      ],
+      "careGuide": "jewellery-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-EAR-010",
+          "priceCents": 999,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/twisted-mini-hoops-crystal-01.jpg",
+          "width": 235,
+          "height": 293,
+          "source": "crop:ear-twist-mini-hoop",
+          "alt": "Twisted Mini Hoops with Crystal"
+        },
+        {
+          "file": "images/gold-ribbon-bow-drop-earrings-02.jpg",
+          "width": 1085,
+          "height": 1449,
+          "source": "a0be5514-8746-450f-b17a-e2da60f45cbe.JPG",
+          "alt": "Twisted Mini Hoops with Crystal, view 2"
+        },
+        {
+          "file": "images/gold-ribbon-bow-drop-earrings-03.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "d0b9a87b-964a-4dbd-a437-751e123b53a0.JPG",
+          "alt": "Twisted Mini Hoops with Crystal, view 3"
+        }
+      ],
+      "tags": [
+        "gold-tone",
+        "hoops",
+        "dainty"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": "Cropped from group shot (low resolution). Reshoot individually.",
+      "verify": [],
+      "status": "active"
+    },
+    {
+      "slug": "stud-and-hoop-stack-set",
+      "sku": "GT-EAR-011",
+      "title": "Stud & Hoop Stack Set",
+      "department": "jewellery",
+      "category": "earrings",
+      "priceCents": 1299,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "Crystal studs and graduated gold-tone hoops: an instant ear stack.",
+      "description": "The shortcut to a curated ear. Mix the crystal studs with the graduated gold-tone hoops across your piercings, or split the set with a friend. We won't tell.",
+      "details": [
+        "Crystal studs plus graduated gold-tone hoops on one card",
+        "Gold-tone finish over base metal",
+        "Sold as shown on a gift-ready card"
+      ],
+      "careGuide": "jewellery-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-EAR-011",
+          "priceCents": 1299,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/stud-and-hoop-stack-set-01.jpg",
+          "width": 289,
+          "height": 361,
+          "source": "crop:ear-stack-set",
+          "alt": "Stud & Hoop Stack Set"
+        },
+        {
+          "file": "images/gold-ribbon-bow-drop-earrings-02.jpg",
+          "width": 1085,
+          "height": 1449,
+          "source": "a0be5514-8746-450f-b17a-e2da60f45cbe.JPG",
+          "alt": "Stud & Hoop Stack Set, view 2"
+        },
+        {
+          "file": "images/gold-ribbon-bow-drop-earrings-03.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "d0b9a87b-964a-4dbd-a437-751e123b53a0.JPG",
+          "alt": "Stud & Hoop Stack Set, view 3"
+        }
+      ],
+      "tags": [
+        "gold-tone",
+        "set",
+        "stack"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": "Cropped from group shot (low resolution). Reshoot individually.",
+      "verify": [
+        "Exact pair count on card (looks like 2 pairs studs + 2 pairs hoops)"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "silver-chunky-mini-hoops",
+      "sku": "GT-EAR-012",
+      "title": "Silver-Tone Chunky Mini Hoops",
+      "department": "jewellery",
+      "category": "earrings",
+      "priceCents": 999,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "Thick, polished silver-tone mini hoops for every single day.",
+      "description": "The everyday hoop, thickened. Small enough to sleep in, if that's who you are, and chunky enough to look intentional.",
+      "details": [
+        "Silver-tone finish over base metal",
+        "Small chunky hoop",
+        "Sold as shown on a gift-ready card"
+      ],
+      "careGuide": "jewellery-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-EAR-012",
+          "priceCents": 999,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/silver-chunky-mini-hoops-01.jpg",
+          "width": 241,
+          "height": 301,
+          "source": "crop:ear-silver-mini-hoop",
+          "alt": "Silver-Tone Chunky Mini Hoops"
+        },
+        {
+          "file": "images/gold-ribbon-bow-drop-earrings-02.jpg",
+          "width": 1085,
+          "height": 1449,
+          "source": "a0be5514-8746-450f-b17a-e2da60f45cbe.JPG",
+          "alt": "Silver-Tone Chunky Mini Hoops, view 2"
+        },
+        {
+          "file": "images/gold-ribbon-bow-drop-earrings-03.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "d0b9a87b-964a-4dbd-a437-751e123b53a0.JPG",
+          "alt": "Silver-Tone Chunky Mini Hoops, view 3"
+        }
+      ],
+      "tags": [
+        "silver-tone",
+        "hoops",
+        "everyday"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": "Cropped from group shot (low resolution). Reshoot individually.",
+      "verify": [],
+      "status": "active"
+    },
+    {
+      "slug": "mystery-earring-trio",
+      "sku": "GT-EAR-013",
+      "title": "The Ear-resistible Mystery Trio",
+      "department": "jewellery",
+      "category": "earrings",
+      "priceCents": 1999,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "Three surprise pairs from our archive: stars, ribbed shells, quilted hearts and twisted hoops.",
+      "description": "Let us style you. We hand-pick three different pairs from our limited-run archive, mixing finishes and shapes so your trio works together and on its own. It could be stars, sculpted shells, quilted hearts or twisted hoops. No two trios are identical, which is the fun part.",
+      "details": [
+        "3 different pairs, hand-picked",
+        "Mixed gold-tone and silver-tone finishes over base metal",
+        "Styles vary; no duplicates within a trio",
+        "Final sale"
+      ],
+      "careGuide": "jewellery-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-EAR-013",
+          "priceCents": 1999,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/mystery-earring-trio-01.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "5a30ecb3-91a4-4a04-aa4d-76498a5faddb.JPG",
+          "alt": "The Ear-resistible Mystery Trio"
+        }
+      ],
+      "tags": [
+        "mystery",
+        "set",
+        "gift"
+      ],
+      "featured": true,
+      "excludedFromPromotions": true,
+      "photoNote": "Shows bagged stock. Shoot a styled flat-lay of a sample trio.",
+      "verify": [
+        "Enough assorted stock for trios"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "no-piercing-ear-cuff",
+      "sku": "GT-EAR-014",
+      "title": "No-Piercing Silver-Tone Ear Cuff",
+      "department": "jewellery",
+      "category": "earrings",
+      "priceCents": 799,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A wide, polished silver-tone cuff that slides onto the ear. No piercing needed.",
+      "description": "An instant edge, zero commitment. This wide, polished cuff slips onto the middle of the ear and gently squeezes to fit. Wear one alone or stack it with your hoops.",
+      "details": [
+        "Silver-tone finish over base metal",
+        "Sold individually",
+        "Gently adjustable fit"
+      ],
+      "careGuide": "jewellery-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-EAR-014",
+          "priceCents": 799,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/mystery-earring-trio-01.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "5a30ecb3-91a4-4a04-aa4d-76498a5faddb.JPG",
+          "alt": "No-Piercing Silver-Tone Ear Cuff"
+        }
+      ],
+      "tags": [
+        "silver-tone",
+        "ear-cuff",
+        "gift-under-15"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": "No product shot yet. Needs a photo before launch.",
+      "verify": [
+        "Confirm these are ear cuffs",
+        "Sold singly or in pairs"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "figaro-charm-necklace",
+      "sku": "GT-NEC-001",
+      "title": "Figaro Chain Charm Necklace",
+      "department": "jewellery",
+      "category": "necklaces",
+      "priceCents": 1399,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A chunky figaro chain finished with a charm: eagle, owl, layered tag or flower.",
+      "description": "A satisfyingly chunky figaro chain does most of the work; the charm adds the personality. Choose a wing-spread eagle, a little owl, a layered dog tag or a layered flower charm, in gold-tone or silver-tone.",
+      "details": [
+        "Gold-tone or silver-tone finish over base metal",
+        "Figaro link chain",
+        "Lobster clasp"
+      ],
+      "careGuide": "jewellery-care",
+      "optionNames": [
+        "Style"
+      ],
+      "variants": [
+        {
+          "title": "Eagle / Silver-Tone",
+          "options": {
+            "Style": "Eagle / Silver-Tone"
+          },
+          "sku": "GT-NEC-001-EGS",
+          "priceCents": 1399,
+          "stock": null
+        },
+        {
+          "title": "Eagle / Gold-Tone",
+          "options": {
+            "Style": "Eagle / Gold-Tone"
+          },
+          "sku": "GT-NEC-001-EGG",
+          "priceCents": 1399,
+          "stock": null
+        },
+        {
+          "title": "Owl / Gold-Tone",
+          "options": {
+            "Style": "Owl / Gold-Tone"
+          },
+          "sku": "GT-NEC-001-OWG",
+          "priceCents": 1399,
+          "stock": null
+        },
+        {
+          "title": "Owl / Silver-Tone",
+          "options": {
+            "Style": "Owl / Silver-Tone"
+          },
+          "sku": "GT-NEC-001-OWS",
+          "priceCents": 1399,
+          "stock": null
+        },
+        {
+          "title": "Layered Tag / Gold-Tone",
+          "options": {
+            "Style": "Layered Tag / Gold-Tone"
+          },
+          "sku": "GT-NEC-001-TGG",
+          "priceCents": 1399,
+          "stock": null
+        },
+        {
+          "title": "Layered Flower / Silver-Tone",
+          "options": {
+            "Style": "Layered Flower / Silver-Tone"
+          },
+          "sku": "GT-NEC-001-FLS",
+          "priceCents": 1399,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/figaro-charm-necklace-01.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "64cb19c2-2127-4258-9a0a-6375b4e3dbb8.JPG",
+          "alt": "Figaro Chain Charm Necklace"
+        }
+      ],
+      "tags": [
+        "necklace",
+        "charm",
+        "gold-tone",
+        "silver-tone",
+        "gift-under-15"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": "Packaged group shot. Reshoot each charm on black.",
+      "verify": [
+        "Chain length",
+        "Clasp type"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "stainless-steel-talisman-pendant",
+      "sku": "GT-NEC-002",
+      "title": "Stainless Steel Talisman Pendant",
+      "department": "jewellery",
+      "category": "necklaces",
+      "priceCents": 1999,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "Coins, suns, stars and turquoise shells on fine stainless steel chain.",
+      "description": "Little talismans with a sun-bleached, Mediterranean feel. Each pendant hangs on a fine stainless steel chain, which stands up to everyday wear far better than plated base metal. Layer two, or let one sit alone at the collarbone.",
+      "details": [
+        "Stainless steel",
+        "Fine cable chain",
+        "Choice of gold-tone or silver-tone",
+        "Turquoise-colour stone accents on select styles"
+      ],
+      "careGuide": "jewellery-care",
+      "optionNames": [
+        "Style"
+      ],
+      "variants": [
+        {
+          "title": "Turquoise Shell / Silver-Tone",
+          "options": {
+            "Style": "Turquoise Shell / Silver-Tone"
+          },
+          "sku": "GT-NEC-002-TSS",
+          "priceCents": 1999,
+          "stock": null
+        },
+        {
+          "title": "Turquoise Shell / Gold-Tone",
+          "options": {
+            "Style": "Turquoise Shell / Gold-Tone"
+          },
+          "sku": "GT-NEC-002-TSG",
+          "priceCents": 1999,
+          "stock": null
+        },
+        {
+          "title": "Antique Coin / Gold-Tone",
+          "options": {
+            "Style": "Antique Coin / Gold-Tone"
+          },
+          "sku": "GT-NEC-002-COG",
+          "priceCents": 1999,
+          "stock": null
+        },
+        {
+          "title": "Antique Coin / Silver-Tone",
+          "options": {
+            "Style": "Antique Coin / Silver-Tone"
+          },
+          "sku": "GT-NEC-002-COS",
+          "priceCents": 1999,
+          "stock": null
+        },
+        {
+          "title": "Sunburst / Silver-Tone",
+          "options": {
+            "Style": "Sunburst / Silver-Tone"
+          },
+          "sku": "GT-NEC-002-SBS",
+          "priceCents": 1999,
+          "stock": null
+        },
+        {
+          "title": "North Star / Gold-Tone",
+          "options": {
+            "Style": "North Star / Gold-Tone"
+          },
+          "sku": "GT-NEC-002-NSG",
+          "priceCents": 1999,
+          "stock": null
+        },
+        {
+          "title": "Turquoise Medallion / Gold-Tone",
+          "options": {
+            "Style": "Turquoise Medallion / Gold-Tone"
+          },
+          "sku": "GT-NEC-002-TMG",
+          "priceCents": 1999,
+          "stock": null
+        },
+        {
+          "title": "Turquoise Medallion / Silver-Tone",
+          "options": {
+            "Style": "Turquoise Medallion / Silver-Tone"
+          },
+          "sku": "GT-NEC-002-TMS",
+          "priceCents": 1999,
+          "stock": null
+        },
+        {
+          "title": "Sunburst Drop / Silver-Tone",
+          "options": {
+            "Style": "Sunburst Drop / Silver-Tone"
+          },
+          "sku": "GT-NEC-002-SDS",
+          "priceCents": 1999,
+          "stock": null
+        },
+        {
+          "title": "Sunburst Drop / Gold-Tone",
+          "options": {
+            "Style": "Sunburst Drop / Gold-Tone"
+          },
+          "sku": "GT-NEC-002-SDG",
+          "priceCents": 1999,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/stainless-steel-talisman-pendant-01.jpg",
+          "width": 1086,
+          "height": 1448,
+          "source": "bc29035f-8e74-420e-99ab-57dcf6df1050.JPG",
+          "alt": "Stainless Steel Talisman Pendant"
+        },
+        {
+          "file": "images/stainless-steel-talisman-pendant-02.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "a6c18a83-44b5-42da-95f7-8a2510ea4f6f.JPG",
+          "alt": "Stainless Steel Talisman Pendant, view 2"
+        }
+      ],
+      "tags": [
+        "necklace",
+        "stainless-steel",
+        "talisman",
+        "layering"
+      ],
+      "featured": true,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [
+        "Confirm these are necklaces (not threader earrings)",
+        "Chain length",
+        "Stone material (likely resin/howlite)"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "evil-eye-charm-bracelet",
+      "sku": "GT-BRA-001",
+      "title": "Evil Eye Charm Bracelet",
+      "department": "jewellery",
+      "category": "bracelets",
+      "priceCents": 1299,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A gold-tone chain with a turquoise evil eye charm, for luck you can wear.",
+      "description": "The nazar has been worn for centuries to turn away bad energy. Ours sits in a scalloped gold-tone setting on a delicate chain, with an extender so it fits most wrists. Wear it for protection, for luck, or because it looks lovely next to your watch.",
+      "details": [
+        "Gold-tone finish over base metal",
+        "Turquoise enamel evil eye charm",
+        "Adjustable with extender chain",
+        "Lobster clasp"
+      ],
+      "careGuide": "jewellery-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-BRA-001",
+          "priceCents": 1299,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/evil-eye-charm-bracelet-01.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "e98649c3-c341-48f9-baea-7e5c3d1a18c4.JPG",
+          "alt": "Evil Eye Charm Bracelet"
+        }
+      ],
+      "tags": [
+        "evil-eye",
+        "bracelet",
+        "gold-tone",
+        "gift-under-15"
+      ],
+      "featured": true,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [
+        "Bracelet vs. anklet",
+        "Length plus extender"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "gold-loop-claw-clip-set",
+      "sku": "GT-HAR-001",
+      "title": "Gold-Tone Loop Claw Clip Set",
+      "department": "hair",
+      "category": "claw-clips",
+      "priceCents": 1299,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "Three open-loop metal claw clips, one large and two small, in polished gold-tone.",
+      "description": "Hair jewellery, basically. A large clip for a twisted updo and two smaller clips for half-up styles or a sleek side sweep. The open-loop design looks deliberate even on a three-minute hair day.",
+      "details": [
+        "Set of 3: 1 large, 2 small",
+        "Gold-tone metal",
+        "Spring-hinge claw"
+      ],
+      "careGuide": "jewellery-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-HAR-001",
+          "priceCents": 1299,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/gold-loop-claw-clip-set-01.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "7aae9be2-c13d-4a94-b3a5-ba6a78d9bf47.JPG",
+          "alt": "Gold-Tone Loop Claw Clip Set"
+        }
+      ],
+      "tags": [
+        "claw-clip",
+        "gold-tone",
+        "set",
+        "gift-under-15"
+      ],
+      "featured": true,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [
+        "Large clip width"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "plumeria-flower-claw-clip",
+      "sku": "GT-HAR-002",
+      "title": "Plumeria Flower Claw Clip",
+      "department": "hair",
+      "category": "claw-clips",
+      "priceCents": 699,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "Holiday-coded flower claw clips in pearly pastels and sunset ombré.",
+      "description": "Pin a little vacation into your hair. The five-petal plumeria comes in soft pearl pastels and glowing ombré tones, sized to hold a twist or a half-up style. The mini set is made for scattering through braids.",
+      "details": [
+        "Acrylic",
+        "Large clip sold individually; mini clips sold as a card"
+      ],
+      "careGuide": "tool-care",
+      "optionNames": [
+        "Style"
+      ],
+      "variants": [
+        {
+          "title": "Large / Pearl Pastel",
+          "options": {
+            "Style": "Large / Pearl Pastel"
+          },
+          "sku": "GT-HAR-002-LPP",
+          "priceCents": 699,
+          "stock": null
+        },
+        {
+          "title": "Large / Sunset Ombré",
+          "options": {
+            "Style": "Large / Sunset Ombré"
+          },
+          "sku": "GT-HAR-002-LSO",
+          "priceCents": 699,
+          "stock": null
+        },
+        {
+          "title": "Mini Flower Clip Card",
+          "options": {
+            "Style": "Mini Flower Clip Card"
+          },
+          "sku": "GT-HAR-002-MIN",
+          "priceCents": 799,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/plumeria-flower-claw-clip-01.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "a76e8ae7-2032-4cf7-a3a1-dd5cb38e4697.JPG",
+          "alt": "Plumeria Flower Claw Clip"
+        }
+      ],
+      "tags": [
+        "claw-clip",
+        "flower",
+        "colourful",
+        "gift-under-15"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [
+        "Colour assortment",
+        "Mini clips per card"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "headband-and-clip-set",
+      "sku": "GT-HAR-003",
+      "title": "Headband & Clip Set",
+      "department": "hair",
+      "category": "headbands",
+      "priceCents": 1199,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A coordinated headband, rectangle clip and two mini claws on one card.",
+      "description": "A matching set for people who like their accessories to agree with each other. Each card pairs a headband with a rectangle barrette and two mini claw clips in the same palette, from creamy wave to classic tortoiseshell.",
+      "details": [
+        "Headband, 1 rectangle clip and 2 mini claw clips",
+        "Acrylic and resin"
+      ],
+      "careGuide": "tool-care",
+      "optionNames": [
+        "Style"
+      ],
+      "variants": [
+        {
+          "title": "Cream Wave",
+          "options": {
+            "Style": "Cream Wave"
+          },
+          "sku": "GT-HAR-003-CRW",
+          "priceCents": 1199,
+          "stock": null
+        },
+        {
+          "title": "Black Wave",
+          "options": {
+            "Style": "Black Wave"
+          },
+          "sku": "GT-HAR-003-BKW",
+          "priceCents": 1199,
+          "stock": null
+        },
+        {
+          "title": "Mocha Wave",
+          "options": {
+            "Style": "Mocha Wave"
+          },
+          "sku": "GT-HAR-003-MCW",
+          "priceCents": 1199,
+          "stock": null
+        },
+        {
+          "title": "Tortoiseshell",
+          "options": {
+            "Style": "Tortoiseshell"
+          },
+          "sku": "GT-HAR-003-TRT",
+          "priceCents": 1199,
+          "stock": null
+        },
+        {
+          "title": "Classic Black",
+          "options": {
+            "Style": "Classic Black"
+          },
+          "sku": "GT-HAR-003-CBK",
+          "priceCents": 1199,
+          "stock": null
+        },
+        {
+          "title": "Amber Tortoise",
+          "options": {
+            "Style": "Amber Tortoise"
+          },
+          "sku": "GT-HAR-003-AMB",
+          "priceCents": 1199,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/headband-and-clip-set-01.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "bf309745-a8d3-4c67-928b-99429256293b.JPG",
+          "alt": "Headband & Clip Set"
+        },
+        {
+          "file": "images/headband-and-clip-set-02.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "42f32c2d-d6fd-44aa-9214-9c7224bda9cb.JPG",
+          "alt": "Headband & Clip Set, view 2"
+        }
+      ],
+      "tags": [
+        "headband",
+        "set",
+        "tortoiseshell",
+        "gift-under-15"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [
+        "Pieces per card"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "padded-plaid-headband",
+      "sku": "GT-HAR-004",
+      "title": "Padded Plaid Headband",
+      "department": "hair",
+      "category": "headbands",
+      "priceCents": 1199,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A plush, padded headband in heritage plaid. Instant polish.",
+      "description": "The padded headband turns a bad hair day into a choice. Soft, structured and wrapped in classic plaid: oatmeal for every day, tartan for the holidays and anything that wants to feel a little bit Highland.",
+      "details": [
+        "Padded fabric-wrapped headband",
+        "One size"
+      ],
+      "careGuide": "textile-care",
+      "optionNames": [
+        "Style"
+      ],
+      "variants": [
+        {
+          "title": "Oatmeal Plaid",
+          "options": {
+            "Style": "Oatmeal Plaid"
+          },
+          "sku": "GT-HAR-004-OAT",
+          "priceCents": 1199,
+          "stock": null
+        },
+        {
+          "title": "Holiday Tartan",
+          "options": {
+            "Style": "Holiday Tartan"
+          },
+          "sku": "GT-HAR-004-TAR",
+          "priceCents": 1199,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/padded-plaid-headband-01.jpg",
+          "width": 1600,
+          "height": 1200,
+          "source": "af5f89a0-fec0-49dc-b3e2-d9a7109ed04c.JPG",
+          "alt": "Padded Plaid Headband"
+        }
+      ],
+      "tags": [
+        "headband",
+        "plaid",
+        "fall-edit",
+        "gift-under-15"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [
+        "Fibre content (required for textile listing)"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "seamless-thick-hair-ties",
+      "sku": "GT-HAR-005",
+      "title": "Seamless Thick Hair Ties (6-Pack)",
+      "department": "hair",
+      "category": "hair-ties",
+      "priceCents": 499,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "Six soft, seamless ties in muted tones. Gentle on hair, firm on hold.",
+      "description": "The ones that don't snag, dent or disappear (as quickly). Thick, seamless and soft-touch, in a muted palette that looks fine on your wrist all day.",
+      "details": [
+        "6 hair ties per card",
+        "Seamless soft-touch elastic",
+        "Assorted muted colours"
+      ],
+      "careGuide": "tool-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-HAR-005",
+          "priceCents": 499,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/seamless-thick-hair-ties-01.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "fafb31b5-47cf-4d54-bed6-961c7ba3ccc5.JPG",
+          "alt": "Seamless Thick Hair Ties (6-Pack)"
+        },
+        {
+          "file": "images/seamless-thick-hair-ties-02.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "801af663-1543-48a5-9454-05db499ebe1d.JPG",
+          "alt": "Seamless Thick Hair Ties (6-Pack), view 2"
+        }
+      ],
+      "tags": [
+        "hair-ties",
+        "basics",
+        "gift-under-15"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [],
+      "status": "active"
+    },
+    {
+      "slug": "mini-elastic-hair-bands",
+      "sku": "GT-HAR-006",
+      "title": "Mini Elastic Hair Bands",
+      "department": "hair",
+      "category": "hair-ties",
+      "priceCents": 399,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A tube of tiny elastics for braids, bubble ponies and baby hairs.",
+      "description": "For braid ends, bubble ponytails, space buns and kids who won't sit still. A tube full of mini elastics in classic black, pastel mix or neon rainbow.",
+      "details": [
+        "Mini elastic bands in a reusable tube",
+        "Quantity per tube: see verify"
+      ],
+      "careGuide": "tool-care",
+      "optionNames": [
+        "Style"
+      ],
+      "variants": [
+        {
+          "title": "Black",
+          "options": {
+            "Style": "Black"
+          },
+          "sku": "GT-HAR-006-BLK",
+          "priceCents": 399,
+          "stock": null
+        },
+        {
+          "title": "Pastel Mix",
+          "options": {
+            "Style": "Pastel Mix"
+          },
+          "sku": "GT-HAR-006-PST",
+          "priceCents": 399,
+          "stock": null
+        },
+        {
+          "title": "Neon Rainbow",
+          "options": {
+            "Style": "Neon Rainbow"
+          },
+          "sku": "GT-HAR-006-NEO",
+          "priceCents": 399,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/mini-elastic-hair-bands-01.jpg",
+          "width": 1448,
+          "height": 1086,
+          "source": "deb1f756-797f-4e77-af89-ed2f7caaa621.JPG",
+          "alt": "Mini Elastic Hair Bands"
+        },
+        {
+          "file": "images/mini-elastic-hair-bands-02.jpg",
+          "width": 1600,
+          "height": 1200,
+          "source": "d734686c-0a94-4305-831d-d815904e288f.JPG",
+          "alt": "Mini Elastic Hair Bands, view 2"
+        },
+        {
+          "file": "images/mini-elastic-hair-bands-03.jpg",
+          "width": 1600,
+          "height": 1200,
+          "source": "6355841c-01a0-43ac-8b82-f576b32cba43 2.JPG",
+          "alt": "Mini Elastic Hair Bands, view 3"
+        }
+      ],
+      "tags": [
+        "hair-ties",
+        "kids",
+        "gift-under-15"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [
+        "Approx. count per tube"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "cherry-gingham-bow-hair-ties",
+      "sku": "GT-HAR-007",
+      "title": "Cherry & Gingham Bow Hair Ties",
+      "department": "hair",
+      "category": "hair-ties",
+      "priceCents": 699,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "Glossy cherries and red gingham bows on soft elastics. Sweet as.",
+      "description": "Two glossy cherries and a little gingham bow on every tie: the easiest way to make pigtails feel like an occasion. Made for small heads and big personalities, and grown-ups with a picnic aesthetic.",
+      "details": [
+        "Elastic hair ties with cherry and bow detail",
+        "Pack size: see verify"
+      ],
+      "careGuide": "tool-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-HAR-007",
+          "priceCents": 699,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/cherry-gingham-bow-hair-ties-01.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "4999a665-5431-4ae7-920a-07b864c54314.JPG",
+          "alt": "Cherry & Gingham Bow Hair Ties"
+        }
+      ],
+      "tags": [
+        "hair-ties",
+        "kids",
+        "cherry",
+        "gift-under-15"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [
+        "Pieces per pack you'll sell"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "spiral-detangling-brush",
+      "sku": "GT-HAR-008",
+      "title": "Spiral Detangling Brush",
+      "department": "hair",
+      "category": "brushes",
+      "priceCents": 999,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A flexible spiral brush that works through knots without the tears.",
+      "description": "The open spiral design flexes as it brushes, so it glides through tangles on wet or dry hair instead of yanking. Light, quick-drying and cheerful enough to leave on the bathroom counter.",
+      "details": [
+        "Flexible open-spiral head",
+        "Use on wet or dry hair",
+        "Lightweight plastic"
+      ],
+      "careGuide": "tool-care",
+      "optionNames": [
+        "Style"
+      ],
+      "variants": [
+        {
+          "title": "Mint",
+          "options": {
+            "Style": "Mint"
+          },
+          "sku": "GT-HAR-008-MNT",
+          "priceCents": 999,
+          "stock": null
+        },
+        {
+          "title": "Coral",
+          "options": {
+            "Style": "Coral"
+          },
+          "sku": "GT-HAR-008-CRL",
+          "priceCents": 999,
+          "stock": null
+        },
+        {
+          "title": "Lilac",
+          "options": {
+            "Style": "Lilac"
+          },
+          "sku": "GT-HAR-008-LIL",
+          "priceCents": 999,
+          "stock": null
+        },
+        {
+          "title": "Pink",
+          "options": {
+            "Style": "Pink"
+          },
+          "sku": "GT-HAR-008-PNK",
+          "priceCents": 999,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/spiral-detangling-brush-01.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "e3d0a3db-cb10-4211-be50-0738ac36ba94.JPG",
+          "alt": "Spiral Detangling Brush"
+        },
+        {
+          "file": "images/spiral-detangling-brush-02.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "96b2394d-3355-4506-9307-6786d901b578.JPG",
+          "alt": "Spiral Detangling Brush, view 2"
+        }
+      ],
+      "tags": [
+        "brush",
+        "hair-tools",
+        "gift-under-15"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [],
+      "status": "active"
+    },
+    {
+      "slug": "linen-top-handle-mini-bag",
+      "sku": "GT-BAG-001",
+      "title": "Linen Top-Handle Mini Bag",
+      "department": "bags",
+      "category": "mini-bags",
+      "priceCents": 3299,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "Natural linen-look panels with tan faux leather trim and rounded top handles.",
+      "description": "Summer texture you can carry year round. A structured mini with a linen-look front, tan trim and rounded handles that make it look like it costs a lot more.",
+      "details": [
+        "Faux leather (vegan)",
+        "Gold-tone hardware",
+        "Interior and strap details: see verify"
+      ],
+      "careGuide": "bag-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-BAG-001",
+          "priceCents": 3299,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/linen-top-handle-mini-bag-01.jpg",
+          "width": 342,
+          "height": 427,
+          "source": "crop:bag-01",
+          "alt": "Linen Top-Handle Mini Bag"
+        },
+        {
+          "file": "images/linen-top-handle-mini-bag-02.jpg",
+          "width": 1199,
+          "height": 1312,
+          "source": "b7b970ff-2d5d-48e8-8114-c7cdcdc4c38d.JPG",
+          "alt": "Linen Top-Handle Mini Bag, view 2"
+        }
+      ],
+      "tags": [
+        "bag",
+        "mini-bag",
+        "vegan-leather"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": "Cropped from group shot, still in packaging (low resolution). Unbox and reshoot before launch.",
+      "verify": [
+        "Material",
+        "Dimensions (W x H x D cm)",
+        "Strap included / length",
+        "Interior pockets"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "emerald-slouch-sling",
+      "sku": "GT-BAG-002",
+      "title": "Emerald Slouch Sling",
+      "department": "bags",
+      "category": "mini-bags",
+      "priceCents": 2999,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A soft, slouchy sling bag in saturated emerald green.",
+      "description": "The colour is the outfit. A soft, rounded sling in deep emerald that sits close to the body and turns denim and a white tee into a look.",
+      "details": [
+        "Faux leather (vegan)",
+        "Gold-tone hardware",
+        "Interior and strap details: see verify"
+      ],
+      "careGuide": "bag-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-BAG-002",
+          "priceCents": 2999,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/emerald-slouch-sling-01.jpg",
+          "width": 315,
+          "height": 394,
+          "source": "crop:bag-02",
+          "alt": "Emerald Slouch Sling"
+        },
+        {
+          "file": "images/linen-top-handle-mini-bag-02.jpg",
+          "width": 1199,
+          "height": 1312,
+          "source": "b7b970ff-2d5d-48e8-8114-c7cdcdc4c38d.JPG",
+          "alt": "Emerald Slouch Sling, view 2"
+        }
+      ],
+      "tags": [
+        "bag",
+        "mini-bag",
+        "vegan-leather"
+      ],
+      "featured": true,
+      "excludedFromPromotions": false,
+      "photoNote": "Cropped from group shot, still in packaging (low resolution). Unbox and reshoot before launch.",
+      "verify": [
+        "Material",
+        "Dimensions (W x H x D cm)",
+        "Strap included / length",
+        "Interior pockets"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "taupe-ring-buckle-crossbody",
+      "sku": "GT-BAG-003",
+      "title": "Taupe Ring-Buckle Crossbody",
+      "department": "bags",
+      "category": "mini-bags",
+      "priceCents": 2999,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A taupe crossbody with a sculptural gold-tone ring buckle.",
+      "description": "Quiet colour, loud hardware. The oval gold-tone buckle gives this neutral crossbody its signature look.",
+      "details": [
+        "Faux leather (vegan)",
+        "Gold-tone hardware",
+        "Interior and strap details: see verify"
+      ],
+      "careGuide": "bag-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-BAG-003",
+          "priceCents": 2999,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/taupe-ring-buckle-crossbody-01.jpg",
+          "width": 270,
+          "height": 337,
+          "source": "crop:bag-03",
+          "alt": "Taupe Ring-Buckle Crossbody"
+        },
+        {
+          "file": "images/linen-top-handle-mini-bag-02.jpg",
+          "width": 1199,
+          "height": 1312,
+          "source": "b7b970ff-2d5d-48e8-8114-c7cdcdc4c38d.JPG",
+          "alt": "Taupe Ring-Buckle Crossbody, view 2"
+        }
+      ],
+      "tags": [
+        "bag",
+        "mini-bag",
+        "vegan-leather"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": "Cropped from group shot, still in packaging (low resolution). Unbox and reshoot before launch.",
+      "verify": [
+        "Material",
+        "Dimensions (W x H x D cm)",
+        "Strap included / length",
+        "Interior pockets"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "ivory-dome-top-handle-bag",
+      "sku": "GT-BAG-004",
+      "title": "Ivory Dome Top-Handle Bag",
+      "department": "bags",
+      "category": "mini-bags",
+      "priceCents": 3299,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A rounded ivory mini with a smooth top handle. Very ladies-who-lunch.",
+      "description": "A rounded dome shape, a single sculpted handle and a glossy ivory finish. Carry it by hand for brunch, or add a strap and go.",
+      "details": [
+        "Faux leather (vegan)",
+        "Gold-tone hardware",
+        "Interior and strap details: see verify"
+      ],
+      "careGuide": "bag-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-BAG-004",
+          "priceCents": 3299,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/ivory-dome-top-handle-bag-01.jpg",
+          "width": 297,
+          "height": 371,
+          "source": "crop:bag-04",
+          "alt": "Ivory Dome Top-Handle Bag"
+        },
+        {
+          "file": "images/linen-top-handle-mini-bag-02.jpg",
+          "width": 1199,
+          "height": 1312,
+          "source": "b7b970ff-2d5d-48e8-8114-c7cdcdc4c38d.JPG",
+          "alt": "Ivory Dome Top-Handle Bag, view 2"
+        }
+      ],
+      "tags": [
+        "bag",
+        "mini-bag",
+        "vegan-leather"
+      ],
+      "featured": true,
+      "excludedFromPromotions": false,
+      "photoNote": "Cropped from group shot, still in packaging (low resolution). Unbox and reshoot before launch.",
+      "verify": [
+        "Material",
+        "Dimensions (W x H x D cm)",
+        "Strap included / length",
+        "Interior pockets"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "black-zip-crossbody",
+      "sku": "GT-BAG-005",
+      "title": "Black Zip Crossbody Pouch",
+      "department": "bags",
+      "category": "mini-bags",
+      "priceCents": 2499,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A flat, textured black zip pouch for phone, cards and keys.",
+      "description": "The hands-free essential. Slim, flat and zipped, it holds your phone, cards and keys and slips under a coat without the bulk.",
+      "details": [
+        "Faux leather (vegan)",
+        "Gold-tone hardware",
+        "Interior and strap details: see verify"
+      ],
+      "careGuide": "bag-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-BAG-005",
+          "priceCents": 2499,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/black-zip-crossbody-01.jpg",
+          "width": 328,
+          "height": 410,
+          "source": "crop:bag-05",
+          "alt": "Black Zip Crossbody Pouch"
+        },
+        {
+          "file": "images/linen-top-handle-mini-bag-02.jpg",
+          "width": 1199,
+          "height": 1312,
+          "source": "b7b970ff-2d5d-48e8-8114-c7cdcdc4c38d.JPG",
+          "alt": "Black Zip Crossbody Pouch, view 2"
+        }
+      ],
+      "tags": [
+        "bag",
+        "mini-bag",
+        "vegan-leather"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": "Cropped from group shot, still in packaging (low resolution). Unbox and reshoot before launch.",
+      "verify": [
+        "Material",
+        "Dimensions (W x H x D cm)",
+        "Strap included / length",
+        "Interior pockets"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "burgundy-dome-crossbody",
+      "sku": "GT-BAG-006",
+      "title": "Burgundy Dome Crossbody",
+      "department": "bags",
+      "category": "mini-bags",
+      "priceCents": 2799,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A pebbled burgundy dome bag with a gold-tone monogram-style plate.",
+      "description": "Deep wine colour, gold-tone hardware and a rounded silhouette. This is what fall looks like as a bag.",
+      "details": [
+        "Faux leather (vegan)",
+        "Gold-tone hardware",
+        "Interior and strap details: see verify"
+      ],
+      "careGuide": "bag-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-BAG-006",
+          "priceCents": 2799,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/burgundy-dome-crossbody-01.jpg",
+          "width": 265,
+          "height": 331,
+          "source": "crop:bag-06",
+          "alt": "Burgundy Dome Crossbody"
+        },
+        {
+          "file": "images/linen-top-handle-mini-bag-02.jpg",
+          "width": 1199,
+          "height": 1312,
+          "source": "b7b970ff-2d5d-48e8-8114-c7cdcdc4c38d.JPG",
+          "alt": "Burgundy Dome Crossbody, view 2"
+        }
+      ],
+      "tags": [
+        "bag",
+        "mini-bag",
+        "vegan-leather"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": "Cropped from group shot, still in packaging (low resolution). Unbox and reshoot before launch.",
+      "verify": [
+        "Material",
+        "Dimensions (W x H x D cm)",
+        "Strap included / length",
+        "Interior pockets"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "fuchsia-flap-crossbody",
+      "sku": "GT-BAG-007",
+      "title": "Fuchsia Flap Crossbody",
+      "department": "bags",
+      "category": "mini-bags",
+      "priceCents": 2799,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A punchy fuchsia mini with a tab flap and gold-tone triangle detail.",
+      "description": "For the days your outfit needs a raised voice. Hot fuchsia, a neat tab closure and a little gold-tone triangle.",
+      "details": [
+        "Faux leather (vegan)",
+        "Gold-tone hardware",
+        "Interior and strap details: see verify"
+      ],
+      "careGuide": "bag-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-BAG-007",
+          "priceCents": 2799,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/fuchsia-flap-crossbody-01.jpg",
+          "width": 260,
+          "height": 325,
+          "source": "crop:bag-07",
+          "alt": "Fuchsia Flap Crossbody"
+        },
+        {
+          "file": "images/linen-top-handle-mini-bag-02.jpg",
+          "width": 1199,
+          "height": 1312,
+          "source": "b7b970ff-2d5d-48e8-8114-c7cdcdc4c38d.JPG",
+          "alt": "Fuchsia Flap Crossbody, view 2"
+        }
+      ],
+      "tags": [
+        "bag",
+        "mini-bag",
+        "vegan-leather"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": "Cropped from group shot, still in packaging (low resolution). Unbox and reshoot before launch.",
+      "verify": [
+        "Material",
+        "Dimensions (W x H x D cm)",
+        "Strap included / length",
+        "Interior pockets"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "blush-double-zip-crossbody",
+      "sku": "GT-BAG-008",
+      "title": "Blush Double-Zip Crossbody",
+      "department": "bags",
+      "category": "mini-bags",
+      "priceCents": 2799,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A blush crossbody with front and main zip compartments.",
+      "description": "Organized, finally. Two zip compartments keep your phone apart from your keys, in a soft blush that goes with everything.",
+      "details": [
+        "Faux leather (vegan)",
+        "Gold-tone hardware",
+        "Interior and strap details: see verify"
+      ],
+      "careGuide": "bag-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-BAG-008",
+          "priceCents": 2799,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/blush-double-zip-crossbody-01.jpg",
+          "width": 299,
+          "height": 373,
+          "source": "crop:bag-08",
+          "alt": "Blush Double-Zip Crossbody"
+        },
+        {
+          "file": "images/linen-top-handle-mini-bag-02.jpg",
+          "width": 1199,
+          "height": 1312,
+          "source": "b7b970ff-2d5d-48e8-8114-c7cdcdc4c38d.JPG",
+          "alt": "Blush Double-Zip Crossbody, view 2"
+        }
+      ],
+      "tags": [
+        "bag",
+        "mini-bag",
+        "vegan-leather"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": "Cropped from group shot, still in packaging (low resolution). Unbox and reshoot before launch.",
+      "verify": [
+        "Material",
+        "Dimensions (W x H x D cm)",
+        "Strap included / length",
+        "Interior pockets"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "ivory-quilted-top-handle-bag",
+      "sku": "GT-BAG-009",
+      "title": "Ivory Quilted Top-Handle Bag",
+      "department": "bags",
+      "category": "mini-bags",
+      "priceCents": 3299,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "Diamond-quilted ivory with a gold-tone turn-lock and top handle.",
+      "description": "Classic quilting, a gold-tone turn-lock and a top handle: the timeless shape, without the timeless price tag.",
+      "details": [
+        "Faux leather (vegan)",
+        "Gold-tone hardware",
+        "Interior and strap details: see verify"
+      ],
+      "careGuide": "bag-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-BAG-009",
+          "priceCents": 3299,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/ivory-quilted-top-handle-bag-01.jpg",
+          "width": 291,
+          "height": 363,
+          "source": "crop:bag-09",
+          "alt": "Ivory Quilted Top-Handle Bag"
+        },
+        {
+          "file": "images/linen-top-handle-mini-bag-02.jpg",
+          "width": 1199,
+          "height": 1312,
+          "source": "b7b970ff-2d5d-48e8-8114-c7cdcdc4c38d.JPG",
+          "alt": "Ivory Quilted Top-Handle Bag, view 2"
+        }
+      ],
+      "tags": [
+        "bag",
+        "mini-bag",
+        "vegan-leather"
+      ],
+      "featured": true,
+      "excludedFromPromotions": false,
+      "photoNote": "Cropped from group shot, still in packaging (low resolution). Unbox and reshoot before launch.",
+      "verify": [
+        "Material",
+        "Dimensions (W x H x D cm)",
+        "Strap included / length",
+        "Interior pockets"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "taupe-twist-lock-flap-bag",
+      "sku": "GT-BAG-010",
+      "title": "Taupe Twist-Lock Flap Bag",
+      "department": "bags",
+      "category": "mini-bags",
+      "priceCents": 2999,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A structured taupe flap bag with a gold-tone push-lock.",
+      "description": "Neat, structured and endlessly wearable. The kind of bag that makes you look like you have your life together.",
+      "details": [
+        "Faux leather (vegan)",
+        "Gold-tone hardware",
+        "Interior and strap details: see verify"
+      ],
+      "careGuide": "bag-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-BAG-010",
+          "priceCents": 2999,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/taupe-twist-lock-flap-bag-01.jpg",
+          "width": 310,
+          "height": 387,
+          "source": "crop:bag-10",
+          "alt": "Taupe Twist-Lock Flap Bag"
+        },
+        {
+          "file": "images/linen-top-handle-mini-bag-02.jpg",
+          "width": 1199,
+          "height": 1312,
+          "source": "b7b970ff-2d5d-48e8-8114-c7cdcdc4c38d.JPG",
+          "alt": "Taupe Twist-Lock Flap Bag, view 2"
+        }
+      ],
+      "tags": [
+        "bag",
+        "mini-bag",
+        "vegan-leather"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": "Cropped from group shot, still in packaging (low resolution). Unbox and reshoot before launch.",
+      "verify": [
+        "Material",
+        "Dimensions (W x H x D cm)",
+        "Strap included / length",
+        "Interior pockets"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "black-round-crossbody",
+      "sku": "GT-BAG-011",
+      "title": "Black Round Crossbody",
+      "department": "bags",
+      "category": "mini-bags",
+      "priceCents": 2799,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A rounded black mini with a gold-tone monogram-style plate.",
+      "description": "The little black bag. A round silhouette and a single gold-tone plate make it work from coffee runs to cocktails.",
+      "details": [
+        "Faux leather (vegan)",
+        "Gold-tone hardware",
+        "Interior and strap details: see verify"
+      ],
+      "careGuide": "bag-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-BAG-011",
+          "priceCents": 2799,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/black-round-crossbody-01.jpg",
+          "width": 246,
+          "height": 307,
+          "source": "crop:bag-11",
+          "alt": "Black Round Crossbody"
+        },
+        {
+          "file": "images/linen-top-handle-mini-bag-02.jpg",
+          "width": 1199,
+          "height": 1312,
+          "source": "b7b970ff-2d5d-48e8-8114-c7cdcdc4c38d.JPG",
+          "alt": "Black Round Crossbody, view 2"
+        }
+      ],
+      "tags": [
+        "bag",
+        "mini-bag",
+        "vegan-leather"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": "Cropped from group shot, still in packaging (low resolution). Unbox and reshoot before launch.",
+      "verify": [
+        "Material",
+        "Dimensions (W x H x D cm)",
+        "Strap included / length",
+        "Interior pockets"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "black-croc-wallet-clutch",
+      "sku": "GT-BAG-012",
+      "title": "Black Croc-Embossed Wallet Clutch",
+      "department": "bags",
+      "category": "mini-bags",
+      "priceCents": 2499,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "Croc-embossed black faux leather with a gold-tone bar. Wallet by day, clutch by night.",
+      "description": "Croc texture and a slim gold-tone bar give this wallet-clutch an evening edge. Holds cards, cash and a lipstick.",
+      "details": [
+        "Faux leather (vegan)",
+        "Gold-tone hardware",
+        "Interior and strap details: see verify"
+      ],
+      "careGuide": "bag-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-BAG-012",
+          "priceCents": 2499,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/black-croc-wallet-clutch-01.jpg",
+          "width": 289,
+          "height": 361,
+          "source": "crop:bag-12",
+          "alt": "Black Croc-Embossed Wallet Clutch"
+        },
+        {
+          "file": "images/linen-top-handle-mini-bag-02.jpg",
+          "width": 1199,
+          "height": 1312,
+          "source": "b7b970ff-2d5d-48e8-8114-c7cdcdc4c38d.JPG",
+          "alt": "Black Croc-Embossed Wallet Clutch, view 2"
+        }
+      ],
+      "tags": [
+        "bag",
+        "mini-bag",
+        "vegan-leather"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": "Cropped from group shot, still in packaging (low resolution). Unbox and reshoot before launch.",
+      "verify": [
+        "Material",
+        "Dimensions (W x H x D cm)",
+        "Strap included / length",
+        "Interior pockets"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "metallic-zip-pouch",
+      "sku": "GT-BAG-013",
+      "title": "Metallic Zip Pouch",
+      "department": "bags",
+      "category": "pouches",
+      "priceCents": 1299,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A shimmering faux leather zip pouch for makeup, cables or a clutch-sized night out.",
+      "description": "Throw it in your tote and stop digging. These metallic and glitter-finish pouches hold makeup, chargers or the bare essentials for a night out, and they look good doing it. Made in Turkey.",
+      "details": [
+        "100% faux leather",
+        "Zip closure",
+        "Made in Turkey"
+      ],
+      "careGuide": "bag-care",
+      "optionNames": [
+        "Style"
+      ],
+      "variants": [
+        {
+          "title": "Gold Sequin",
+          "options": {
+            "Style": "Gold Sequin"
+          },
+          "sku": "GT-BAG-013-GSQ",
+          "priceCents": 1299,
+          "stock": null
+        },
+        {
+          "title": "Pink Glitter",
+          "options": {
+            "Style": "Pink Glitter"
+          },
+          "sku": "GT-BAG-013-PGL",
+          "priceCents": 1299,
+          "stock": null
+        },
+        {
+          "title": "Ruby",
+          "options": {
+            "Style": "Ruby"
+          },
+          "sku": "GT-BAG-013-RBY",
+          "priceCents": 1299,
+          "stock": null
+        },
+        {
+          "title": "Champagne",
+          "options": {
+            "Style": "Champagne"
+          },
+          "sku": "GT-BAG-013-CHM",
+          "priceCents": 1299,
+          "stock": null
+        },
+        {
+          "title": "Fuchsia",
+          "options": {
+            "Style": "Fuchsia"
+          },
+          "sku": "GT-BAG-013-FCH",
+          "priceCents": 1299,
+          "stock": null
+        },
+        {
+          "title": "Silver",
+          "options": {
+            "Style": "Silver"
+          },
+          "sku": "GT-BAG-013-SLV",
+          "priceCents": 1299,
+          "stock": null
+        },
+        {
+          "title": "Emerald",
+          "options": {
+            "Style": "Emerald"
+          },
+          "sku": "GT-BAG-013-EMR",
+          "priceCents": 1299,
+          "stock": null
+        },
+        {
+          "title": "Bronze",
+          "options": {
+            "Style": "Bronze"
+          },
+          "sku": "GT-BAG-013-BRZ",
+          "priceCents": 1299,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/metallic-zip-pouch-01.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "fc112ac0-264f-4b71-b29a-07edfb1ba51c.JPG",
+          "alt": "Metallic Zip Pouch"
+        }
+      ],
+      "tags": [
+        "pouch",
+        "makeup-bag",
+        "metallic",
+        "gift-under-15"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": "Stacked in packaging. Reshoot a few colours unboxed.",
+      "verify": [
+        "Dimensions",
+        "Exact colour list"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "corduroy-baker-boy-cap",
+      "sku": "GT-HAT-001",
+      "title": "Corduroy Baker Boy Cap with Chain",
+      "department": "hats-scarves",
+      "category": "hats",
+      "priceCents": 2499,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A slouchy corduroy baker boy cap trimmed with a chunky chain.",
+      "description": "Part Parisian, part Peaky, entirely fall. A soft corduroy crown slouches over a short brim, finished with a chunky dark chain and gold-tone buttons. It turns a trench coat into a look and a bad hair day into a decision.",
+      "details": [
+        "100% polyester (exclusive of decoration and trims)",
+        "Size M",
+        "Chain and button trim"
+      ],
+      "careGuide": "textile-care",
+      "optionNames": [
+        "Style"
+      ],
+      "variants": [
+        {
+          "title": "Olive",
+          "options": {
+            "Style": "Olive"
+          },
+          "sku": "GT-HAT-001-OLV",
+          "priceCents": 2499,
+          "stock": null
+        },
+        {
+          "title": "Cream",
+          "options": {
+            "Style": "Cream"
+          },
+          "sku": "GT-HAT-001-CRM",
+          "priceCents": 2499,
+          "stock": null
+        },
+        {
+          "title": "Burgundy",
+          "options": {
+            "Style": "Burgundy"
+          },
+          "sku": "GT-HAT-001-BUR",
+          "priceCents": 2499,
+          "stock": null
+        },
+        {
+          "title": "Camel",
+          "options": {
+            "Style": "Camel"
+          },
+          "sku": "GT-HAT-001-CML",
+          "priceCents": 2499,
+          "stock": null
+        },
+        {
+          "title": "Toffee",
+          "options": {
+            "Style": "Toffee"
+          },
+          "sku": "GT-HAT-001-TOF",
+          "priceCents": 2499,
+          "stock": null
+        },
+        {
+          "title": "Blush Taupe",
+          "options": {
+            "Style": "Blush Taupe"
+          },
+          "sku": "GT-HAT-001-BLT",
+          "priceCents": 2499,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/corduroy-baker-boy-cap-01.jpg",
+          "width": 1086,
+          "height": 1448,
+          "source": "3fdd1ff8-ee21-470f-ab36-9739f9e6a634.JPG",
+          "alt": "Corduroy Baker Boy Cap with Chain"
+        },
+        {
+          "file": "images/corduroy-baker-boy-cap-02.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "172df85e-c18f-42fd-a123-791475394c78.JPG",
+          "alt": "Corduroy Baker Boy Cap with Chain, view 2"
+        },
+        {
+          "file": "images/corduroy-baker-boy-cap-03.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "3f9e1c33-b6f9-437b-ba99-04c780b98220.JPG",
+          "alt": "Corduroy Baker Boy Cap with Chain, view 3"
+        }
+      ],
+      "tags": [
+        "hat",
+        "baker-boy",
+        "corduroy",
+        "fall-edit"
+      ],
+      "featured": true,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [
+        "Head circumference for size M",
+        "Bilingual Canadian textile label"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "classic-beret",
+      "sku": "GT-HAT-002",
+      "title": "Classic Beret",
+      "department": "hats-scarves",
+      "category": "hats",
+      "priceCents": 1699,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "The soft, felted beret in six saturated shades.",
+      "description": "Tilt it, pull it back, wear it straight like you mean it. Our classic beret has a soft, felted feel and comes in six colours, from mustard to royal blue, that make a neutral coat sing.",
+      "details": [
+        "Soft felted beret",
+        "One size",
+        "Fibre content: see verify"
+      ],
+      "careGuide": "textile-care",
+      "optionNames": [
+        "Style"
+      ],
+      "variants": [
+        {
+          "title": "Mustard",
+          "options": {
+            "Style": "Mustard"
+          },
+          "sku": "GT-HAT-002-MUS",
+          "priceCents": 1699,
+          "stock": null
+        },
+        {
+          "title": "Navy",
+          "options": {
+            "Style": "Navy"
+          },
+          "sku": "GT-HAT-002-NVY",
+          "priceCents": 1699,
+          "stock": null
+        },
+        {
+          "title": "Coral",
+          "options": {
+            "Style": "Coral"
+          },
+          "sku": "GT-HAT-002-COR",
+          "priceCents": 1699,
+          "stock": null
+        },
+        {
+          "title": "Denim Blue",
+          "options": {
+            "Style": "Denim Blue"
+          },
+          "sku": "GT-HAT-002-DNM",
+          "priceCents": 1699,
+          "stock": null
+        },
+        {
+          "title": "Sky Blue",
+          "options": {
+            "Style": "Sky Blue"
+          },
+          "sku": "GT-HAT-002-SKY",
+          "priceCents": 1699,
+          "stock": null
+        },
+        {
+          "title": "Royal Blue",
+          "options": {
+            "Style": "Royal Blue"
+          },
+          "sku": "GT-HAT-002-RYL",
+          "priceCents": 1699,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/classic-beret-01.jpg",
+          "width": 1086,
+          "height": 1448,
+          "source": "4b02ed73-24fc-40e7-bd7c-08711f71d944 2.JPG",
+          "alt": "Classic Beret"
+        },
+        {
+          "file": "images/classic-beret-02.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "c7976609-197b-430d-b506-2637b1f64370.JPG",
+          "alt": "Classic Beret, view 2"
+        },
+        {
+          "file": "images/classic-beret-03.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "f00c41b3-c567-418e-84d1-31a46e8fd8bc.JPG",
+          "alt": "Classic Beret, view 3"
+        }
+      ],
+      "tags": [
+        "hat",
+        "beret",
+        "fall-edit",
+        "colourful"
+      ],
+      "featured": true,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [
+        "Fibre content (wool blend? acrylic?)",
+        "Bilingual Canadian textile label"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "pink-corduroy-bucket-hat",
+      "sku": "GT-HAT-003",
+      "title": "Pink Corduroy Bucket Hat",
+      "department": "hats-scarves",
+      "category": "hats",
+      "priceCents": 1999,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A soft pink corduroy bucket hat. Nineties approved.",
+      "description": "Soft-wale corduroy in a dusty pink, with a gently sloped brim that shades without hiding. Made in Turkey from 100% cotton.",
+      "details": [
+        "100% cotton",
+        "Made in Turkey",
+        "One size"
+      ],
+      "careGuide": "textile-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-HAT-003",
+          "priceCents": 1999,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/pink-corduroy-bucket-hat-01.jpg",
+          "width": 1086,
+          "height": 1448,
+          "source": "7eb0411f-660a-4eb3-9239-b23b94aca865.JPG",
+          "alt": "Pink Corduroy Bucket Hat"
+        },
+        {
+          "file": "images/pink-corduroy-bucket-hat-02.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "20fff240-1586-44ea-a1ac-dbbc8c863d31.JPG",
+          "alt": "Pink Corduroy Bucket Hat, view 2"
+        },
+        {
+          "file": "images/pink-corduroy-bucket-hat-03.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "ad102678-5add-4537-94e7-68414dec233b.JPG",
+          "alt": "Pink Corduroy Bucket Hat, view 3"
+        }
+      ],
+      "tags": [
+        "hat",
+        "bucket-hat",
+        "corduroy"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [
+        "Confirm fibre content on label"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "herringbone-baseball-cap",
+      "sku": "GT-HAT-004",
+      "title": "Herringbone Baseball Cap",
+      "department": "hats-scarves",
+      "category": "hats",
+      "priceCents": 1999,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A tweedy herringbone cap in warm tan. The country walk, upgraded.",
+      "description": "The baseball cap goes to the countryside. A warm tan herringbone weave gives this one a tailored, heritage feel that works with a wool coat as well as a hoodie.",
+      "details": [
+        "100% cotton",
+        "Made in Turkey",
+        "Adjustable back"
+      ],
+      "careGuide": "textile-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-HAT-004",
+          "priceCents": 1999,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/pink-corduroy-bucket-hat-01.jpg",
+          "width": 1086,
+          "height": 1448,
+          "source": "7eb0411f-660a-4eb3-9239-b23b94aca865.JPG",
+          "alt": "Herringbone Baseball Cap"
+        },
+        {
+          "file": "images/pink-corduroy-bucket-hat-02.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "20fff240-1586-44ea-a1ac-dbbc8c863d31.JPG",
+          "alt": "Herringbone Baseball Cap, view 2"
+        }
+      ],
+      "tags": [
+        "hat",
+        "cap",
+        "fall-edit"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [
+        "Confirm fibre content",
+        "Back closure type"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "quilted-baseball-cap",
+      "sku": "GT-HAT-005",
+      "title": "Quilted Baseball Cap",
+      "department": "hats-scarves",
+      "category": "hats",
+      "priceCents": 1999,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A diamond-quilted black cap with a glossy, puffer-jacket finish.",
+      "description": "Like your favourite puffer, but for your head. Diamond quilting and a soft sheen make this black cap the polished option for cold, bright days.",
+      "details": [
+        "Quilted shell",
+        "Made in Turkey",
+        "Adjustable back"
+      ],
+      "careGuide": "textile-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-HAT-005",
+          "priceCents": 1999,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/pink-corduroy-bucket-hat-01.jpg",
+          "width": 1086,
+          "height": 1448,
+          "source": "7eb0411f-660a-4eb3-9239-b23b94aca865.JPG",
+          "alt": "Quilted Baseball Cap"
+        },
+        {
+          "file": "images/pink-corduroy-bucket-hat-03.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "ad102678-5add-4537-94e7-68414dec233b.JPG",
+          "alt": "Quilted Baseball Cap, view 2"
+        }
+      ],
+      "tags": [
+        "hat",
+        "cap",
+        "quilted",
+        "fall-edit"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [
+        "Fibre content (label shows cotton?)",
+        "Back closure type"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "pop-up-ear-bunny-hat",
+      "sku": "GT-HAT-006",
+      "title": "Pop-Up Ear Bunny Hat",
+      "department": "hats-scarves",
+      "category": "hats",
+      "priceCents": 1999,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A plush bunny hat whose ears pop up when you squeeze the paws.",
+      "description": "Squeeze the paws and the ears spring up. Pure joy, highly giftable, and properly warm thanks to the plush faux fur and long paw flaps that double as a scarf. For kids, for teens, for adults who refuse to be serious in January.",
+      "details": [
+        "Plush faux fur",
+        "Squeeze-to-pop ears (air pump)",
+        "Long paw flaps",
+        "One size"
+      ],
+      "careGuide": "textile-care",
+      "optionNames": [
+        "Style"
+      ],
+      "variants": [
+        {
+          "title": "Latte",
+          "options": {
+            "Style": "Latte"
+          },
+          "sku": "GT-HAT-006-LAT",
+          "priceCents": 1999,
+          "stock": null
+        },
+        {
+          "title": "Taupe",
+          "options": {
+            "Style": "Taupe"
+          },
+          "sku": "GT-HAT-006-TAU",
+          "priceCents": 1999,
+          "stock": null
+        },
+        {
+          "title": "Cream",
+          "options": {
+            "Style": "Cream"
+          },
+          "sku": "GT-HAT-006-CRM",
+          "priceCents": 1999,
+          "stock": null
+        },
+        {
+          "title": "Dove Grey",
+          "options": {
+            "Style": "Dove Grey"
+          },
+          "sku": "GT-HAT-006-DGR",
+          "priceCents": 1999,
+          "stock": null
+        },
+        {
+          "title": "Blush Pink",
+          "options": {
+            "Style": "Blush Pink"
+          },
+          "sku": "GT-HAT-006-BLS",
+          "priceCents": 1999,
+          "stock": null
+        },
+        {
+          "title": "Rainbow",
+          "options": {
+            "Style": "Rainbow"
+          },
+          "sku": "GT-HAT-006-RNB",
+          "priceCents": 1999,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/pop-up-ear-bunny-hat-01.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "ae5f597a-c52f-46a6-8cea-7c7505777940.JPG",
+          "alt": "Pop-Up Ear Bunny Hat"
+        },
+        {
+          "file": "images/pop-up-ear-bunny-hat-02.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "f21768e4-c9d5-4234-b6a4-dbffb1754e22.JPG",
+          "alt": "Pop-Up Ear Bunny Hat, view 2"
+        }
+      ],
+      "tags": [
+        "hat",
+        "novelty",
+        "kids",
+        "gift",
+        "winter"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": "Shot on the table, slightly cluttered. Reshoot on black, and add a short ear-pop video if possible.",
+      "verify": [
+        "Confirm ear-pop mechanism",
+        "Fibre content",
+        "Age labelling if marketed to children"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "brushed-plaid-blanket-scarf",
+      "sku": "GT-SCF-001",
+      "title": "Brushed Plaid Blanket Scarf",
+      "department": "hats-scarves",
+      "category": "scarves",
+      "priceCents": 1999,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "An oversized, brushed blanket scarf in houndstooth, check and plaid.",
+      "description": "Wrap it twice, throw it over a shoulder, or wear it as a shawl on the train. These oversized scarves are brushed for softness and come in four very different personalities: pink houndstooth, black-and-white check, charcoal plaid with a red stripe, and a fresh lime textured weave.",
+      "details": [
+        "Oversized blanket scarf",
+        "Brushed finish",
+        "Fibre content: see verify"
+      ],
+      "careGuide": "textile-care",
+      "optionNames": [
+        "Style"
+      ],
+      "variants": [
+        {
+          "title": "Pink Houndstooth",
+          "options": {
+            "Style": "Pink Houndstooth"
+          },
+          "sku": "GT-SCF-001-PHT",
+          "priceCents": 1999,
+          "stock": null
+        },
+        {
+          "title": "Black & White Check",
+          "options": {
+            "Style": "Black & White Check"
+          },
+          "sku": "GT-SCF-001-BWC",
+          "priceCents": 1999,
+          "stock": null
+        },
+        {
+          "title": "Charcoal Red Plaid",
+          "options": {
+            "Style": "Charcoal Red Plaid"
+          },
+          "sku": "GT-SCF-001-CRP",
+          "priceCents": 1999,
+          "stock": null
+        },
+        {
+          "title": "Lime Textured Weave",
+          "options": {
+            "Style": "Lime Textured Weave"
+          },
+          "sku": "GT-SCF-001-LTW",
+          "priceCents": 1999,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/brushed-plaid-blanket-scarf-01.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "ffe358c4-bfaa-47f7-b928-e7008c80fc7a.JPG",
+          "alt": "Brushed Plaid Blanket Scarf"
+        },
+        {
+          "file": "images/brushed-plaid-blanket-scarf-02.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "1f84285c-0fab-44b0-8118-bdf1d36b1ee9.JPG",
+          "alt": "Brushed Plaid Blanket Scarf, view 2"
+        }
+      ],
+      "tags": [
+        "scarf",
+        "plaid",
+        "fall-edit",
+        "winter"
+      ],
+      "featured": true,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [
+        "Fibre content",
+        "Dimensions",
+        "Bilingual Canadian textile label"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "strawberry-ankle-socks",
+      "sku": "GT-SOK-001",
+      "title": "I ♥ Strawberry Ankle Socks",
+      "department": "socks",
+      "category": "ankle-socks",
+      "priceCents": 599,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "Strawberry prints, red hearts and a cheeky drip cuff. Sweetest socks in the drawer.",
+      "description": "Four ways to wear your heart on your ankle: a strawberry drip cuff, scattered red hearts, one big embroidered berry, or a full strawberry toss. Mix and match: 3 or more pairs save 20%, 6 or more save 30%.",
+      "details": [
+        "One pair",
+        "Fits women's shoe sizes 5 to 9 (EU 35 to 40)",
+        "Fibre content: see verify"
+      ],
+      "careGuide": "textile-care",
+      "optionNames": [
+        "Style"
+      ],
+      "variants": [
+        {
+          "title": "Strawberry Drip",
+          "options": {
+            "Style": "Strawberry Drip"
+          },
+          "sku": "GT-SOK-001-DRP",
+          "priceCents": 599,
+          "stock": null
+        },
+        {
+          "title": "Red Hearts",
+          "options": {
+            "Style": "Red Hearts"
+          },
+          "sku": "GT-SOK-001-HRT",
+          "priceCents": 599,
+          "stock": null
+        },
+        {
+          "title": "Big Strawberry",
+          "options": {
+            "Style": "Big Strawberry"
+          },
+          "sku": "GT-SOK-001-BIG",
+          "priceCents": 599,
+          "stock": null
+        },
+        {
+          "title": "Strawberry Toss",
+          "options": {
+            "Style": "Strawberry Toss"
+          },
+          "sku": "GT-SOK-001-TOS",
+          "priceCents": 599,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/strawberry-ankle-socks-01.jpg",
+          "width": 1086,
+          "height": 1448,
+          "source": "2af16685-723d-4061-b93b-7afdd774b6ce.JPG",
+          "alt": "I ♥ Strawberry Ankle Socks"
+        },
+        {
+          "file": "images/strawberry-ankle-socks-02.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "196c340b-f50a-42f7-bae6-574a8c06e138.JPG",
+          "alt": "I ♥ Strawberry Ankle Socks, view 2"
+        },
+        {
+          "file": "images/strawberry-ankle-socks-03.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "485cb2be-dda8-4978-adc9-597f8a6a3093.JPG",
+          "alt": "I ♥ Strawberry Ankle Socks, view 3"
+        }
+      ],
+      "tags": [
+        "socks",
+        "gift-under-15",
+        "mix-and-match"
+      ],
+      "featured": true,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [
+        "Fibre content (cotton blend %)",
+        "Bilingual Canadian textile label",
+        "Sold as single pairs (confirm)"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "fruit-flower-ankle-socks",
+      "sku": "GT-SOK-002",
+      "title": "Fruit & Flower Ankle Socks",
+      "department": "socks",
+      "category": "ankle-socks",
+      "priceCents": 599,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "Tiny embroidered fruit and flowers on soft white ankle socks.",
+      "description": "A little fruit-stand charm for your sneakers: avocado, orange, watermelon or cherry, each with tiny flowers in between. Mix and match: 3 or more pairs save 20%, 6 or more save 30%.",
+      "details": [
+        "One pair",
+        "Fits women's shoe sizes 5 to 9 (EU 35 to 40)",
+        "Fibre content: see verify"
+      ],
+      "careGuide": "textile-care",
+      "optionNames": [
+        "Style"
+      ],
+      "variants": [
+        {
+          "title": "Avocado",
+          "options": {
+            "Style": "Avocado"
+          },
+          "sku": "GT-SOK-002-AVO",
+          "priceCents": 599,
+          "stock": null
+        },
+        {
+          "title": "Orange",
+          "options": {
+            "Style": "Orange"
+          },
+          "sku": "GT-SOK-002-ORG",
+          "priceCents": 599,
+          "stock": null
+        },
+        {
+          "title": "Watermelon",
+          "options": {
+            "Style": "Watermelon"
+          },
+          "sku": "GT-SOK-002-WTM",
+          "priceCents": 599,
+          "stock": null
+        },
+        {
+          "title": "Cherry",
+          "options": {
+            "Style": "Cherry"
+          },
+          "sku": "GT-SOK-002-CHR",
+          "priceCents": 599,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/fruit-flower-ankle-socks-01.jpg",
+          "width": 1086,
+          "height": 1449,
+          "source": "f54a3f1d-c9f2-4e04-b9de-f543a967232a.JPG",
+          "alt": "Fruit & Flower Ankle Socks"
+        },
+        {
+          "file": "images/fruit-flower-ankle-socks-02.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "40a91ccc-f3b4-46ca-83c2-f84a7cc143ee.JPG",
+          "alt": "Fruit & Flower Ankle Socks, view 2"
+        }
+      ],
+      "tags": [
+        "socks",
+        "gift-under-15",
+        "mix-and-match"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [
+        "Fibre content (cotton blend %)",
+        "Bilingual Canadian textile label",
+        "Sold as single pairs (confirm)"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "smiley-checker-ankle-socks",
+      "sku": "GT-SOK-003",
+      "title": "Smiley & Checker Ankle Socks",
+      "department": "socks",
+      "category": "ankle-socks",
+      "priceCents": 599,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "Black-and-white graphic ankle socks: checkerboard, smileys, letters and spots.",
+      "description": "Monochrome but make it playful. Checkerboard cuffs, smiley faces and graphic spots that work with every pair of trainers you own. Mix and match: 3 or more pairs save 20%, 6 or more save 30%.",
+      "details": [
+        "One pair",
+        "Fits women's shoe sizes 5 to 9 (EU 35 to 40)",
+        "Fibre content: see verify"
+      ],
+      "careGuide": "textile-care",
+      "optionNames": [
+        "Style"
+      ],
+      "variants": [
+        {
+          "title": "Checkerboard",
+          "options": {
+            "Style": "Checkerboard"
+          },
+          "sku": "GT-SOK-003-CHK",
+          "priceCents": 599,
+          "stock": null
+        },
+        {
+          "title": "Smiley Letters",
+          "options": {
+            "Style": "Smiley Letters"
+          },
+          "sku": "GT-SOK-003-LTR",
+          "priceCents": 599,
+          "stock": null
+        },
+        {
+          "title": "Black Spot",
+          "options": {
+            "Style": "Black Spot"
+          },
+          "sku": "GT-SOK-003-BSP",
+          "priceCents": 599,
+          "stock": null
+        },
+        {
+          "title": "Nice Spots",
+          "options": {
+            "Style": "Nice Spots"
+          },
+          "sku": "GT-SOK-003-NCE",
+          "priceCents": 599,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/smiley-checker-ankle-socks-01.jpg",
+          "width": 1086,
+          "height": 1448,
+          "source": "ea9b9ca5-3701-4c77-b4e1-a144dc75725a.JPG",
+          "alt": "Smiley & Checker Ankle Socks"
+        },
+        {
+          "file": "images/smiley-checker-ankle-socks-02.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "1d7ce00b-c2d6-4300-bfb9-b0411c3903e2.JPG",
+          "alt": "Smiley & Checker Ankle Socks, view 2"
+        }
+      ],
+      "tags": [
+        "socks",
+        "gift-under-15",
+        "mix-and-match"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [
+        "Fibre content (cotton blend %)",
+        "Bilingual Canadian textile label",
+        "Sold as single pairs (confirm)"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "critter-crew-socks",
+      "sku": "GT-SOK-004",
+      "title": "Critter Crew Socks",
+      "department": "socks",
+      "category": "crew-socks",
+      "priceCents": 699,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "Kitty, bunny and bear faces on soft ribbed crew socks.",
+      "description": "Cute, cosy and peeking out of your boots. Each ribbed crew sock has a sweet character on the ankle: grey kitty, pink bunny, black bear or cream bear. Mix and match: 3 or more pairs save 20%, 6 or more save 30%.",
+      "details": [
+        "One pair",
+        "Fits women's shoe sizes 5 to 9 (EU 35 to 40)",
+        "Fibre content: see verify"
+      ],
+      "careGuide": "textile-care",
+      "optionNames": [
+        "Style"
+      ],
+      "variants": [
+        {
+          "title": "Grey Kitty",
+          "options": {
+            "Style": "Grey Kitty"
+          },
+          "sku": "GT-SOK-004-KIT",
+          "priceCents": 699,
+          "stock": null
+        },
+        {
+          "title": "Pink Bunny",
+          "options": {
+            "Style": "Pink Bunny"
+          },
+          "sku": "GT-SOK-004-BUN",
+          "priceCents": 699,
+          "stock": null
+        },
+        {
+          "title": "Black Bear",
+          "options": {
+            "Style": "Black Bear"
+          },
+          "sku": "GT-SOK-004-BBR",
+          "priceCents": 699,
+          "stock": null
+        },
+        {
+          "title": "Cream Bear",
+          "options": {
+            "Style": "Cream Bear"
+          },
+          "sku": "GT-SOK-004-CBR",
+          "priceCents": 699,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/critter-crew-socks-01.jpg",
+          "width": 1086,
+          "height": 1449,
+          "source": "d8df0320-fcb2-48f9-9460-d7985f4a1bd3.JPG",
+          "alt": "Critter Crew Socks"
+        },
+        {
+          "file": "images/critter-crew-socks-02.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "f9575823-d669-4c93-a517-de51d5930044.JPG",
+          "alt": "Critter Crew Socks, view 2"
+        },
+        {
+          "file": "images/critter-crew-socks-03.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "1e4ec33b-1a81-453f-9c9e-e0ad53fa1d7e.JPG",
+          "alt": "Critter Crew Socks, view 3"
+        }
+      ],
+      "tags": [
+        "socks",
+        "gift-under-15",
+        "mix-and-match"
+      ],
+      "featured": true,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [
+        "Fibre content (cotton blend %)",
+        "Bilingual Canadian textile label",
+        "Sold as single pairs (confirm)"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "sequin-teddy-crew-socks",
+      "sku": "GT-SOK-005",
+      "title": "Sequin Teddy Crew Socks",
+      "department": "socks",
+      "category": "crew-socks",
+      "priceCents": 799,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "Sequin-trimmed teddy bears, kitties and polka dots on cosy crew socks.",
+      "description": "Teddies with a little sparkle. Sequin-detail bears, a cheeky cat and soft polka dots on cosy crew socks. Gift them in a pair and look very thoughtful. Mix and match: 3 or more pairs save 20%, 6 or more save 30%.",
+      "details": [
+        "One pair",
+        "Fits women's shoe sizes 5 to 9 (EU 35 to 40)",
+        "Fibre content: see verify"
+      ],
+      "careGuide": "textile-care",
+      "optionNames": [
+        "Style"
+      ],
+      "variants": [
+        {
+          "title": "Teddy / Black",
+          "options": {
+            "Style": "Teddy / Black"
+          },
+          "sku": "GT-SOK-005-TBK",
+          "priceCents": 799,
+          "stock": null
+        },
+        {
+          "title": "Teddy / Cream",
+          "options": {
+            "Style": "Teddy / Cream"
+          },
+          "sku": "GT-SOK-005-TCR",
+          "priceCents": 799,
+          "stock": null
+        },
+        {
+          "title": "Teddy / Grey",
+          "options": {
+            "Style": "Teddy / Grey"
+          },
+          "sku": "GT-SOK-005-TGR",
+          "priceCents": 799,
+          "stock": null
+        },
+        {
+          "title": "Teddy / Beige",
+          "options": {
+            "Style": "Teddy / Beige"
+          },
+          "sku": "GT-SOK-005-TBG",
+          "priceCents": 799,
+          "stock": null
+        },
+        {
+          "title": "Kitty / Cream",
+          "options": {
+            "Style": "Kitty / Cream"
+          },
+          "sku": "GT-SOK-005-KCR",
+          "priceCents": 799,
+          "stock": null
+        },
+        {
+          "title": "Polka Dot / Pink",
+          "options": {
+            "Style": "Polka Dot / Pink"
+          },
+          "sku": "GT-SOK-005-PPK",
+          "priceCents": 799,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/sequin-teddy-crew-socks-01.jpg",
+          "width": 1086,
+          "height": 1448,
+          "source": "b3793471-2b29-4837-9ccb-97b28805c6ce.JPG",
+          "alt": "Sequin Teddy Crew Socks"
+        },
+        {
+          "file": "images/sequin-teddy-crew-socks-02.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "ae184961-d00e-48a8-8d5b-3b5e822dc68d.JPG",
+          "alt": "Sequin Teddy Crew Socks, view 2"
+        },
+        {
+          "file": "images/sequin-teddy-crew-socks-03.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "a0bf6a50-121b-4743-91bb-a7ac452e40de.JPG",
+          "alt": "Sequin Teddy Crew Socks, view 3"
+        }
+      ],
+      "tags": [
+        "socks",
+        "gift-under-15",
+        "mix-and-match"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [
+        "Fibre content (cotton blend %)",
+        "Bilingual Canadian textile label",
+        "Sold as single pairs (confirm)"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "retro-stripe-crew-socks",
+      "sku": "GT-SOK-006",
+      "title": "Retro Stripe Crew Socks",
+      "department": "socks",
+      "category": "crew-socks",
+      "priceCents": 699,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "Varsity-stripe crew socks in white, black, burgundy and grey.",
+      "description": "The sporty classic: a ribbed crew sock with twin varsity stripes at the cuff. Slouch them, fold them, or wear them with loafers like the fashion people. Mix and match: 3 or more pairs save 20%, 6 or more save 30%.",
+      "details": [
+        "One pair",
+        "Fits women's shoe sizes 5 to 9 (EU 35 to 40)",
+        "Fibre content: see verify"
+      ],
+      "careGuide": "textile-care",
+      "optionNames": [
+        "Style"
+      ],
+      "variants": [
+        {
+          "title": "White",
+          "options": {
+            "Style": "White"
+          },
+          "sku": "GT-SOK-006-WHT",
+          "priceCents": 699,
+          "stock": null
+        },
+        {
+          "title": "Black",
+          "options": {
+            "Style": "Black"
+          },
+          "sku": "GT-SOK-006-BLK",
+          "priceCents": 699,
+          "stock": null
+        },
+        {
+          "title": "Burgundy",
+          "options": {
+            "Style": "Burgundy"
+          },
+          "sku": "GT-SOK-006-BUR",
+          "priceCents": 699,
+          "stock": null
+        },
+        {
+          "title": "Grey",
+          "options": {
+            "Style": "Grey"
+          },
+          "sku": "GT-SOK-006-GRY",
+          "priceCents": 699,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/retro-stripe-crew-socks-01.jpg",
+          "width": 1086,
+          "height": 1448,
+          "source": "4e5dc45e-9ab7-4a54-ad17-0192c29a997f.JPG",
+          "alt": "Retro Stripe Crew Socks"
+        },
+        {
+          "file": "images/retro-stripe-crew-socks-02.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "36cf027f-4d04-4619-a93c-7cfb7435e799.JPG",
+          "alt": "Retro Stripe Crew Socks, view 2"
+        },
+        {
+          "file": "images/retro-stripe-crew-socks-03.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "7cdb36f8-1805-4369-88f1-bea46d26a23e.JPG",
+          "alt": "Retro Stripe Crew Socks, view 3"
+        }
+      ],
+      "tags": [
+        "socks",
+        "gift-under-15",
+        "mix-and-match"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [
+        "Fibre content (cotton blend %)",
+        "Bilingual Canadian textile label",
+        "Sold as single pairs (confirm)"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "pineapple-ribbed-crew-socks",
+      "sku": "GT-SOK-007",
+      "title": "Pineapple Ribbed Crew Socks",
+      "department": "socks",
+      "category": "crew-socks",
+      "priceCents": 799,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "Bright ribbed crew socks with a pineapple patch. Sweet, a little tart.",
+      "description": "Pineapple on bright ribbed knit with a black stripe at the cuff. These socks are a conversation piece, and the conversation is usually about pizza. Mix and match: 3 or more pairs save 20%, 6 or more save 30%.",
+      "details": [
+        "One pair",
+        "One size",
+        "Fibre content: see verify"
+      ],
+      "careGuide": "textile-care",
+      "optionNames": [
+        "Style"
+      ],
+      "variants": [
+        {
+          "title": "Fuchsia",
+          "options": {
+            "Style": "Fuchsia"
+          },
+          "sku": "GT-SOK-007-FCH",
+          "priceCents": 799,
+          "stock": null
+        },
+        {
+          "title": "Mint Green",
+          "options": {
+            "Style": "Mint Green"
+          },
+          "sku": "GT-SOK-007-MNT",
+          "priceCents": 799,
+          "stock": null
+        },
+        {
+          "title": "Coral",
+          "options": {
+            "Style": "Coral"
+          },
+          "sku": "GT-SOK-007-CRL",
+          "priceCents": 799,
+          "stock": null
+        },
+        {
+          "title": "Aqua",
+          "options": {
+            "Style": "Aqua"
+          },
+          "sku": "GT-SOK-007-AQU",
+          "priceCents": 799,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/pineapple-ribbed-crew-socks-01.jpg",
+          "width": 1086,
+          "height": 1448,
+          "source": "4c5a8f35-2695-4ade-966b-5af7057385c8.JPG",
+          "alt": "Pineapple Ribbed Crew Socks"
+        },
+        {
+          "file": "images/pineapple-ribbed-crew-socks-02.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "c5bd085a-afbd-40e6-97d6-4ee51250f055.JPG",
+          "alt": "Pineapple Ribbed Crew Socks, view 2"
+        }
+      ],
+      "tags": [
+        "socks",
+        "gift-under-15",
+        "mix-and-match"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [
+        "Fibre content (cotton blend %)",
+        "Bilingual Canadian textile label",
+        "Sold as single pairs (confirm)"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "little-heart-crew-socks",
+      "sku": "GT-SOK-008",
+      "title": "Little Heart Crew Socks",
+      "department": "socks",
+      "category": "crew-socks",
+      "priceCents": 699,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "Black crew socks with one tiny embroidered red heart.",
+      "description": "The black crew sock, with a secret. A single tiny red heart, embroidered at the ankle, for the person who likes their romance understated. Mix and match: 3 or more pairs save 20%, 6 or more save 30%.",
+      "details": [
+        "One pair",
+        "One size",
+        "Fibre content: see verify"
+      ],
+      "careGuide": "textile-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-SOK-008",
+          "priceCents": 699,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/little-heart-crew-socks-01.jpg",
+          "width": 1086,
+          "height": 1448,
+          "source": "afe4437c-f75f-42bf-a729-30a82e28f3dd.JPG",
+          "alt": "Little Heart Crew Socks"
+        },
+        {
+          "file": "images/little-heart-crew-socks-02.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "7ea89a30-2a6c-4de5-92a0-7fc192cdc5dc.JPG",
+          "alt": "Little Heart Crew Socks, view 2"
+        },
+        {
+          "file": "images/little-heart-crew-socks-03.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "b333e743-5bc2-44f1-a1b5-1af70ffef9a5.JPG",
+          "alt": "Little Heart Crew Socks, view 3"
+        }
+      ],
+      "tags": [
+        "socks",
+        "gift-under-15",
+        "mix-and-match"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [
+        "Fibre content (cotton blend %)",
+        "Bilingual Canadian textile label",
+        "Sold as single pairs (confirm)"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "active-crew-socks",
+      "sku": "GT-SOK-009",
+      "title": "Active Crew Socks",
+      "department": "socks",
+      "category": "crew-socks",
+      "priceCents": 599,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "Cushioned sport crew socks in women's and men's sizes.",
+      "description": "Comfortable, cushioned and built for steps, sets and Saturday errands. Women's sizes come in black, grey, navy and sunny yellow; men's in charcoal, grey, graphite and white. Mix and match: 3 or more pairs save 20%, 6 or more save 30%.",
+      "details": [
+        "One pair",
+        "Women's 5 to 9 (EU 35 to 40) or Men's 8 to 11 (EU 41 to 44)",
+        "Fibre content: see verify"
+      ],
+      "careGuide": "textile-care",
+      "optionNames": [
+        "Style"
+      ],
+      "variants": [
+        {
+          "title": "Women's 5-9 / Black",
+          "options": {
+            "Style": "Women's 5-9 / Black"
+          },
+          "sku": "GT-SOK-009-WBK",
+          "priceCents": 599,
+          "stock": null
+        },
+        {
+          "title": "Women's 5-9 / Grey",
+          "options": {
+            "Style": "Women's 5-9 / Grey"
+          },
+          "sku": "GT-SOK-009-WGR",
+          "priceCents": 599,
+          "stock": null
+        },
+        {
+          "title": "Women's 5-9 / Navy",
+          "options": {
+            "Style": "Women's 5-9 / Navy"
+          },
+          "sku": "GT-SOK-009-WNV",
+          "priceCents": 599,
+          "stock": null
+        },
+        {
+          "title": "Women's 5-9 / Yellow",
+          "options": {
+            "Style": "Women's 5-9 / Yellow"
+          },
+          "sku": "GT-SOK-009-WYL",
+          "priceCents": 599,
+          "stock": null
+        },
+        {
+          "title": "Men's 8-11 / Charcoal",
+          "options": {
+            "Style": "Men's 8-11 / Charcoal"
+          },
+          "sku": "GT-SOK-009-MCH",
+          "priceCents": 599,
+          "stock": null
+        },
+        {
+          "title": "Men's 8-11 / Grey",
+          "options": {
+            "Style": "Men's 8-11 / Grey"
+          },
+          "sku": "GT-SOK-009-MGR",
+          "priceCents": 599,
+          "stock": null
+        },
+        {
+          "title": "Men's 8-11 / Graphite",
+          "options": {
+            "Style": "Men's 8-11 / Graphite"
+          },
+          "sku": "GT-SOK-009-MGP",
+          "priceCents": 599,
+          "stock": null
+        },
+        {
+          "title": "Men's 8-11 / White",
+          "options": {
+            "Style": "Men's 8-11 / White"
+          },
+          "sku": "GT-SOK-009-MWH",
+          "priceCents": 599,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/active-crew-socks-01.jpg",
+          "width": 1086,
+          "height": 1448,
+          "source": "e587b229-4457-4cd4-9bef-0f6f7683b2e7.JPG",
+          "alt": "Active Crew Socks"
+        },
+        {
+          "file": "images/active-crew-socks-02.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "defe994a-ef9d-4c81-aee4-cded62fb53ac.JPG",
+          "alt": "Active Crew Socks, view 2"
+        },
+        {
+          "file": "images/active-crew-socks-03.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "3741a55e-5979-44c5-9435-258982e60771.JPG",
+          "alt": "Active Crew Socks, view 3"
+        }
+      ],
+      "tags": [
+        "socks",
+        "gift-under-15",
+        "mix-and-match"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [
+        "Fibre content (cotton blend %)",
+        "Bilingual Canadian textile label",
+        "Sold as single pairs (confirm)"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "suede-touch-pyjama-set",
+      "sku": "GT-LNG-001",
+      "title": "Suede-Touch Button-Up Pyjama Set",
+      "department": "loungewear",
+      "category": "pyjamas",
+      "priceCents": 4499,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A classic button-up pyjama set in a soft, brushed suede-touch fabric.",
+      "description": "Proper pyjamas: a button-front shirt with a notch collar and long, relaxed trousers, in a brushed suede-touch fabric that feels warm without overheating. Four prints, from holiday tartan to a teddy-bear check that makes Sunday mornings better. By Boyraz, made in Turkey.",
+      "details": [
+        "Button-up shirt and long trousers",
+        "Brushed suede-touch fabric",
+        "Made in Turkey (Boyraz)",
+        "Sizes S/M, L, XL, XXL"
+      ],
+      "careGuide": "textile-care",
+      "optionNames": [
+        "Print",
+        "Size"
+      ],
+      "variants": [
+        {
+          "title": "Holiday Tartan / S/M",
+          "options": {
+            "Print": "Holiday Tartan",
+            "Size": "S/M"
+          },
+          "sku": "GT-LNG-001-HOL-SM",
+          "priceCents": 4499,
+          "stock": null
+        },
+        {
+          "title": "Holiday Tartan / L",
+          "options": {
+            "Print": "Holiday Tartan",
+            "Size": "L"
+          },
+          "sku": "GT-LNG-001-HOL-L",
+          "priceCents": 4499,
+          "stock": null
+        },
+        {
+          "title": "Holiday Tartan / XL",
+          "options": {
+            "Print": "Holiday Tartan",
+            "Size": "XL"
+          },
+          "sku": "GT-LNG-001-HOL-XL",
+          "priceCents": 4499,
+          "stock": null
+        },
+        {
+          "title": "Holiday Tartan / XXL",
+          "options": {
+            "Print": "Holiday Tartan",
+            "Size": "XXL"
+          },
+          "sku": "GT-LNG-001-HOL-XXL",
+          "priceCents": 4499,
+          "stock": null
+        },
+        {
+          "title": "Pink Star Teddy / S/M",
+          "options": {
+            "Print": "Pink Star Teddy",
+            "Size": "S/M"
+          },
+          "sku": "GT-LNG-001-PIN-SM",
+          "priceCents": 4499,
+          "stock": null
+        },
+        {
+          "title": "Pink Star Teddy / L",
+          "options": {
+            "Print": "Pink Star Teddy",
+            "Size": "L"
+          },
+          "sku": "GT-LNG-001-PIN-L",
+          "priceCents": 4499,
+          "stock": null
+        },
+        {
+          "title": "Pink Star Teddy / XL",
+          "options": {
+            "Print": "Pink Star Teddy",
+            "Size": "XL"
+          },
+          "sku": "GT-LNG-001-PIN-XL",
+          "priceCents": 4499,
+          "stock": null
+        },
+        {
+          "title": "Pink Star Teddy / XXL",
+          "options": {
+            "Print": "Pink Star Teddy",
+            "Size": "XXL"
+          },
+          "sku": "GT-LNG-001-PIN-XXL",
+          "priceCents": 4499,
+          "stock": null
+        },
+        {
+          "title": "Navy Pin Dot / S/M",
+          "options": {
+            "Print": "Navy Pin Dot",
+            "Size": "S/M"
+          },
+          "sku": "GT-LNG-001-NAV-SM",
+          "priceCents": 4499,
+          "stock": null
+        },
+        {
+          "title": "Navy Pin Dot / L",
+          "options": {
+            "Print": "Navy Pin Dot",
+            "Size": "L"
+          },
+          "sku": "GT-LNG-001-NAV-L",
+          "priceCents": 4499,
+          "stock": null
+        },
+        {
+          "title": "Navy Pin Dot / XL",
+          "options": {
+            "Print": "Navy Pin Dot",
+            "Size": "XL"
+          },
+          "sku": "GT-LNG-001-NAV-XL",
+          "priceCents": 4499,
+          "stock": null
+        },
+        {
+          "title": "Navy Pin Dot / XXL",
+          "options": {
+            "Print": "Navy Pin Dot",
+            "Size": "XXL"
+          },
+          "sku": "GT-LNG-001-NAV-XXL",
+          "priceCents": 4499,
+          "stock": null
+        },
+        {
+          "title": "Teddy Check / S/M",
+          "options": {
+            "Print": "Teddy Check",
+            "Size": "S/M"
+          },
+          "sku": "GT-LNG-001-TED-SM",
+          "priceCents": 4499,
+          "stock": null
+        },
+        {
+          "title": "Teddy Check / L",
+          "options": {
+            "Print": "Teddy Check",
+            "Size": "L"
+          },
+          "sku": "GT-LNG-001-TED-L",
+          "priceCents": 4499,
+          "stock": null
+        },
+        {
+          "title": "Teddy Check / XL",
+          "options": {
+            "Print": "Teddy Check",
+            "Size": "XL"
+          },
+          "sku": "GT-LNG-001-TED-XL",
+          "priceCents": 4499,
+          "stock": null
+        },
+        {
+          "title": "Teddy Check / XXL",
+          "options": {
+            "Print": "Teddy Check",
+            "Size": "XXL"
+          },
+          "sku": "GT-LNG-001-TED-XXL",
+          "priceCents": 4499,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/suede-touch-pyjama-set-01.jpg",
+          "width": 1367,
+          "height": 1151,
+          "source": "d7a09faa-e917-4080-8250-614383cbbad7.JPG",
+          "alt": "Suede-Touch Button-Up Pyjama Set"
+        },
+        {
+          "file": "images/suede-touch-pyjama-set-02.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "39525b4a-d2a4-44d6-aa99-67f11abe718e.JPG",
+          "alt": "Suede-Touch Button-Up Pyjama Set, view 2"
+        },
+        {
+          "file": "images/suede-touch-pyjama-set-03.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "a5eaf310-08cf-454a-923e-141560eefba1.JPG",
+          "alt": "Suede-Touch Button-Up Pyjama Set, view 3"
+        }
+      ],
+      "tags": [
+        "pyjamas",
+        "loungewear",
+        "gift",
+        "winter"
+      ],
+      "featured": true,
+      "excludedFromPromotions": false,
+      "photoNote": "Packaging shots. Fine for launch; a flat-lay of each set would sell better.",
+      "verify": [
+        "Fibre content",
+        "Size chart (bust/waist/hip cm)",
+        "Sizes in stock per print"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "fleece-lined-thermal-leggings",
+      "sku": "GT-LNG-002",
+      "title": "Fleece-Lined Thermal Leggings",
+      "department": "loungewear",
+      "category": "thermals",
+      "priceCents": 1999,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "Black thermal leggings with a brushed inner lining for real Canadian cold.",
+      "description": "The layer you'll live in from November to March. Opaque black thermal leggings with a brushed, warm inner face, a high waist and enough stretch to wear under jeans or on their own with a long sweater.",
+      "details": [
+        "Thermal knit with brushed lining",
+        "High waist",
+        "Black"
+      ],
+      "careGuide": "textile-care",
+      "optionNames": [
+        "Size"
+      ],
+      "variants": [
+        {
+          "title": "S/M",
+          "options": {
+            "Size": "S/M"
+          },
+          "sku": "GT-LNG-002-SM",
+          "priceCents": 1999,
+          "stock": null
+        },
+        {
+          "title": "L/XL",
+          "options": {
+            "Size": "L/XL"
+          },
+          "sku": "GT-LNG-002-LXL",
+          "priceCents": 1999,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/fleece-lined-thermal-leggings-01.jpg",
+          "width": 1086,
+          "height": 1448,
+          "source": "20325a25-d80d-4830-8f2c-edbbc702052c.JPG",
+          "alt": "Fleece-Lined Thermal Leggings"
+        },
+        {
+          "file": "images/fleece-lined-thermal-leggings-02.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "970f1d8c-b105-439b-b698-d65b7ebe12ed.JPG",
+          "alt": "Fleece-Lined Thermal Leggings, view 2"
+        }
+      ],
+      "tags": [
+        "thermals",
+        "leggings",
+        "winter",
+        "basics"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [
+        "Sizes available",
+        "Fibre content",
+        "Lining type"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "precision-eyelash-curler",
+      "sku": "GT-BTY-001",
+      "title": "Precision Eyelash Curler",
+      "department": "beauty",
+      "category": "beauty-tools",
+      "priceCents": 799,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A stainless eyelash curler with a soft pad for a lasting, even curl.",
+      "description": "Wide-awake lashes in about ten seconds. A curved frame matches the eye's shape and a soft pad grips without crimping, for a lift that holds through mascara.",
+      "details": [
+        "Metal frame with soft silicone pad",
+        "Comfort-grip handles"
+      ],
+      "careGuide": "tool-care",
+      "optionNames": [
+        "Style"
+      ],
+      "variants": [
+        {
+          "title": "Pink",
+          "options": {
+            "Style": "Pink"
+          },
+          "sku": "GT-BTY-001-PNK",
+          "priceCents": 799,
+          "stock": null
+        },
+        {
+          "title": "Mint",
+          "options": {
+            "Style": "Mint"
+          },
+          "sku": "GT-BTY-001-MNT",
+          "priceCents": 799,
+          "stock": null
+        },
+        {
+          "title": "Blue",
+          "options": {
+            "Style": "Blue"
+          },
+          "sku": "GT-BTY-001-BLU",
+          "priceCents": 799,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/precision-eyelash-curler-01.jpg",
+          "width": 1086,
+          "height": 1448,
+          "source": "f1e952ee-a400-47dd-9c1e-b4d6958f55d8.JPG",
+          "alt": "Precision Eyelash Curler"
+        },
+        {
+          "file": "images/precision-eyelash-curler-02.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "2d984ec3-e0f3-4093-8553-dfc862b59ce9.JPG",
+          "alt": "Precision Eyelash Curler, view 2"
+        },
+        {
+          "file": "images/precision-eyelash-curler-03.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "9f6b70b1-7f89-42a5-851c-a657e5c0e08f.JPG",
+          "alt": "Precision Eyelash Curler, view 3"
+        }
+      ],
+      "tags": [
+        "beauty",
+        "lashes",
+        "gift-under-15"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [
+        "Replacement pad included?"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "blending-sponge-travel-case",
+      "sku": "GT-BTY-002",
+      "title": "Blending Sponge in Travel Case",
+      "department": "beauty",
+      "category": "beauty-tools",
+      "priceCents": 599,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A soft, bouncy makeup blender in its own clear travel case.",
+      "description": "Dampen, squeeze and bounce for a seamless, skin-like finish with foundation, concealer or cream blush. It comes in a clear case to keep it clean in your bag.",
+      "details": [
+        "Latex-free blending sponge (verify)",
+        "Clear protective case",
+        "Assorted colours"
+      ],
+      "careGuide": "tool-care",
+      "optionNames": [
+        "Style"
+      ],
+      "variants": [
+        {
+          "title": "Assorted Colour",
+          "options": {
+            "Style": "Assorted Colour"
+          },
+          "sku": "GT-BTY-002-AST",
+          "priceCents": 599,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/blending-sponge-travel-case-01.jpg",
+          "width": 1086,
+          "height": 1448,
+          "source": "47842216-dc44-49f0-91f1-1edc1a4a6dd6.JPG",
+          "alt": "Blending Sponge in Travel Case"
+        },
+        {
+          "file": "images/blending-sponge-travel-case-02.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "f451c4ca-08bb-4d44-9ddd-cb50861c8ad8.JPG",
+          "alt": "Blending Sponge in Travel Case, view 2"
+        },
+        {
+          "file": "images/blending-sponge-travel-case-03.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "26769ef3-6c97-4b9a-8a94-73eb656f11af.JPG",
+          "alt": "Blending Sponge in Travel Case, view 3"
+        }
+      ],
+      "tags": [
+        "beauty",
+        "makeup",
+        "gift-under-15"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [
+        "Latex-free?",
+        "Can customers pick colour?"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "nail-art-brush-set",
+      "sku": "GT-BTY-003",
+      "title": "Nail Art Brush Set (15 Pieces)",
+      "department": "beauty",
+      "category": "beauty-tools",
+      "priceCents": 999,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "Fifteen fine-tipped brushes for detailing, striping, ombré and dotting.",
+      "description": "Everything you need for salon-style detail at home: liners for stripes, flat brushes for colour blocks, a fan for ombré, and dotting tools for the small stuff.",
+      "details": [
+        "15 brushes",
+        "Liner, flat, fan and detail tips",
+        "Pink handles"
+      ],
+      "careGuide": "tool-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-BTY-003",
+          "priceCents": 999,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/nail-art-brush-set-01.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "1e46fd5a-68b9-4ef1-a6f6-98ef22ab7ea2.JPG",
+          "alt": "Nail Art Brush Set (15 Pieces)"
+        },
+        {
+          "file": "images/nail-art-brush-set-02.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "2e71049a-8a61-4895-bd34-17e702a7d92e.JPG",
+          "alt": "Nail Art Brush Set (15 Pieces), view 2"
+        }
+      ],
+      "tags": [
+        "beauty",
+        "nails",
+        "gift-under-15"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [
+        "Exact piece count"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "eyebrow-shaping-razors",
+      "sku": "GT-BTY-004",
+      "title": "Eyebrow Shaping Razors (3-Pack)",
+      "department": "beauty",
+      "category": "beauty-tools",
+      "priceCents": 599,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "Fine, guarded razors for tidying brows and dermaplaning.",
+      "description": "For clean brow lines and a smooth base for makeup. Three slim, guarded razors in soft pastel colours. By Amorfia Cosmetics.",
+      "details": [
+        "3 razors",
+        "Safety guard",
+        "By Amorfia Cosmetics"
+      ],
+      "careGuide": "tool-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-BTY-004",
+          "priceCents": 599,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/eyebrow-shaping-razors-01.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "a255ff47-3e5f-482b-96f1-4ad639adae13.JPG",
+          "alt": "Eyebrow Shaping Razors (3-Pack)"
+        },
+        {
+          "file": "images/eyebrow-shaping-razors-02.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "806dff04-f96e-4bb3-b2d1-ef8231a2fd79.JPG",
+          "alt": "Eyebrow Shaping Razors (3-Pack), view 2"
+        }
+      ],
+      "tags": [
+        "beauty",
+        "brows",
+        "gift-under-15"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [
+        "Final sale for hygiene (recommended)"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "good-luck-avocado-keychain",
+      "sku": "GT-CHM-001",
+      "title": "'Good Luck' Avocado Keychain",
+      "department": "charms",
+      "category": "keychains",
+      "priceCents": 699,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A squishy avocado with a heart pit and a 'Good Luck' strap. Avo good day.",
+      "description": "A soft rubber avocado with a heart-shaped pit, on a bright green 'Good Luck' wrist strap. It makes your keys easy to find and your bag easier to like. A very good small gift.",
+      "details": [
+        "Soft PVC charm",
+        "Green 'Good Luck' wrist strap",
+        "Split key ring",
+        "Heart colours vary"
+      ],
+      "careGuide": "tool-care",
+      "optionNames": [],
+      "variants": [
+        {
+          "title": "Default",
+          "options": {},
+          "sku": "GT-CHM-001",
+          "priceCents": 699,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/good-luck-avocado-keychain-01.jpg",
+          "width": 1600,
+          "height": 844,
+          "source": "cbeb0430-924e-4b52-b60a-18a065a53bbb.JPG",
+          "alt": "'Good Luck' Avocado Keychain"
+        },
+        {
+          "file": "images/good-luck-avocado-keychain-02.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "bb6f2aa7-c1f8-46a1-8d94-d11fe759565b.JPG",
+          "alt": "'Good Luck' Avocado Keychain, view 2"
+        },
+        {
+          "file": "images/good-luck-avocado-keychain-03.jpg",
+          "width": 1600,
+          "height": 846,
+          "source": "5c69d754-906c-49d4-b677-cadd5546d9b3.JPG",
+          "alt": "'Good Luck' Avocado Keychain, view 3"
+        },
+        {
+          "file": "images/good-luck-avocado-keychain-04.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "4c4a7248-9c19-4e02-b036-25458a34ae0d.JPG",
+          "alt": "'Good Luck' Avocado Keychain, view 4"
+        },
+        {
+          "file": "images/good-luck-avocado-keychain-05.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "079a92ba-7e78-4a6c-897e-f4f774a7778a.JPG",
+          "alt": "'Good Luck' Avocado Keychain, view 5"
+        }
+      ],
+      "tags": [
+        "keychain",
+        "gift-under-15",
+        "avocado"
+      ],
+      "featured": true,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [],
+      "status": "active"
+    },
+    {
+      "slug": "panda-fruit-keychain",
+      "sku": "GT-CHM-002",
+      "title": "Panda & Fruit Keychain",
+      "department": "charms",
+      "category": "keychains",
+      "priceCents": 599,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A little panda holding a strawberry, banana, watermelon or ice cream.",
+      "description": "Pandas, but snacking. Each glossy little figure holds a different treat, on a sturdy key ring. Collect the set; nobody's stopping you.",
+      "details": [
+        "PVC figure",
+        "Metal key ring",
+        "Fruit varies"
+      ],
+      "careGuide": "tool-care",
+      "optionNames": [
+        "Style"
+      ],
+      "variants": [
+        {
+          "title": "Strawberry",
+          "options": {
+            "Style": "Strawberry"
+          },
+          "sku": "GT-CHM-002-STR",
+          "priceCents": 599,
+          "stock": null
+        },
+        {
+          "title": "Banana",
+          "options": {
+            "Style": "Banana"
+          },
+          "sku": "GT-CHM-002-BAN",
+          "priceCents": 599,
+          "stock": null
+        },
+        {
+          "title": "Watermelon",
+          "options": {
+            "Style": "Watermelon"
+          },
+          "sku": "GT-CHM-002-WTM",
+          "priceCents": 599,
+          "stock": null
+        },
+        {
+          "title": "Ice Cream",
+          "options": {
+            "Style": "Ice Cream"
+          },
+          "sku": "GT-CHM-002-ICE",
+          "priceCents": 599,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/panda-fruit-keychain-01.jpg",
+          "width": 1086,
+          "height": 1448,
+          "source": "9e35aa33-461a-44ef-b3b7-dfeee354e461.JPG",
+          "alt": "Panda & Fruit Keychain"
+        },
+        {
+          "file": "images/panda-fruit-keychain-02.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "4a93ffb4-a3a0-4b4b-9577-2ebdf3add079.JPG",
+          "alt": "Panda & Fruit Keychain, view 2"
+        },
+        {
+          "file": "images/panda-fruit-keychain-03.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "43db919d-d358-4362-b92a-824b237fc236.JPG",
+          "alt": "Panda & Fruit Keychain, view 3"
+        }
+      ],
+      "tags": [
+        "keychain",
+        "gift-under-15",
+        "kids"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [
+        "Which fruits are in stock"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "faux-fur-pom-pom-charm",
+      "sku": "GT-CHM-003",
+      "title": "Faux Fur Pom-Pom Bag Charm",
+      "department": "charms",
+      "category": "keychains",
+      "priceCents": 899,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A big, fluffy faux fur pom-pom to clip onto bags, keys and backpacks.",
+      "description": "Clip it to your tote, your backpack zipper or your keys. A fat, fluffy faux fur pom-pom in eight colours, from snow white to rust. Very soft, very hard not to squeeze.",
+      "details": [
+        "Faux fur pom-pom",
+        "Metal clip ring",
+        "Approx. 8 cm diameter (verify)"
+      ],
+      "careGuide": "textile-care",
+      "optionNames": [
+        "Style"
+      ],
+      "variants": [
+        {
+          "title": "Cherry Red",
+          "options": {
+            "Style": "Cherry Red"
+          },
+          "sku": "GT-CHM-003-RED",
+          "priceCents": 899,
+          "stock": null
+        },
+        {
+          "title": "Snow White",
+          "options": {
+            "Style": "Snow White"
+          },
+          "sku": "GT-CHM-003-WHT",
+          "priceCents": 899,
+          "stock": null
+        },
+        {
+          "title": "Jet Black",
+          "options": {
+            "Style": "Jet Black"
+          },
+          "sku": "GT-CHM-003-BLK",
+          "priceCents": 899,
+          "stock": null
+        },
+        {
+          "title": "Cream",
+          "options": {
+            "Style": "Cream"
+          },
+          "sku": "GT-CHM-003-CRM",
+          "priceCents": 899,
+          "stock": null
+        },
+        {
+          "title": "Blush",
+          "options": {
+            "Style": "Blush"
+          },
+          "sku": "GT-CHM-003-BLS",
+          "priceCents": 899,
+          "stock": null
+        },
+        {
+          "title": "Dove Grey",
+          "options": {
+            "Style": "Dove Grey"
+          },
+          "sku": "GT-CHM-003-GRY",
+          "priceCents": 899,
+          "stock": null
+        },
+        {
+          "title": "Mustard",
+          "options": {
+            "Style": "Mustard"
+          },
+          "sku": "GT-CHM-003-MUS",
+          "priceCents": 899,
+          "stock": null
+        },
+        {
+          "title": "Rust",
+          "options": {
+            "Style": "Rust"
+          },
+          "sku": "GT-CHM-003-RST",
+          "priceCents": 899,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/faux-fur-pom-pom-charm-01.jpg",
+          "width": 1086,
+          "height": 1448,
+          "source": "49c69682-d3c9-4258-beed-035dc4bc2f71 2.JPG",
+          "alt": "Faux Fur Pom-Pom Bag Charm"
+        },
+        {
+          "file": "images/faux-fur-pom-pom-charm-02.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "bfd40482-b786-4ad0-a0b5-bc49b12b249d.JPG",
+          "alt": "Faux Fur Pom-Pom Bag Charm, view 2"
+        },
+        {
+          "file": "images/faux-fur-pom-pom-charm-03.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "ddcacfac-aed7-4435-8b33-32957bdd7b78 2.JPG",
+          "alt": "Faux Fur Pom-Pom Bag Charm, view 3"
+        }
+      ],
+      "tags": [
+        "bag-charm",
+        "keychain",
+        "gift-under-15",
+        "winter"
+      ],
+      "featured": true,
+      "excludedFromPromotions": false,
+      "photoNote": null,
+      "verify": [
+        "Confirm faux fur (not real fur)",
+        "Diameter"
+      ],
+      "status": "active"
+    },
+    {
+      "slug": "mini-metallic-pouch-keyring",
+      "sku": "GT-CHM-004",
+      "title": "Mini Metallic Pouch Keyring",
+      "department": "charms",
+      "category": "keychains",
+      "priceCents": 699,
+      "compareAtPriceCents": null,
+      "currency": "CAD",
+      "shortDescription": "A tiny shimmering pouch on a key ring for coins, earbuds or a lip balm.",
+      "description": "Small enough to hang off your keys, roomy enough for coins, a lip balm or your earbuds. Choose solid metallic shimmer or a floral glitter print.",
+      "details": [
+        "Metallic faux leather pouch",
+        "Gold-tone key ring",
+        "Colours vary"
+      ],
+      "careGuide": "bag-care",
+      "optionNames": [
+        "Style"
+      ],
+      "variants": [
+        {
+          "title": "Solid Metallic (assorted)",
+          "options": {
+            "Style": "Solid Metallic (assorted)"
+          },
+          "sku": "GT-CHM-004-SOL",
+          "priceCents": 699,
+          "stock": null
+        },
+        {
+          "title": "Floral Shimmer (assorted)",
+          "options": {
+            "Style": "Floral Shimmer (assorted)"
+          },
+          "sku": "GT-CHM-004-FLR",
+          "priceCents": 699,
+          "stock": null
+        }
+      ],
+      "images": [
+        {
+          "file": "images/mini-metallic-pouch-keyring-01.jpg",
+          "width": 1200,
+          "height": 1600,
+          "source": "cf1d1cb8-c522-40cc-8464-d6364e6af08d.JPG",
+          "alt": "Mini Metallic Pouch Keyring"
+        }
+      ],
+      "tags": [
+        "keychain",
+        "pouch",
+        "gift-under-15"
+      ],
+      "featured": false,
+      "excludedFromPromotions": false,
+      "photoNote": "Packaged group shot. Reshoot one or two unboxed.",
+      "verify": [
+        "Confirm item type (coin pouch vs. foldable bag)",
+        "Closure"
+      ],
+      "status": "active"
+    }
+  ]
+}
