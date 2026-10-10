@@ -1,18 +1,22 @@
-import { Instrument_Serif, Manrope } from 'next/font/google'
+import localFont from 'next/font/local'
 
-/** The only two families (PRD 4.3), self-hosted by next/font with metric-matched fallbacks (no layout shift). */
-export const serif = Instrument_Serif({
-  weight: '400',
-  style: ['normal', 'italic'],
-  subsets: ['latin'],
+/** The only two type families (PRD 4.3), self-hosted for deterministic builds and no CDN dependency. */
+export const serif = localFont({
+  src: [
+    { path: '../assets/fonts/InstrumentSerif-Regular.ttf', weight: '400', style: 'normal' },
+    { path: '../assets/fonts/InstrumentSerif-Italic.ttf', weight: '400', style: 'italic' },
+  ],
   display: 'swap',
   variable: '--font-instrument-serif',
+  fallback: ['Georgia', 'serif'],
 })
 
-export const sans = Manrope({
-  subsets: ['latin'],
+export const sans = localFont({
+  src: '../public/fonts/manrope-latin.woff2',
+  weight: '200 800',
   display: 'swap',
   variable: '--font-manrope',
+  fallback: ['Arial', 'sans-serif'],
 })
 
 export const fontVariables = `${serif.variable} ${sans.variable}`
