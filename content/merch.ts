@@ -3,13 +3,15 @@
  * Images reference catalogue files; the data adapter resolves sizes and alt text.
  * Picks favour the best-photographed products (PRD 4.5): earring cards, caps, berets, talismans.
  */
+/** `tilePosition` is the CSS object-position (focal point) of the full-bleed editorial tile crop. */
 export const departmentEditorial: Record<
   string,
-  { image: string; tileImage: string; line: string }
+  { image: string; tileImage: string; line: string; tilePosition?: string }
 > = {
   jewellery: {
-    image: 'images/golden-hour-textured-hoops-02.jpg',
+    image: 'images/gold-ribbon-bow-drop-earrings-02.jpg',
     tileImage: 'images/gold-ribbon-bow-drop-earrings-02.jpg',
+    tilePosition: '50% 55%',
     line: 'Gold-tone, card-mounted and ready to gift. Or to keep.',
   },
   hair: {
@@ -23,7 +25,7 @@ export const departmentEditorial: Record<
     line: 'Small bags. Big opinions about what fits.',
   },
   'hats-scarves': {
-    image: 'images/corduroy-baker-boy-cap-01.jpg',
+    image: 'images/classic-beret-01.jpg',
     tileImage: 'images/classic-beret-01.jpg',
     line: 'Berets in six colours, for every mood of October.',
   },

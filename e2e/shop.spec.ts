@@ -70,7 +70,7 @@ test.describe('shopping journey', () => {
       await closeBag(page)
     }
 
-    await page.getByRole('banner').getByRole('button', { name: /^Bag/ }).click()
+    await page.getByRole('banner').getByRole('button', { name: /^Bag, \d+ items/ }).click()
     const drawer = page.getByRole('dialog')
     await expect(drawer.getByTestId('bag-line')).toHaveCount(4)
     // Socks 3 x $6.99 = $20.97, 20% = $4.19. Earrings $11.99 + $14.99 + $11.99, one $11.99 free.

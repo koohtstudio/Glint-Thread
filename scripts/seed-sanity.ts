@@ -268,7 +268,10 @@ async function main() {
     footerSignOff: siteDefaults.footerSignOff,
   })
   const h = homeDefaults
-  const featured = catalog.products.filter((p) => p.featured && p.status === 'active').slice(0, 8)
+  const bySlug = new Map(catalog.products.map((p) => [p.slug, p]))
+  const featured = h.edit.productSlugs
+    .map((slug) => bySlug.get(slug))
+    .filter((p): p is NonNullable<typeof p> => Boolean(p) && p!.status === 'active')
   docs.push({
     _id: 'homePage',
     _type: 'homePage',

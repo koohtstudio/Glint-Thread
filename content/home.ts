@@ -17,7 +17,21 @@ export const homeDefaults = {
     primaryCta: { label: 'Shop jewellery', href: '/shop/jewellery' },
     secondaryCta: { label: 'See the fall edit', href: '/collections/fall-edit' },
   },
-  edit: { eyebrow: 'Featured', title: "This week's edit", productSlugs: [] as string[] },
+  edit: {
+    eyebrow: 'Featured',
+    title: "This week's edit",
+    // Curated from the featured set, best-photographed first (PRD 6.1.3).
+    productSlugs: [
+      'gold-ribbon-bow-drop-earrings',
+      'oversized-open-heart-earrings',
+      'puffy-teardrop-studs',
+      'corduroy-baker-boy-cap',
+      'classic-beret',
+      'brushed-plaid-blanket-scarf',
+      'strawberry-ankle-socks',
+      'faux-fur-pom-pom-charm',
+    ],
+  },
   departmentMosaic: ['jewellery', 'hats-scarves', 'bags', 'hair', 'socks', 'charms'],
   departmentExtras: ['loungewear', 'beauty'],
   brandBand: {

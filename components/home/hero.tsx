@@ -30,8 +30,9 @@ export function Hero({ hero }: { hero: HomePage['hero'] }) {
           image={hero.image}
           sizes="(min-width: 1024px) 58vw, 100vw"
           preload
-          className="hero-settle aspect-[4/5] w-full sm:aspect-[4/3] lg:aspect-auto lg:h-[88vh] lg:max-h-[1000px] lg:min-h-[560px]"
-          imageClassName="object-[50%_55%]"
+          className="hero-settle aspect-[4/5] w-full sm:aspect-[16/15] lg:aspect-auto lg:h-[88vh] lg:max-h-[1000px] lg:min-h-[560px]"
+          // Crop in the gaps between card rows: rows 1 to 3 stay whole.
+          imageClassName="object-[50%_29%]"
         />
       </div>
 

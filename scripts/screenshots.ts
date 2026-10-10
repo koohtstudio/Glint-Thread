@@ -79,7 +79,7 @@ async function revealAll(page: Page) {
     window.scrollTo(0, 0)
     await new Promise((r) => setTimeout(r, 300))
   })
-  await page.waitForLoadState('networkidle').catch(() => {})
+  await page.waitForTimeout(400)
 }
 
 interface Shot {
@@ -104,7 +104,11 @@ const SHOTS: Shot[] = [
         BAG,
       )
       await page.reload()
-      await page.getByRole('banner').getByRole('button', { name: /^Bag/ }).click()
+      await page.waitForTimeout(1800)
+      await page
+        .getByRole('banner')
+        .getByRole('button', { name: /^Bag, \d+ items/ })
+        .click()
       await page.getByTestId('bag-savings').waitFor({ timeout: 10_000 })
       await page.waitForTimeout(500)
     },
@@ -166,9 +170,13 @@ async function main() {
     for (const shot of SHOTS) {
       if (ONLY && !ONLY.includes(shot.name)) continue
       const page = await context.newPage()
-      await page.goto(BASE + shot.path, { waitUntil: 'networkidle' })
+      await page.goto(BASE + shot.path, { waitUntil: 'load', timeout: 45_000 })
       await page.evaluate(() => document.fonts.ready)
-      if (shot.setup) await shot.setup(page, width)
+      // Give React time to hydrate before interacting (handlers attach after load).
+      if (shot.setup) {
+        await page.waitForTimeout(1500)
+        await shot.setup(page, width)
+      }
       if (shot.fullPage) await revealAll(page)
       const file = path.join(outDir, `${shot.name}-${width}.png`)
       await page.screenshot({ path: file, fullPage: Boolean(shot.fullPage) })

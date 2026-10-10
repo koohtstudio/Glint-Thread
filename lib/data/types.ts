@@ -111,7 +111,7 @@ export interface Department {
   blurb: string
   productCount: number
   image: ImageRef | null
-  editorialTile: { image: ImageRef; line: string } | null
+  editorialTile: { image: ImageRef; line: string; position?: string } | null
 }
 
 export interface Category {
