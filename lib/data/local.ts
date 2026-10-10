@@ -22,7 +22,11 @@ import {
   searchList,
   sortProducts,
   colourFromLabel,
+  LOW_RES_WIDTH,
+  publicDetails,
 } from './derive'
+
+export { LOW_RES_WIDTH, publicDetails }
 import { catalogSchema, type CatalogFile, type CatalogProduct } from './schema'
 import type {
   CareGuide,
@@ -37,7 +41,6 @@ import type {
   SiteSettings,
 } from './types'
 
-export const LOW_RES_WIDTH = 600
 const IMAGE_BASE = '/catalog/images/'
 
 export interface LocalAdapterOptions {
@@ -45,11 +48,6 @@ export interface LocalAdapterOptions {
   defaultStock?: number
   /** Override the catalogue (tests). */
   catalog?: unknown
-}
-
-/** Internal detail lines such as "Fibre content: see verify" are Studio notes, not storefront copy. */
-export function publicDetails(details: string[]): string[] {
-  return details.filter((d) => !/\bverify\b/i.test(d))
 }
 
 export function loadCatalog(source: unknown = rawCatalog): CatalogFile {

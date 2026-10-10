@@ -15,6 +15,14 @@ import type {
 } from './types'
 import type { Promotion } from '@/lib/pricing/types'
 
+/** Images narrower than this are small crops: never shown wider than their natural width (PRD 4.5). */
+export const LOW_RES_WIDTH = 600
+
+/** Internal detail lines such as "Fibre content: see verify" are Studio notes, not storefront copy. */
+export function publicDetails(details: string[]): string[] {
+  return details.filter((d) => !/\bverify\b/i.test(d))
+}
+
 // ---------- Finishes (PRD 6.2: derived from tags) ----------
 
 const FINISH_TAGS: Record<string, Finish> = {

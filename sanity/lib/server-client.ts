@@ -7,7 +7,8 @@ let readClient: SanityClient | null = null
 let writeClient: SanityClient | null = null
 
 function base() {
-  if (!env.NEXT_PUBLIC_SANITY_PROJECT_ID) throw new Error('Sanity is not configured (NEXT_PUBLIC_SANITY_PROJECT_ID is missing)')
+  if (!env.NEXT_PUBLIC_SANITY_PROJECT_ID)
+    throw new Error('Sanity is not configured (NEXT_PUBLIC_SANITY_PROJECT_ID is missing)')
   return {
     projectId: env.NEXT_PUBLIC_SANITY_PROJECT_ID,
     dataset: env.NEXT_PUBLIC_SANITY_DATASET,
@@ -29,6 +30,11 @@ export function sanityReadClient(): SanityClient {
 /** Orders, stock and subscribers. Requires SANITY_API_WRITE_TOKEN. */
 export function sanityWriteClient(): SanityClient {
   if (!env.SANITY_API_WRITE_TOKEN) throw new Error('SANITY_API_WRITE_TOKEN is not set')
-  writeClient ??= createClient({ ...base(), useCdn: false, token: env.SANITY_API_WRITE_TOKEN, perspective: 'raw' })
+  writeClient ??= createClient({
+    ...base(),
+    useCdn: false,
+    token: env.SANITY_API_WRITE_TOKEN,
+    perspective: 'raw',
+  })
   return writeClient
 }

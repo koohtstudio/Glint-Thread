@@ -4,14 +4,39 @@
     {
       "name": "dev",
       "runtimeExecutable": "/Users/aaseessethi/.nvm/versions/node/v24.21.0/bin/node",
-      "runtimeArgs": ["node_modules/next/dist/bin/next", "dev", "--port", "3000"],
+      "runtimeArgs": [
+        "node_modules/next/dist/bin/next",
+        "dev",
+        "--port",
+        "3000"
+      ],
       "port": 3000
     },
     {
       "name": "prod",
       "runtimeExecutable": "/Users/aaseessethi/.nvm/versions/node/v24.21.0/bin/node",
-      "runtimeArgs": ["node_modules/next/dist/bin/next", "start", "--port", "3100"],
+      "runtimeArgs": [
+        "node_modules/next/dist/bin/next",
+        "start",
+        "--port",
+        "3100"
+      ],
       "port": 3100
+    },
+    {
+      "name": "studio-check",
+      "runtimeExecutable": "/Users/aaseessethi/.nvm/versions/node/v24.21.0/bin/node",
+      "runtimeArgs": [
+        "node_modules/next/dist/bin/next",
+        "dev",
+        "--port",
+        "3200"
+      ],
+      "port": 3200,
+      "env": {
+        "NEXT_PUBLIC_SANITY_PROJECT_ID": "abc12345",
+        "DATA_SOURCE": "local"
+      }
     }
   ]
 }

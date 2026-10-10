@@ -32,3 +32,9 @@ One line each: decision, then reason.
 - /api/admin/ship-order accepts ADMIN_ACTION_SECRET (scripts) or the signed-in Studio user's Sanity token verified via /users/me with an administrator or editor role. Embedding the secret in the Studio would publish it in browser JS.
 - Newsletter confirm and unsubscribe links are stateless HMAC tokens (NEWSLETTER_TOKEN_SECRET, falling back to ADMIN_ACTION_SECRET, then a dev-only constant outside production), so double opt-in works even before Sanity is connected.
 - Resend deprecated audiences for segments; RESEND_AUDIENCE_ID is passed as the segment ID when adding confirmed subscribers.
+- The Sanity seed uses createIfNotExists by default so re-running never overwrites prices, stock or copy edited in the Studio; `--force` switches to createOrReplace.
+- Orders use private `orders.<uuid>` document IDs so they are never readable through the public CDN or without a token.
+- Studio uses token login (`auth.loginMethod: 'token'`) so the "Mark as shipped" action can send the user's token to the server for verification.
+- `@sanity/icons` v5 changed its export shape (one module per icon); Studio icons were dropped rather than pinning an old major, Sanity's defaults are used.
+- A root `sanity.config.ts` re-exports `sanity/sanity.config.ts` so the Sanity CLI finds it for schema extract and TypeGen (`npm run typegen` writes `sanity.types.ts`).
+- In Sanity mode, null stock uses DEV_DEFAULT_STOCK outside production and is treated as untracked in production; the launch check blocks launch while any stock is null.
