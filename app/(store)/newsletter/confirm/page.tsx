@@ -38,7 +38,11 @@ async function Confirm({
     return <p className="t-lede mt-8">{t('newsletter.invalidLink')}</p>
   }
   // The consent record (wording version, time of the tick, source) goes to Resend only (PRD 9.8).
-  const state = await confirmSubscriber(email, { consentVersion: version, consentAt, source })
+  const state = await confirmSubscriber(email, {
+    consentTextVersion: version,
+    consentAt,
+    signupSource: source,
+  })
   const code =
     (await getPromoCodes()).find((c) => c.code === 'WELCOME10' && c.active)?.code ?? 'WELCOME10'
   if (state === 'confirmed' || state === 'logged') {

@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { emailShell, sendEmail } from '@/lib/email/send'
 import { NewsletterConfirmEmail } from '@/lib/email/templates/emails'
 import { clientIp, limiters, tooManyRequests } from '@/lib/rate-limit'
-import { CONSENT_VERSION } from '@/lib/subscribers'
+import { CONSENT_TEXT_VERSION } from '@/lib/subscribers'
 import { signToken } from '@/lib/tokens'
 import { absoluteUrl } from '@/lib/public-env'
 import { t } from '@/lib/i18n'
@@ -43,12 +43,12 @@ export async function POST(request: Request) {
 
   const email = parsed.data.email.trim().toLowerCase()
   const consentAt = new Date().toISOString()
-  const payload = `${consentAt}|${parsed.data.source}|${CONSENT_VERSION}`
+  const payload = `${consentAt}|${parsed.data.source}|${CONSENT_TEXT_VERSION}`
   const params = new URLSearchParams({
     email,
     at: consentAt,
     src: parsed.data.source,
-    v: CONSENT_VERSION,
+    v: CONSENT_TEXT_VERSION,
     token: signToken('confirm', email, payload),
   })
   const confirmUrl = absoluteUrl(`/newsletter/confirm?${params}`)

@@ -24,6 +24,7 @@
     "seed": "tsx scripts/seed-sanity.ts",
     "seed:dry": "tsx scripts/seed-sanity.ts --dry-run",
     "typegen": "node -e \"require('fs').rmSync('sanity/extract.json',{force:true})\" && sanity schema extract --path=sanity/extract.json && sanity typegen generate",
+    "setup:resend": "tsx scripts/setup-resend.ts",
     "check:launch": "tsx scripts/check-launch.ts",
     "ci": "npm run typecheck && npm run lint && npm run test"
   },

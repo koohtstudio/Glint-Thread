@@ -114,6 +114,7 @@ npm test               # vitest (unit + contract + copy lint); test:coverage for
 npm run e2e            # playwright (starts the app itself)
 npm run shots -- pass-3   # screenshots into screenshots/pass-3/
 npm run seed -- --dry-run # Sanity seed (no keys needed for dry run)
+npm run setup:resend   # create the Resend Newsletter topic, segment and consent properties
 npm run check:launch   # launch gate (PRD 14.3)
 ```
 Use Node 24: `export PATH=$HOME/.nvm/versions/node/v24.21.0/bin:$PATH` in non-interactive shells.

@@ -1,74 +1,101 @@
 import 'server-only'
 import { env } from '@/lib/env'
+import {
+  CONSENT_TEXT_VERSION,
+  CONTACT_PROPERTY_KEYS,
+  consentProperties,
+  type ConsentRecord,
+} from '@/lib/newsletter-config'
+
+export { CONSENT_TEXT_VERSION }
+export type { ConsentRecord }
 
 /**
- * Newsletter contacts live only in Resend (PRD 9.7, 9.8): never in Sanity. The CASL consent record
- * (consent text version, timestamp, source) is stored as properties on the Resend contact.
- * Without RESEND_API_KEY the contact is logged to the console instead.
+ * Newsletter contacts live only in Resend (PRD 9.7, 9.8), never in Sanity. A confirmed contact gets the CASL
+ * consent properties, an opt-in subscription to the Newsletter topic and membership of the Newsletter
+ * subscribers segment. Without RESEND_API_KEY the action is logged to the console; with a key but no topic
+ * or segment IDs, the contact is still saved and the missing pieces are skipped with a warning
+ * (run `npm run setup:resend` to create them).
  */
-export const CONSENT_VERSION = 'newsletter-consent-v1'
-
-export interface ConsentRecord {
-  consentVersion: string
-  consentAt: string
-  source: string
-}
-
-const PROPERTIES = ['consent_version', 'consent_at', 'consent_source', 'confirmed_at'] as const
-
 async function resendClient() {
   const { Resend } = await import('resend')
   return new Resend(env.RESEND_API_KEY)
 }
+type ResendClient = Awaited<ReturnType<typeof resendClient>>
 
 let propertiesReady: Promise<void> | null = null
-/** Creates the custom contact properties once per process; "already exists" errors are ignored. */
-function ensureProperties(resend: Awaited<ReturnType<typeof resendClient>>) {
+/** Creates the consent properties if `setup:resend` has not run; "already exists" errors are ignored. */
+function ensureProperties(resend: ResendClient) {
   propertiesReady ??= Promise.all(
-    PROPERTIES.map((key) =>
+    CONTACT_PROPERTY_KEYS.map((key) =>
       resend.contactProperties.create({ key, type: 'string' }).catch(() => null),
     ),
   ).then(() => undefined)
   return propertiesReady
 }
 
-/** Called from the double opt-in confirm link: adds or updates the contact with its consent record. */
+function warnIfMissing() {
+  if (!env.RESEND_NEWSLETTER_TOPIC_ID)
+    console.warn('[newsletter] RESEND_NEWSLETTER_TOPIC_ID is not set: run `npm run setup:resend`')
+  if (!env.RESEND_NEWSLETTER_SEGMENT_ID)
+    console.warn('[newsletter] RESEND_NEWSLETTER_SEGMENT_ID is not set (optional)')
+}
+
+/** Double opt-in confirmed: write the consent record, subscribe to the topic and add to the segment. */
 export async function confirmSubscriber(
   email: string,
   consent: ConsentRecord,
 ): Promise<'confirmed' | 'logged'> {
-  const properties = {
-    consent_version: consent.consentVersion,
-    consent_at: consent.consentAt,
-    consent_source: consent.source,
-    confirmed_at: new Date().toISOString(),
-  }
+  const properties = consentProperties(consent)
   if (!env.RESEND_API_KEY) {
     console.info(`[newsletter] (no Resend) confirmed ${email}`, properties)
     return 'logged'
   }
   const resend = await resendClient()
   await ensureProperties(resend)
+  warnIfMissing()
+  const topicId = env.RESEND_NEWSLETTER_TOPIC_ID
+  const segmentId = env.RESEND_NEWSLETTER_SEGMENT_ID
+
   const created = await resend.contacts.create({
     email,
     unsubscribed: false,
     properties,
-    ...(env.RESEND_AUDIENCE_ID ? { segments: [{ id: env.RESEND_AUDIENCE_ID }] } : {}),
+    ...(topicId ? { topics: [{ id: topicId, subscription: 'opt_in' as const }] } : {}),
+    ...(segmentId ? { segments: [{ id: segmentId }] } : {}),
   })
-  if (created.error) {
-    // Existing contact: update consent and resubscribe.
-    const updated = await resend.contacts.update({ email, unsubscribed: false, properties })
-    if (updated.error) console.error('[newsletter] could not save Resend contact', updated.error)
+  if (!created.error) return 'confirmed'
+
+  // The contact already exists (for example a returning subscriber): update, resubscribe and re-add.
+  const updated = await resend.contacts.update({ email, unsubscribed: false, properties })
+  if (updated.error) console.error('[newsletter] could not update Resend contact', updated.error)
+  if (topicId) {
+    const t = await resend.contacts.topics.update({
+      email,
+      topics: [{ id: topicId, subscription: 'opt_in' }],
+    })
+    if (t.error) console.error('[newsletter] could not subscribe to topic', t.error)
+  }
+  if (segmentId) {
+    const s = await resend.contacts.segments.add({ email, segmentId })
+    if (s.error) console.error('[newsletter] could not add to segment', s.error)
   }
   return 'confirmed'
 }
 
+/** Unsubscribe from the Newsletter topic; with no topic ID configured, fall back to a global unsubscribe. */
 export async function unsubscribe(email: string) {
   if (!env.RESEND_API_KEY) {
     console.info(`[newsletter] (no Resend) unsubscribed ${email}`)
     return
   }
   const resend = await resendClient()
-  const res = await resend.contacts.update({ email, unsubscribed: true })
-  if (res.error) console.error('[newsletter] could not unsubscribe Resend contact', res.error)
+  const topicId = env.RESEND_NEWSLETTER_TOPIC_ID
+  const res = topicId
+    ? await resend.contacts.topics.update({
+        email,
+        topics: [{ id: topicId, subscription: 'opt_out' }],
+      })
+    : await resend.contacts.update({ email, unsubscribed: true })
+  if (res.error) console.error('[newsletter] could not unsubscribe', res.error)
 }
