@@ -26,3 +26,9 @@ One line each: decision, then reason.
 - Bag lines keep a snapshot (title, image, price) for instant rendering; the server quote replaces totals as soon as it returns.
 - The footer newsletter column links to the home newsletter band on the home page instead of repeating the form.
 - `next/image` uses `preload` instead of the deprecated `priority` prop (Next 16).
+- Param-driven pages (shop, collections, products, content pages) export `instant = false`: every param is prerendered by generateStaticParams, so a blocking navigation is served from cache and needs no skeleton fallback (Next 16 instant-navigation validation).
+- The home hero starts below the header instead of under it: the PRD's default hero image is white earring cards on black, and the transparent header's wordmark would sit over white card stock. The header is still transparent at the top of the home page and turns ink-950/85 with blur after 24 px.
+- The Stripe webhook returns 500 (not 200) when processing a handled event fails, so Stripe retries; handlers are idempotent on event ID, so retries are safe. Unexpected event types still get 200, bad signatures 400.
+- /api/admin/ship-order accepts ADMIN_ACTION_SECRET (scripts) or the signed-in Studio user's Sanity token verified via /users/me with an administrator or editor role. Embedding the secret in the Studio would publish it in browser JS.
+- Newsletter confirm and unsubscribe links are stateless HMAC tokens (NEWSLETTER_TOKEN_SECRET, falling back to ADMIN_ACTION_SECRET, then a dev-only constant outside production), so double opt-in works even before Sanity is connected.
+- Resend deprecated audiences for segments; RESEND_AUDIENCE_ID is passed as the segment ID when adding confirmed subscribers.
