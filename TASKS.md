@@ -2,9 +2,9 @@
 
 Status: [x] done, [~] in progress, [ ] to do. Mirrors the milestones in PROMPTS.md Prompt 1.
 
-- [~] M1 Foundation: Next 16 + TS strict + Tailwind v4 tokens, fonts, env (Zod), format, i18n, lint, CLAUDE.md, DECISIONS.md, .env.example
-- [ ] M2 Data layer: types, Zod catalogue schema, local adapter, image copy script, DEV_DEFAULT_STOCK, contract tests
-- [ ] M3 Pricing engine: PRD 9.1 rules, PRD test table + edge cases, 100% branch coverage
+- [x] M1 Foundation: Next 16 + TS strict + Tailwind v4 tokens, fonts, env (Zod), format, i18n, lint, CLAUDE.md, DECISIONS.md, .env.example
+- [x] M2 Data layer: types, Zod catalogue schema, local adapter, image copy script, DEV_DEFAULT_STOCK, contract tests
+- [~] M3 Pricing engine: PRD 9.1 rules, PRD test table + edge cases, 100% branch coverage
 - [ ] M4 Design system: PRD 4.6 components, /dev/styleguide
 - [ ] M5 Global layout: announcement bar, header, mega menu, mobile menu, footer, bag drawer, search overlay
 - [ ] M6 Pages: home, listings, PDP, bag, search, success, order status, content pages, 404/error
