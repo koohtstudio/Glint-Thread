@@ -2,7 +2,7 @@ import { computeQuote } from '@/lib/commerce/quote'
 import { quoteRequestSchema } from '@/lib/commerce/schemas'
 import { clientIp, limiters, tooManyRequests } from '@/lib/rate-limit'
 
-/** POST cart -> priced quote (PRD 9.1). Drives the bag drawer, bag page and free-shipping progress. */
+/** POST cart -> priced quote (PRD 9.1): promotions, code, shipping and, with a province, tax. Drives the bag and checkout summary. */
 export async function POST(request: Request) {
   const rl = limiters.quote.check(clientIp(request.headers))
   if (!rl.ok) return tooManyRequests(rl.retryAfterSeconds)

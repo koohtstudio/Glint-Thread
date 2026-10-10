@@ -34,6 +34,8 @@ export interface EmailShellProps {
   siteUrl: string
   businessAddress: string
   legalName: string
+  /** GST/HST registration number, printed on receipts when set (PRD 7.6). */
+  gstHstNumber?: string
   marketing?: { unsubscribeUrl: string }
 }
 
@@ -43,6 +45,7 @@ export function EmailShell({
   siteUrl,
   businessAddress,
   legalName,
+  gstHstNumber,
   marketing,
 }: EmailShellProps) {
   return (
@@ -74,6 +77,12 @@ export function EmailShell({
               All the glint. None of the gold loan.
               <br />
               {legalName}, operating as Glint &amp; Thread. {businessAddress}
+              {gstHstNumber ? (
+                <>
+                  <br />
+                  GST/HST no. {gstHstNumber}
+                </>
+              ) : null}
             </Text>
             {marketing ? (
               <Text

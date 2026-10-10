@@ -1,8 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Suspense } from 'react'
-import { getStripe } from '@/lib/stripe'
-import { findOrderBySession } from '@/lib/orders'
+import { loadConfirmation } from '@/lib/checkout/summary'
 import { formatMoney } from '@/lib/format'
 import { pageMetadata } from '@/lib/seo'
 import { t } from '@/lib/i18n'
@@ -15,61 +14,17 @@ export const metadata: Metadata = pageMetadata({
   noindex: true,
 })
 
-interface View {
-  orderNumber: string
-  email: string | null
-  items: { title: string; qty: number; totalCents: number }[]
-  subtotalCents: number
-  discountCents: number
-  shippingCents: number
-  taxCents: number
-  totalCents: number
-  paid: boolean
-}
-
-/** Retrieves the session server-side, so a refresh is safe (PRD 6.4.6). */
-async function load(sessionId: string): Promise<View | null> {
-  const stripe = getStripe()
-  if (!stripe || !/^cs_[A-Za-z0-9_]+$/.test(sessionId)) return null
-  try {
-    const session = await stripe.checkout.sessions.retrieve(sessionId, { expand: ['line_items'] })
-    const order = await findOrderBySession(session.id, session.metadata?.orderId).catch(() => null)
-    return {
-      orderNumber:
-        order?.orderNumber ?? session.metadata?.orderNumber ?? session.id.slice(-8).toUpperCase(),
-      email: session.customer_details?.email ?? null,
-      items:
-        order?.lines.map((l) => ({
-          title: l.variantTitle === 'Default' ? l.title : `${l.title}, ${l.variantTitle}`,
-          qty: l.qty,
-          totalCents: l.lineSubtotalCents,
-        })) ??
-        (session.line_items?.data ?? []).map((li) => ({
-          title: li.description ?? 'Item',
-          qty: li.quantity ?? 1,
-          totalCents: li.amount_subtotal,
-        })),
-      subtotalCents: session.amount_subtotal ?? 0,
-      discountCents: session.total_details?.amount_discount ?? 0,
-      shippingCents: session.total_details?.amount_shipping ?? 0,
-      taxCents: session.total_details?.amount_tax ?? 0,
-      totalCents: session.amount_total ?? 0,
-      paid: session.payment_status === 'paid' || session.payment_status === 'no_payment_required',
-    }
-  } catch (err) {
-    console.error('[success] could not load session', err)
-    return null
-  }
-}
-
 async function Confirmation({
   searchParams,
 }: {
   searchParams: PageProps<'/checkout/success'>['searchParams']
 }) {
   const sp = await searchParams
-  const sessionId = typeof sp.session_id === 'string' ? sp.session_id : ''
-  const view = sessionId ? await load(sessionId) : null
+  const pick = (k: string) => (typeof sp[k] === 'string' ? (sp[k] as string) : '')
+  const view =
+    pick('payment_intent') && pick('payment_intent_client_secret')
+      ? await loadConfirmation(pick('payment_intent'), pick('payment_intent_client_secret'))
+      : null
 
   if (!view) {
     return (
@@ -79,6 +34,19 @@ async function Confirmation({
         <p className="t-lede mt-8">{t('success.missing')}</p>
         <Button asChild variant="secondary" className="mt-10">
           <Link href="/order-status">{t('orderStatus.title')}</Link>
+        </Button>
+      </div>
+    )
+  }
+
+  if (view.state === 'failed') {
+    return (
+      <div className="max-w-2xl">
+        <p className="eyebrow">{t('success.eyebrow')}</p>
+        <h1 className="t-h1 mt-4">{t('success.failedTitle')}</h1>
+        <p className="t-lede mt-8">{t('success.failedBody')}</p>
+        <Button asChild className="mt-10">
+          <Link href="/checkout">{t('success.tryAgain')}</Link>
         </Button>
       </div>
     )
@@ -95,8 +63,8 @@ async function Confirmation({
             ? t('success.intro', { orderNumber: view.orderNumber, email: view.email })
             : t('success.introNoEmail', { orderNumber: view.orderNumber })}
         </p>
-        {!view.paid ? (
-          <p className="mt-4 text-[15px] text-champagne-400">{t('success.pending')}</p>
+        {view.state === 'processing' ? (
+          <p className="mt-4 text-[15px] text-champagne-400">{t('success.processing')}</p>
         ) : null}
         <h2 className="eyebrow mt-14">{t('success.next')}</h2>
         <ol className="mt-5 space-y-4">
@@ -148,17 +116,17 @@ async function Confirmation({
           <div className="flex justify-between">
             <dt className="text-bone-300">{t('success.shipping')}</dt>
             <dd className="price">
-              {view.shippingCents ? formatMoney(view.shippingCents) : 'Free'}
+              {view.shippingCents ? formatMoney(view.shippingCents) : t('checkout.free')}
             </dd>
           </div>
-          {view.taxCents ? (
-            <div className="flex justify-between">
-              <dt className="text-bone-300">{t('success.tax')}</dt>
-              <dd className="price">{formatMoney(view.taxCents)}</dd>
+          {view.taxLines.map((line) => (
+            <div key={`${line.code}-${line.ratePercent}`} className="flex justify-between">
+              <dt className="text-bone-300">{line.label}</dt>
+              <dd className="price">{formatMoney(line.amountCents)}</dd>
             </div>
-          ) : null}
+          ))}
           <div className="flex justify-between border-t border-line pt-3 text-[16px]">
-            <dt>{view.paid ? t('success.paid') : t('success.total')}</dt>
+            <dt>{view.state === 'succeeded' ? t('success.paid') : t('success.total')}</dt>
             <dd className="price">{formatMoney(view.totalCents)}</dd>
           </div>
         </dl>

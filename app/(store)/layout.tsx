@@ -14,6 +14,7 @@ import { AnnouncementBar } from '@/components/layout/announcement-bar'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { StoreProviders } from '@/components/layout/store-providers'
+import { publicEnv } from '@/lib/public-env'
 
 export default async function StoreLayout({ children }: LayoutProps<'/'>) {
   const [departments, categories, home, settings, cards] = await Promise.all([
@@ -41,7 +42,7 @@ export default async function StoreLayout({ children }: LayoutProps<'/'>) {
       <StoreProviders
         nav={nav}
         bag={{
-          checkoutEnabled: features.stripe,
+          checkoutEnabled: features.stripe && Boolean(publicEnv.stripePublishableKey),
           taxMode: env.TAX_MODE,
           freeShippingThresholdCents: settings.freeShippingThresholdCents,
           addOns,

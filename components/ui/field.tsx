@@ -216,3 +216,77 @@ export function Honeypot({ name = 'company' }: { name?: string }) {
     </div>
   )
 }
+
+export interface SelectProps extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'id'> {
+  label: string
+  options: { value: string; label: string }[]
+  placeholder?: string
+  hint?: string
+  error?: string | null
+  id?: string
+  tone?: 'dark' | 'light'
+  wrapperClassName?: string
+}
+
+/** Underline-style native select (keeps platform pickers on phones) with our label, chevron and error treatment. */
+export function Select({
+  label,
+  options,
+  placeholder,
+  hint,
+  error,
+  id,
+  tone = 'dark',
+  wrapperClassName,
+  className,
+  ...rest
+}: SelectProps) {
+  const auto = useId()
+  const fieldId = id ?? auto
+  return (
+    <FieldShell
+      id={fieldId}
+      label={label}
+      hint={hint}
+      error={error}
+      tone={tone}
+      className={wrapperClassName}
+    >
+      <div className="relative">
+        <select
+          id={fieldId}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={describedBy(fieldId, hint, error)}
+          className={cx(
+            inputBase,
+            'cursor-pointer appearance-none pr-8',
+            tone === 'light'
+              ? 'border-ink-950/30 text-ink-950 focus:border-champagne-800'
+              : 'border-line-strong text-bone-50 focus:border-champagne-400',
+            error && (tone === 'light' ? 'border-error-dark' : 'border-error'),
+            className,
+          )}
+          {...rest}
+        >
+          {placeholder ? (
+            <option value="" className="bg-ink-900 text-bone-500">
+              {placeholder}
+            </option>
+          ) : null}
+          {options.map((o) => (
+            <option key={o.value} value={o.value} className="bg-ink-900 text-bone-50">
+              {o.label}
+            </option>
+          ))}
+        </select>
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 20 20"
+          className="pointer-events-none absolute top-1/2 right-0 size-4 -translate-y-1/2 text-bone-300"
+        >
+          <path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        </svg>
+      </div>
+    </FieldShell>
+  )
+}

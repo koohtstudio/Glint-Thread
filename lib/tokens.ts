@@ -28,3 +28,21 @@ export function verifyToken(
   const given = Buffer.from(token)
   return expected.length === given.length && timingSafeEqual(expected, given)
 }
+
+/** Binds a checkout to its order and PaymentIntent, so only the creator can update the intent (PRD 9.2). */
+export function signCheckoutToken(orderId: string, paymentIntentId: string): string {
+  return createHmac('sha256', key())
+    .update(`checkout:${orderId}:${paymentIntentId}`)
+    .digest('base64url')
+    .slice(0, 40)
+}
+
+export function verifyCheckoutToken(
+  orderId: string,
+  paymentIntentId: string,
+  token: string,
+): boolean {
+  const expected = Buffer.from(signCheckoutToken(orderId, paymentIntentId))
+  const given = Buffer.from(token)
+  return expected.length === given.length && timingSafeEqual(expected, given)
+}

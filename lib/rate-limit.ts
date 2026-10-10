@@ -39,11 +39,16 @@ export function createRateLimiter({ limit, windowMs }: { limit: number; windowMs
 }
 
 export const limiters = {
-  checkout: createRateLimiter({ limit: 10, windowMs: 60_000 }),
+  checkout: createRateLimiter({ limit: 40, windowMs: 60_000 }),
   quote: createRateLimiter({ limit: 120, windowMs: 60_000 }),
   newsletter: createRateLimiter({ limit: 5, windowMs: 60_000 }),
   contact: createRateLimiter({ limit: 5, windowMs: 60_000 }),
   orderStatus: createRateLimiter({ limit: 10, windowMs: 60_000 }),
+  /** Sign-up, session creation: one person typing, not a script. */
+  auth: createRateLimiter({ limit: 15, windowMs: 60_000 }),
+  /** Anything that sends an email (links, resets, verification). */
+  authEmail: createRateLimiter({ limit: 5, windowMs: 60_000 }),
+  account: createRateLimiter({ limit: 60, windowMs: 60_000 }),
 }
 
 /** Best-effort client IP from proxy headers (Vercel sets x-forwarded-for). */

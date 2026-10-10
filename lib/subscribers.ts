@@ -99,3 +99,15 @@ export async function unsubscribe(email: string) {
     : await resend.contacts.update({ email, unsubscribed: true })
   if (res.error) console.error('[newsletter] could not unsubscribe', res.error)
 }
+
+/** Removes the Resend contact entirely (account deletion, PIPEDA). */
+export async function deleteContact(email: string) {
+  if (!env.RESEND_API_KEY) {
+    console.info(`[newsletter] (no Resend) deleted contact ${email}`)
+    return
+  }
+  const resend = await resendClient()
+  const res = await resend.contacts.remove({ email })
+  if (res.error && res.error.statusCode !== 404)
+    console.error('[newsletter] could not delete contact', res.error)
+}

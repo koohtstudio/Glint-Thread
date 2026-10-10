@@ -1,12 +1,13 @@
 import type Stripe from 'stripe'
 import { env } from '@/lib/env'
 import { getStripe } from '@/lib/stripe'
-import { markOrderExpired, markOrderPaid, markOrderRefunded } from '@/lib/orders'
+import { markOrderExpired, markOrderPaid, markOrderRefunded, markPaymentFailed } from '@/lib/orders'
 
 /**
  * Stripe webhook (PRD 9.3). Verifies the signature against the raw body; 400 only on a bad signature,
  * 200 for handled and unexpected events (logged), 500 if processing fails so Stripe retries.
- * Handlers are idempotent on event ID.
+ * Handlers are idempotent on event ID. Events: payment_intent.succeeded, payment_intent.payment_failed,
+ * payment_intent.canceled, charge.refunded.
  */
 export async function POST(request: Request) {
   const stripe = getStripe()
@@ -25,16 +26,17 @@ export async function POST(request: Request) {
 
   try {
     switch (event.type) {
-      case 'checkout.session.completed':
-      case 'checkout.session.async_payment_succeeded': {
-        const session = await stripe.checkout.sessions.retrieve(event.data.object.id, {
-          expand: ['line_items', 'shipping_cost.shipping_rate'],
-        })
-        const result = await markOrderPaid(session, event.id)
-        console.info(`[webhook] ${event.type} ${session.id}: ${result}`)
+      case 'payment_intent.succeeded': {
+        const result = await markOrderPaid(event.data.object, event.id)
+        console.info(`[webhook] ${event.type} ${event.data.object.id}: ${result}`)
         break
       }
-      case 'checkout.session.expired': {
+      case 'payment_intent.payment_failed': {
+        const result = await markPaymentFailed(event.data.object, event.id)
+        console.info(`[webhook] ${event.type} ${event.data.object.id}: ${result}`)
+        break
+      }
+      case 'payment_intent.canceled': {
         const result = await markOrderExpired(event.data.object, event.id)
         console.info(`[webhook] ${event.type} ${event.data.object.id}: ${result}`)
         break

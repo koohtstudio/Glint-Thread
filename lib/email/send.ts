@@ -56,5 +56,6 @@ export async function emailShell() {
     siteUrl: env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, ''),
     legalName: settings.legalName,
     businessAddress: settings.businessAddress,
+    ...(env.GST_HST_NUMBER ? { gstHstNumber: env.GST_HST_NUMBER } : {}),
   }
 }

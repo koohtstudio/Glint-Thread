@@ -19,7 +19,7 @@ import { PromoCode } from './promo-code'
 
 export interface BagConfig {
   checkoutEnabled: boolean
-  taxMode: 'none' | 'stripe'
+  taxMode: 'none' | 'table'
   freeShippingThresholdCents: number
   addOns: ProductCard[]
 }
@@ -165,7 +165,7 @@ export function BagContents({
           </div>
         </dl>
         <p className="mt-2 text-[13px] text-bone-500">
-          {config.taxMode === 'stripe' ? t('bag.shippingTaxNote') : t('bag.shippingNote')}
+          {config.taxMode === 'table' ? t('bag.shippingTaxNote') : t('bag.shippingNote')}
         </p>
         <div className="mt-5">
           <CheckoutButton

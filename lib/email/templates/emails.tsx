@@ -12,6 +12,8 @@ export interface OrderEmailData {
   subtotalCents: number
   discountCents: number
   shippingCents: number
+  /** Each tax by name, for example "HST (ON) 13%"; empty when no tax is charged. */
+  taxLines: { label: string; amountCents: number }[]
   taxCents: number
   totalCents: number
   shippingMethod?: string | null
@@ -40,7 +42,7 @@ export function OrderConfirmationEmail({ order, shell }: { order: OrderEmailData
             label: order.shippingMethod ?? 'Shipping',
             value: order.shippingCents ? formatMoney(order.shippingCents) : 'Free',
           },
-          ...(order.taxCents ? [{ label: 'Tax', value: formatMoney(order.taxCents) }] : []),
+          ...order.taxLines.map((l) => ({ label: l.label, value: formatMoney(l.amountCents) })),
           { label: 'Total', value: formatMoney(order.totalCents), strong: true },
         ]}
       />

@@ -5,6 +5,7 @@ import { sortProducts } from '@/lib/data/derive'
 import { env, features } from '@/lib/env'
 import { pageMetadata } from '@/lib/seo'
 import { t } from '@/lib/i18n'
+import { publicEnv } from '@/lib/public-env'
 import { BagPageClient } from '@/components/cart/bag-page'
 
 export const metadata: Metadata = pageMetadata({
@@ -27,7 +28,7 @@ export default async function BagPage() {
         <Suspense fallback={<div className="min-h-64" aria-busy="true" />}>
           <BagPageClient
             config={{
-              checkoutEnabled: features.stripe,
+              checkoutEnabled: features.stripe && Boolean(publicEnv.stripePublishableKey),
               taxMode: env.TAX_MODE,
               freeShippingThresholdCents: settings.freeShippingThresholdCents,
               addOns,

@@ -1,6 +1,7 @@
 /**
  * PRD 9.8 privacy guarantee: no order document written by checkout or the Stripe webhook contains the
- * customer's email, name, phone or address. A recording fake Sanity client captures every write.
+ * customer's email, name, phone or address. A recording fake Sanity client captures every write; a fake
+ * Firestore (customerOrders) shows where the personal data goes instead.
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type Stripe from 'stripe'
@@ -111,7 +112,15 @@ vi.mock('@/lib/env', () => ({
     OWNER_EMAIL: 'owner@example.ca',
     EMAIL_FROM: 'Glint & Thread <orders@example.ca>',
   },
-  features: { sanity: true, sanityWrite: true, stripe: false, stripeWebhook: false, email: false },
+  features: {
+    sanity: true,
+    sanityWrite: true,
+    stripe: false,
+    stripeWebhook: false,
+    email: false,
+    firebaseAdmin: false,
+    accounts: false,
+  },
 }))
 vi.mock('@/sanity/lib/server-client', () => ({
   sanityWriteClient: () => fakeClient,
@@ -141,6 +150,32 @@ vi.mock('@/lib/data', () => ({
   ],
 }))
 vi.mock('@/lib/stripe', () => ({ getStripe: () => null }))
+
+const firestore = new Map<string, Record<string, unknown>>()
+vi.mock('@/lib/account/customer-orders', () => ({
+  customerOrderIdFor: (id: string) => id.replace(/^orders\./, ''),
+  createCustomerOrder: async (id: string, doc: Record<string, unknown>) => {
+    firestore.set(id, { ...doc })
+  },
+  updateCustomerOrder: async (id: string, patch: Record<string, unknown>) => {
+    firestore.set(id, { ...(firestore.get(id) ?? {}), ...patch })
+  },
+  getCustomerOrder: async (id: string) => firestore.get(id) ?? null,
+  findCustomerOrderBySanityId: async (sanityId: string) =>
+    [...firestore.values()].find((d) => d.sanityOrderId === sanityId) ?? null,
+  findCustomerOrderByPaymentIntent: async () => null,
+}))
+vi.mock('@/lib/firebase/admin', () => ({
+  adminAuth: () => ({
+    getUserByEmail: async () => {
+      throw new Error('auth/user-not-found')
+    },
+  }),
+  adminDb: () => ({}),
+  firebaseConfigured: () => true,
+}))
+vi.mock('@/lib/account/store', () => ({ ensureProfile: async () => undefined }))
+vi.mock('@/lib/auth/links', () => ({ sendAccountSetupEmail: async () => undefined }))
 
 const PII = {
   email: 'ana.tremblay@example.ca',
@@ -181,20 +216,32 @@ const quote: Quote = {
   promotions: [{ id: 'socks-mix-match', title: 'Mix & Match Socks', discountCents: 419 }],
   promoCode: { code: 'WELCOME10', applied: true, percentOff: 10, requiresEmail: true },
   shippingOptions: [],
+  shipping: {
+    id: 'standard',
+    label: 'Standard (Canada Post, tracked)',
+    amountCents: 899,
+    eta: '3 to 7 business days',
+    isFree: false,
+  },
+  taxMode: 'table',
+  taxLines: [{ code: 'HST', label: 'HST (ON) 13%', ratePercent: 13, amountCents: 314 }],
+  taxCents: 314,
+  totalCents: 2723,
   freeShipping: { thresholdCents: 6000, remainingCents: 4490, unlocked: false },
   messages: [],
 }
 
-function session(orderId: string): Stripe.Checkout.Session {
+function paymentIntent(orderId: string): Stripe.PaymentIntent {
   return {
-    id: 'cs_test_123',
-    object: 'checkout.session',
-    payment_status: 'paid',
+    id: 'pi_test_456',
+    object: 'payment_intent',
+    status: 'succeeded',
+    amount: 2723,
+    amount_received: 2723,
+    currency: 'cad',
     metadata: { orderId, orderNumber: 'GT-ABC123' },
-    client_reference_id: orderId,
-    customer_email: PII.email,
-    customer_details: {
-      email: PII.email,
+    receipt_email: PII.email,
+    shipping: {
       name: PII.name,
       phone: PII.phone,
       address: {
@@ -206,55 +253,37 @@ function session(orderId: string): Stripe.Checkout.Session {
         country: 'CA',
       },
     },
-    collected_information: {
-      shipping_details: {
-        name: PII.name,
-        address: {
-          line1: PII.line1,
-          line2: PII.line2,
-          city: PII.city,
-          state: 'ON',
-          postal_code: PII.postal,
-          country: 'CA',
-        },
-      },
-    },
-    shipping_cost: {
-      amount_total: 899,
-      shipping_rate: {
-        id: 'shr_1',
-        display_name: 'Standard (Canada Post, tracked)',
-        delivery_estimate: {
-          minimum: { unit: 'business_day', value: 3 },
-          maximum: { unit: 'business_day', value: 7 },
-        },
-      },
-    },
-    total_details: { amount_discount: 587, amount_shipping: 899, amount_tax: 0 },
-    amount_subtotal: 2097,
-    amount_total: 2409,
-    payment_intent: 'pi_test_456',
     livemode: false,
-  } as unknown as Stripe.Checkout.Session
+  } as unknown as Stripe.PaymentIntent
+}
+
+const customer = {
+  email: PII.email,
+  name: PII.name,
+  phone: PII.phone,
+  address: {
+    name: PII.name,
+    line1: PII.line1,
+    line2: PII.line2,
+    city: PII.city,
+    province: 'ON',
+    postalCode: PII.postal,
+    phone: PII.phone,
+  },
 }
 
 describe('orders keep customer PII out of Sanity (PRD 9.8)', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     writes.length = 0
     sent.length = 0
     store.clear()
+    firestore.clear()
+    const { features } = await import('@/lib/env')
+    ;(features as { firebaseAdmin: boolean }).firebaseAdmin = false
   })
 
-  it('writes no email, name, phone or address on checkout or on the paid webhook', async () => {
-    const { createPendingOrder, markOrderPaid } = await import('./orders')
-    const { hashEmail } = await import('./email-hash')
-
-    const pending = await createPendingOrder(quote, PII.email)
-    expect(pending.persisted).toBe(true)
-    const result = await markOrderPaid(session(pending.id), 'evt_1')
-    expect(result).toBe('processed')
-
-    const serialized = JSON.stringify(writes).toLowerCase()
+  function expectNoPii(recorded: unknown) {
+    const serialized = JSON.stringify(recorded).toLowerCase()
     for (const value of Object.values(PII)) expect(serialized).not.toContain(value.toLowerCase())
     for (const key of [
       '"customer"',
@@ -267,25 +296,57 @@ describe('orders keep customer PII out of Sanity (PRD 9.8)', () => {
       '"city"',
     ])
       expect(serialized).not.toContain(key)
+  }
 
-    // What is stored instead: the salted hash, the province and non-personal facts.
+  it('writes no email, name, phone or address on checkout or on the paid webhook', async () => {
+    const { createPendingOrder, markOrderPaid } = await import('./orders')
+    const { hashEmail } = await import('./email-hash')
+
+    const pending = await createPendingOrder({ quote, customer, uid: null, createAccount: false })
+    expect(pending.stores.sanity).toBe(true)
+    const result = await markOrderPaid(paymentIntent(pending.id), 'evt_1')
+    expect(result).toBe('processed')
+
+    expectNoPii(writes)
+
+    // What is stored instead: the salted hash, the province, tax lines and non-personal facts.
     const stored = [...store.values()][0]
     expect(stored.emailHash).toBe(hashEmail(PII.email))
     expect(stored.emailHash).toMatch(/^[0-9a-f]{64}$/)
     expect(stored.shippingProvince).toBe('ON')
     expect(stored.status).toBe('paid')
     expect(stored.stockDecremented).toBe(true)
+    expect((stored.taxLines as { label: string }[])[0].label).toBe('HST (ON) 13%')
+    expect((stored.amounts as { totalCents: number }).totalCents).toBe(2723)
 
-    // The confirmation still reaches the customer: the address came from Stripe at send time.
+    // The confirmation still reaches the customer: the address came from the PaymentIntent at send time.
     expect(sent.some((m) => m.to === PII.email && /confirmed/.test(m.subject))).toBe(true)
+  })
+
+  it('keeps the personal data in Firestore only, and the Sanity writes clean', async () => {
+    const { features } = await import('@/lib/env')
+    ;(features as { firebaseAdmin: boolean }).firebaseAdmin = true
+    const { createPendingOrder, markOrderPaid } = await import('./orders')
+
+    const pending = await createPendingOrder({ quote, customer, uid: null, createAccount: false })
+    expect(pending.stores).toEqual({ sanity: true, firestore: true })
+    await markOrderPaid(paymentIntent(pending.id), 'evt_1')
+
+    expectNoPii(writes)
+    const fs = [...firestore.values()][0]
+    expect(fs.email).toBe(PII.email)
+    expect(fs.name).toBe(PII.name)
+    expect(fs.status).toBe('paid')
+    expect((fs.shippingAddress as { line1: string }).line1).toBe(PII.line1)
+    expect((fs.totals as { totalCents: number }).totalCents).toBe(2723)
   })
 
   it('stays idempotent on a replayed event', async () => {
     const { createPendingOrder, markOrderPaid } = await import('./orders')
-    const pending = await createPendingOrder(quote, PII.email)
-    await markOrderPaid(session(pending.id), 'evt_1')
+    const pending = await createPendingOrder({ quote, customer, uid: null, createAccount: false })
+    await markOrderPaid(paymentIntent(pending.id), 'evt_1')
     const before = writes.length
-    expect(await markOrderPaid(session(pending.id), 'evt_1')).toBe('duplicate')
+    expect(await markOrderPaid(paymentIntent(pending.id), 'evt_1')).toBe('duplicate')
     expect(writes.length).toBe(before)
   })
 })
