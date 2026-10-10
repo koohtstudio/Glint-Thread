@@ -41,6 +41,7 @@ interface CartState {
   setPromo: (code: string | null, email?: string | null) => void
   setQuote: (quote: Quote | null, status: CartState['quoteStatus']) => void
   reconcile: (quote: Quote) => void
+  setHydrated: () => void
 }
 
 export const MAX_QTY = 10
@@ -127,6 +128,9 @@ export const useCart = create<CartState>()(
       setQuote(quote, status) {
         set({ quote, quoteStatus: status })
       },
+      setHydrated() {
+        set({ hydrated: true })
+      },
       /** Apply server corrections (removed SKUs, clamped quantities) back to the local bag. */
       reconcile(quote) {
         const bySku = new Map(quote.lines.map((l) => [l.sku, l]))
@@ -148,9 +152,9 @@ export const useCart = create<CartState>()(
       version: 1,
       storage: createJSONStorage(() => safeStorage),
       partialize: (s) => ({ lines: s.lines, promoCode: s.promoCode, email: s.email }),
+      // Runs during store creation, so it must use the state it is given, not `useCart`.
       onRehydrateStorage: () => (state) => {
-        state?.setQuote(null, 'idle')
-        useCart.setState({ hydrated: true })
+        state?.setHydrated()
       },
     },
   ),

@@ -4,7 +4,6 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import type { ProductCard } from '@/lib/data/types'
 import { useCart } from '@/lib/cart/store'
 import { snapshotFor } from '@/lib/cart/snapshot'
-import { toast } from '@/lib/toast'
 import { formatMoney } from '@/lib/format'
 import { t } from '@/lib/i18n'
 import { cx } from '@/lib/cx'
@@ -60,22 +59,28 @@ export function ProductMain({
     rememberViewed(product)
   }, [product])
 
+  // Show the mobile bar once the main button has scrolled above the viewport (rAF-throttled scroll check).
   useEffect(() => {
-    const el = buttonRef.current
-    if (!el) return
-    const io = new IntersectionObserver(
-      ([entry]) => setShowBar(!entry.isIntersecting && entry.boundingClientRect.top < 0),
-      {
-        threshold: 0,
-      },
-    )
-    io.observe(el)
-    return () => io.disconnect()
+    let frame = 0
+    const check = () => {
+      frame = 0
+      const el = buttonRef.current
+      if (el) setShowBar(el.getBoundingClientRect().bottom < 0)
+    }
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(check)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    return () => {
+      cancelAnimationFrame(frame)
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+    }
   }, [])
 
   const addToBag = () => {
     add(variant.sku, qty, snapshotFor(product, variant))
-    toast(t('toast.added', { title: product.title }))
   }
 
   return (
@@ -145,6 +150,8 @@ export function ProductMain({
           showBar ? 'translate-y-0' : 'pointer-events-none translate-y-full',
         )}
         aria-hidden={!showBar}
+        data-testid="sticky-bar"
+        data-visible={showBar}
       >
         <div className="flex items-center gap-4">
           <div className="min-w-0 flex-1">

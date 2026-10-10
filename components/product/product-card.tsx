@@ -7,7 +7,6 @@ import type { ProductCard as ProductCardData } from '@/lib/data/types'
 import { useCart } from '@/lib/cart/store'
 import { useQuickAdd } from '@/lib/cart/quick-add'
 import { snapshotFor } from '@/lib/cart/snapshot'
-import { toast } from '@/lib/toast'
 import { t } from '@/lib/i18n'
 import { cx } from '@/lib/cx'
 import { Badge } from '@/components/ui/badge'
@@ -67,7 +66,6 @@ export function ProductCard({
     if (single) {
       const v = product.variants[0]
       add(v.sku, 1, snapshotFor(product, v))
-      toast(t('toast.added', { title: product.title }))
     } else {
       openQuickAdd(product)
     }

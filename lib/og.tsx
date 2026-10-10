@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element -- next/og renders plain <img>; next/image does not apply */
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { ImageResponse } from 'next/og'
@@ -71,7 +72,6 @@ export async function matCard({
           padding: 34,
         }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         {img ? (
           <img
             src={img}
@@ -143,7 +143,6 @@ export async function brandCard({ imageSrc }: { imageSrc: string }) {
         fontFamily: 'Instrument Serif',
       }}
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={img} alt="" style={{ width: 520, height: 630, objectFit: 'cover' }} />
       <div
         style={{

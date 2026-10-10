@@ -18,6 +18,12 @@ export function useQuoteSync() {
   const reconcile = useCart((s) => s.reconcile)
   const seq = useRef(0)
 
+  // Belt and braces: mark hydrated once persist has finished (also covers storage being unavailable).
+  useEffect(() => {
+    if (useCart.persist.hasHydrated()) useCart.getState().setHydrated()
+    return useCart.persist.onFinishHydration(() => useCart.getState().setHydrated())
+  }, [])
+
   const key = JSON.stringify({ l: lines.map((l) => [l.sku, l.qty]), promoCode, email })
 
   useEffect(() => {

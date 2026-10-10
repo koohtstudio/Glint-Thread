@@ -6,7 +6,6 @@ import { useQuickAdd } from '@/lib/cart/quick-add'
 import type { ProductCard } from '@/lib/data/types'
 import { useCart } from '@/lib/cart/store'
 import { snapshotFor } from '@/lib/cart/snapshot'
-import { toast } from '@/lib/toast'
 import { t } from '@/lib/i18n'
 import { Sheet } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
@@ -66,7 +65,6 @@ function QuickAddBody({ product, onDone }: { product: ProductCard; onDone: () =>
         disabled={!variant.available}
         onClick={() => {
           add(variant.sku, 1, snapshotFor(product, variant))
-          toast(t('toast.added', { title: product.title }))
           onDone()
         }}
       >
