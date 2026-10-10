@@ -14,7 +14,7 @@
 
 Glint & Thread sells gold-tone, silver-tone and stainless steel fashion jewellery, plus the accessories that sit around it: hair clips, mini bags, berets and baker boy caps, blanket scarves, novelty socks, pyjama sets, beauty tools and bag charms. The stock is small-batch and largely imported from Turkey.
 
-The site must feel like a premium boutique (think editorial jewellery brands), not a dropshipping template, while staying fast, accessible and cheap to run. Launch scope is Canada-only shipping, CAD pricing, guest checkout through Stripe, and a CMS (Sanity) the owner can run without a developer.
+The site must feel like a premium boutique (think editorial jewellery brands), not a dropshipping template, while staying fast, accessible and cheap to run. Launch scope is Canada-only shipping, CAD pricing, customer accounts (Firebase Auth), our own one-page checkout with Stripe used **only for payment** (Payment Element, Express Checkout Element, PaymentIntents), guest checkout, provincial sales tax calculated by our own pricing engine, and a CMS (Sanity) the owner can run without a developer.
 
 **Tagline:** *All the glint. None of the gold loan.*
 
@@ -22,13 +22,14 @@ The site must feel like a premium boutique (think editorial jewellery brands), n
 
 ### Goals (launch)
 1. A storefront that looks and feels premium on every screen size from 360 px phones to 1920 px desktops.
-2. End-to-end commerce: browse → product → bag → Stripe Checkout → paid order in the CMS → confirmation email → owner marks shipped → shipping email.
-3. Owner self-service in Sanity Studio: products, prices, stock, photos, promotions, homepage, policies, orders.
+2. End-to-end commerce: browse → product → bag → our `/checkout` page (Stripe Payment Element) → paid order in the CMS (no personal data) and in the customer's account → confirmation email → owner marks shipped → shipping email.
+3. Owner self-service in Sanity Studio: products, prices, stock, photos, promotions, homepage, policies, tax rates, orders.
 4. Correct Canadian commerce behaviour: CAD formatting, Canada-only shipping, honest product claims, CASL-compliant email capture, tax handling that matches the business's registration status.
-5. Works on day one with zero accounts (local catalogue mode), then switches to Sanity + Stripe by adding environment variables.
+5. Works on day one with zero accounts (local catalogue mode), then switches on Sanity, Stripe, Resend and Firebase by adding environment variables. Without Firebase keys, customer accounts are hidden and guest checkout still works.
+6. Customer accounts: sign up and sign in, order history with tracking, saved addresses, profile, marketing preferences and self-service account deletion (PIPEDA).
 
 ### Non-goals (v1)
-Customer accounts and wishlists synced to an account (a local wishlist is fine), multi-currency, international shipping, reviews (no fake ones, ever), loyalty points, marketplace integrations, French site (architecture must be ready for it; see §12).
+Wishlists synced to an account (a local wishlist is fine), multi-currency, international shipping, reviews (no fake ones, ever), loyalty points, marketplace integrations, French site (architecture must be ready for it; see §12).
 
 ### Success metrics (first 90 days)
 | Metric | Target |
@@ -213,7 +214,14 @@ New In · Gifts Under $15 · The Gold-Tone Edit · Sweater Weather (fall/winter)
 | `/products/[slug]` | Product detail |
 | `/search?q=` | Search results (plus an instant-search overlay from the header) |
 | `/bag` | Full-page bag (fallback; the drawer is primary) |
-| `/checkout/success?session_id=` | Order confirmation |
+| `/checkout` | One-page checkout: contact, shipping address and method, payment (Stripe Payment Element, Express Checkout Element). Replaces the Stripe-hosted redirect. noindex |
+| `/checkout/success?order=` | Order confirmation (Stripe appends `payment_intent` and `payment_intent_client_secret`) |
+| `/account` | Account overview (noindex; redirects to sign-in when signed out) |
+| `/account/orders`, `/account/orders/[orderNumber]` | Order history, order detail with status and tracking |
+| `/account/addresses` | Saved addresses (add, edit, delete, default) |
+| `/account/profile` | Profile, password, delete my account |
+| `/account/preferences` | Marketing preferences (synced to the Resend Newsletter topic) |
+| `/account/sign-in`, `/account/sign-up`, `/account/forgot-password`, `/account/action` | Auth pages; `action` handles email verification, password reset and email-link sign-in links |
 | `/order-status` | Look up an order by order number and email |
 | `/about`, `/shipping-returns`, `/faq`, `/contact`, `/care`, `/size-guide`, `/privacy`, `/terms`, `/accessibility` | Content pages, editable in Sanity |
 | `/studio/[[...tool]]` | Embedded Sanity Studio (noindex) |
@@ -257,12 +265,15 @@ New In · Gifts Under $15 · The Gold-Tone Edit · Sweater Weather (fall/winter)
 
 ### 6.4 Bag and checkout flow
 1. Add to bag → drawer opens with the added item highlighted for 1.2 s.
-2. The bag drawer shows a server-computed quote (§9.1): subtotal, automatic promotion savings, free-shipping progress.
+2. The bag drawer shows a server-computed quote (§9.1): subtotal, automatic promotion savings, free-shipping progress. Signed-in customers' bags persist across devices (§9.9).
 3. Promo code field (collapsed by default, "Have a code?").
-4. Checkout → server validates and re-prices → creates a **pending order** in the CMS → creates a Stripe Checkout Session → redirects to Stripe.
-5. Stripe collects email, phone, Canadian shipping address, shipping method and payment (cards, Apple Pay, Google Pay as enabled in the Stripe dashboard).
-6. Success page `/checkout/success`: an editorial confirmation ("It's on its way soon.") with the order number, items, totals and what happens next; clears the bag. It retrieves the session server-side, so a refresh is safe.
-7. Cancel: back to the store with the bag intact and a quiet toast.
+4. **Checkout** → `/checkout` (our page; no redirect to Stripe). One page, three sections that open in turn on mobile (each with a "Continue" and an "Edit" on completed sections) and sit together on desktop beside a **sticky order summary**:
+   1. **Contact:** email (prefilled and locked when signed in; guests see a "Create an account" checkbox, unchecked).
+   2. **Shipping:** Canadian address (province select, postal code validated and normalised to `A1A 1A1`, and checked against the province), phone, saved addresses selectable when signed in; shipping method from our shipping settings.
+   3. **Payment:** Stripe **Payment Element**, with the **Express Checkout Element** (Apple Pay, Google Pay) at the top of the page.
+5. The order summary shows lines, promotion savings, promo code field, shipping, **each tax line by name** (for example "HST (ON) 13%", or "GST 5%" plus "PST (BC) 7%") and the total. Every number comes from the server pricing engine and is re-quoted whenever the address, shipping method, code or bag changes.
+6. Pay → `stripe.confirmPayment` → `/checkout/success?order=…`: an editorial confirmation ("It's on its way soon.") with the order number, items, totals including tax lines, and what happens next; clears the bag. The page verifies the PaymentIntent server-side, so a refresh is safe. 3-D Secure and redirect-based methods return to the same URL.
+7. Declined or failed payments show the Stripe message inline under the Payment Element; the bag and form stay intact.
 
 ### 6.5 Search
 Header search opens an overlay with instant results (debounced 150 ms) showing up to 6 products with thumbnails, plus "See all results". The full results page uses the listing layout. Matching covers title, tags, category, department and variant names. Empty state suggests the department links.
@@ -329,9 +340,9 @@ All values live in Sanity `siteSettings` (seeded from `products.json` → `shipp
 ### 7.6 Sales tax
 Canadian prices are shown tax-exclusive. Two modes via env `TAX_MODE`:
 - `none` (default): for a **small supplier** (under $30,000 in taxable sales over four consecutive calendar quarters), which isn't required to register for GST/HST and must not charge it. No tax lines; copy says "Shipping calculated at checkout".
-- `stripe`: once registered, enable Stripe Tax with the business's Canadian registrations. Checkout sets `automatic_tax: { enabled: true }`, products get the general tangible goods tax code, and shipping is taxed correctly. Copy becomes "Shipping and taxes calculated at checkout". (Stripe Tax has a per-transaction fee; see Stripe pricing.)
+- `table`: once registered, tax is calculated by **our own pricing engine** from a per-province table kept in Sanity `siteSettings` (no Stripe Tax). Each province has one or more components (`GST`, `HST`, `PST`, `RST`, `QST`), each with a rate and its own **applies to shipping** flag, editable by the owner. Tax is calculated on the **discounted merchandise subtotal** (after automatic promotions and codes), plus shipping where the component's flag is on, **rounded per component to the cent**. The province comes from the shipping address. Copy becomes "Shipping and taxes calculated at checkout". Receipts and order emails show the `GST_HST_NUMBER` when set; the launch check fails if `TAX_MODE=table` and it is empty.
 
-Reference rates for 2026 (for copy, tests and sanity checks only, not for calculation): AB 5 % GST · BC 5 % + 7 % PST · MB 5 % + 7 % RST · NB 15 % HST · NL 15 % HST · NS 14 % HST · NT 5 % · NU 5 % · ON 13 % HST · PE 15 % HST · QC 5 % + 9.975 % QST · SK 5 % + 6 % PST · YT 5 %. The owner confirms registration obligations, including provincial PST/QST registration thresholds, with an accountant.
+Seed table (2026): AB 5 GST · BC 5 GST + 7 PST · MB 5 GST + 7 RST · NB 15 HST · NL 15 HST · NS 14 HST · NT 5 GST · NU 5 GST · ON 13 HST · PE 15 HST · QC 5 GST + 9.975 QST · SK 5 GST + 6 PST · YT 5 GST. All components apply to shipping by default (delivery charges on taxable goods are taxable); the owner can switch that per component. The engine does not model product-specific exemptions (for example some provincial PST exemptions for children's clothing); the owner confirms registration obligations, exemptions and PST/QST thresholds with an accountant.
 
 ## 8. Technical architecture
 
@@ -344,12 +355,14 @@ Reference rates for 2026 (for copy, tests and sanity checks only, not for calcul
 | Motion | `motion` | Spec in §4.7 |
 | Cart state | Zustand with `persist` (localStorage, guarded) | Small, fast |
 | Validation | Zod | API inputs, env, catalogue import |
-| CMS and DB | Sanity: Content Lake plus Studio embedded at `/studio`, `next-sanity`, `@sanity/image-url`, Sanity TypeGen | Owner-editable products, content, settings, orders |
-| Payments | Stripe Checkout (hosted), Stripe Node SDK | PCI handled; Apple Pay and Google Pay; CAD |
-| Email | Resend plus React Email | Order, shipping and contact emails |
+| CMS | Sanity: Content Lake plus Studio embedded at `/studio`, `next-sanity`, `@sanity/image-url`, Sanity TypeGen | Owner-editable products, content, settings, tax table, and non-personal order documents |
+| Payments | Stripe **PaymentIntents** with the Payment Element and Express Checkout Element (`@stripe/stripe-js`, `@stripe/react-stripe-js`), Stripe Node SDK | Stripe is used **only for payment**: PCI handled by Stripe's iframes; Apple Pay and Google Pay; CAD. Tax, shipping and discounts are ours |
+| Accounts | Firebase Auth (email + password, email link, optional Google) with **session cookies** via `firebase-admin` | Customer accounts; the client SDK is used only for sign-in UI flows |
+| Private data | Firestore (profiles, addresses, carts, customer side of orders), `firebase-admin` on the server only, security rules tested with the emulator | The private store for everything personal (§9.8) |
+| Email | Resend plus React Email | Order, shipping, contact and account emails (verification, password reset and sign-in links are generated with the Admin SDK and sent by us, so no default Firebase emails go out); newsletter topic and segment |
 | Hosting | Vercel | Native Next.js; preview deploys |
 | Analytics | Vercel Analytics (cookieless) | No consent banner needed |
-| Tests | Vitest (unit), Playwright (e2e and screenshots), axe-core (accessibility) | §14 |
+| Tests | Vitest (unit), `@firebase/rules-unit-testing` with the Firestore emulator (rules), Playwright (e2e with the Firebase emulators, and screenshots), axe-core (accessibility) | §14 |
 | Quality | ESLint, Prettier, `tsc --noEmit` in CI | |
 
 ### 8.2 Data-source adapter (critical for speed)
@@ -367,29 +380,38 @@ app/
   (store)/products/[slug]/page.tsx
   (store)/search/page.tsx
   (store)/bag/page.tsx
+  (store)/checkout/page.tsx                  # our one-page checkout
   (store)/checkout/success/page.tsx
+  (store)/account/(public)/{sign-in,sign-up,forgot-password,action}/page.tsx
+  (store)/account/(private)/{page,orders,addresses,profile,preferences}/...
   (store)/order-status/page.tsx
   (store)/[page]/page.tsx                    # about, faq, privacy, and so on
   studio/[[...tool]]/page.tsx
   api/quote/route.ts                         # POST cart -> priced quote
-  api/checkout/route.ts                      # POST cart -> Stripe session URL
+  api/checkout/session/route.ts              # POST create or update pending order + PaymentIntent, returns quote
+  api/checkout/quote/route.ts                # POST re-quote (address, method, code)
+  api/auth/{signup,session,email-link,password-reset}/route.ts
+  api/account/{profile,addresses,orders,cart,preferences,password,delete}/route.ts
   api/stripe/webhook/route.ts
   api/revalidate/route.ts                    # Sanity webhook
   api/newsletter/route.ts
   api/contact/route.ts
   api/order-status/route.ts
   api/admin/ship-order/route.ts              # called by a Studio document action
+  api/admin/order-customer/route.ts          # Studio Customer panel (Firestore, falls back to Stripe)
   sitemap.ts, robots.ts, opengraph-image.tsx, not-found.tsx, error.tsx
 components/{ui,layout,product,cart,home,listing,content}/
 lib/
   data/{index.ts,local.ts,sanity.ts,types.ts,queries.ts}
   pricing/{engine.ts,engine.test.ts,types.ts}
   stripe.ts, env.ts (Zod-validated), format.ts (Intl en-CA CAD), seo.ts, rate-limit.ts
+  firebase/{admin.ts,client.ts}, auth/session.ts, geo.ts (provinces, postal codes), orders.ts, customer-orders.ts
   email/{send.ts,templates/*.tsx}
 sanity/
   sanity.config.ts, structure.ts, schemaTypes/*, actions/markShipped.ts, components/*
 scripts/
-  copy-catalog-images.ts, seed-sanity.ts, check-launch.ts, screenshots.ts
+  copy-catalog-images.ts, seed-sanity.ts, setup-resend.ts, check-launch.ts, screenshots.ts
+firestore.rules, firestore.indexes.json, firebase.json   # rules, indexes, emulator config
 e2e/*.spec.ts
 catalog/ (provided)
 CLAUDE.md
@@ -408,14 +430,25 @@ SANITY_REVALIDATE_SECRET=
 STRIPE_SECRET_KEY=
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
 STRIPE_WEBHOOK_SECRET=
-TAX_MODE=none                         # none | stripe
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+NEXT_PUBLIC_FIREBASE_APP_ID=
+NEXT_PUBLIC_AUTH_GOOGLE=              # 1 turns on "Continue with Google" (also enable it in the Firebase console)
+FIREBASE_ADMIN_PROJECT_ID=            # server only
+FIREBASE_ADMIN_CLIENT_EMAIL=          # server only
+FIREBASE_ADMIN_PRIVATE_KEY=           # server only; paste with literal \n, they are unescaped
+TAX_MODE=none                         # none | table
+GST_HST_NUMBER=                       # shown on receipts; required when TAX_MODE=table
 RESEND_API_KEY=
+RESEND_NEWSLETTER_TOPIC_ID=           # created by `npm run setup:resend`
+RESEND_NEWSLETTER_SEGMENT_ID=         # created by `npm run setup:resend`
 EMAIL_FROM="Glint & Thread <orders@example.ca>"
 OWNER_EMAIL=
 EMAIL_HASH_SALT=                      # long random string, server only
 DEV_DEFAULT_STOCK=10
 ```
-When Stripe keys are missing, the Checkout button renders disabled with "Checkout opens soon" and the API returns 503. When Resend is missing, emails are logged to the console.
+Behaviour without keys: no Stripe keys → `/checkout` shows "Checkout opens soon" and the checkout API returns 503; no Firebase keys → account links and pages are hidden and guest checkout still works (customer details then live only on the Stripe PaymentIntent); no Resend key → emails are logged to the console; no Sanity write token → orders are not stored. For local development and tests, the Firebase emulators are used through the standard `FIREBASE_AUTH_EMULATOR_HOST` and `FIRESTORE_EMULATOR_HOST` variables (plus `NEXT_PUBLIC_FIREBASE_AUTH_EMULATOR_HOST` for the browser).
 
 ### 8.5 Caching and revalidation
 - Listing and product pages are statically generated (`generateStaticParams` from the adapter) and revalidated on demand.
@@ -425,7 +458,7 @@ When Stripe keys are missing, the Checkout button renders disabled with "Checkou
 ## 9. Commerce logic
 
 ### 9.1 Pricing engine (`lib/pricing/engine.ts`, pure, framework-free, fully unit-tested)
-**Input:** `lines: {sku, qty}[]`, `promoCode?`, `email?`, canonical catalogue data (prices, categories, exclusions, stock), active promotions, promo codes, shipping settings.
+**Input:** `lines: {sku, qty}[]`, `promoCode?`, `email?`, `province?`, `shippingMethodId?`, canonical catalogue data (prices, categories, exclusions, stock), active promotions, promo codes, shipping settings, `taxMode` and the tax table.
 **Output:**
 ```ts
 type Quote = {
@@ -436,6 +469,11 @@ type Quote = {
   codeDiscountCents: number;             // promo code, applied after automatic
   discountedSubtotalCents: number;
   shippingOptions: { id; label; amountCents; eta; isFree: boolean }[];
+  shipping: { id; label; amountCents; isFree } | null;   // the selected method (null until chosen)
+  taxMode: 'none' | 'table';
+  taxLines: { code; label; ratePercent; amountCents }[]; // empty when TAX_MODE=none or no province yet
+  taxCents: number;
+  totalCents: number;                    // discounted subtotal + shipping + tax
   freeShipping: { thresholdCents; remainingCents; unlocked: boolean };
   messages: { type: 'info'|'warning'|'error'; text: string; sku?: string }[];  // e.g. stock reduced
 };
@@ -448,6 +486,8 @@ type Quote = {
 5. A unit receives at most one automatic promotion. Excluded products get none.
 6. Promo code applies to `merchandise − automatic` on non-excluded lines; validate active flag, first-order-only (no paid order with that email and code), and expiry.
 7. Free shipping uses `discountedSubtotalCents` against the threshold.
+8. Tax (`taxMode: 'table'` and a known province): for each component of the province, base = `discountedSubtotalCents` (+ the selected shipping amount when the component applies to shipping), `amount = Math.round(base * rate / 100)` computed in integers (rates carry up to three decimals, for example 9.975), rounded per component. `taxCents` is the sum of the components; `totalCents = discountedSubtotalCents + shipping + taxCents`. Unknown province or `taxMode: 'none'` gives no tax lines.
+9. Tax labels: GST is "GST 5%"; HST, PST, RST and QST carry the province, for example "HST (ON) 13%", "PST (BC) 7%", "QST (QC) 9.975%".
 
 **Required unit tests (exact expectations):**
 | Case | Expected |
@@ -463,57 +503,67 @@ type Quote = {
 | Discounted subtotal $59.99 | standard shipping 899, remaining 1 cent |
 | Discounted subtotal $60.00 | standard shipping 0, unlocked |
 | Requested qty 5, stock 2 | qty clamped to 2 + warning |
+| One order to each of the 13 provinces and territories, with and without shipping tax | exact cents per component and total (see tests) |
+| 3 socks in ON with WELCOME10 | tax on the discounted subtotal after the code |
+| Free-shipping order in BC | PST and GST on merchandise only (shipping is $0) |
 
-### 9.2 Checkout session (`POST /api/checkout`)
-1. Rate-limit by IP (10 per minute; in-memory LRU is acceptable for v1).
-2. Zod-validate `{ lines, promoCode? }`. Never accept prices from the client.
-3. Build the quote from canonical data. Abort with a friendly error if any line is unavailable.
-4. Create a **pending order** document in Sanity (order number `GT-` + 6 base32 characters, lines, quote snapshot, `status: 'pending'`).
-5. Create a Stripe Checkout Session:
-   - `mode: 'payment'`, `currency: 'cad'`, `locale: 'en'`.
-   - `line_items` with `price_data` (unit_amount from the quote, `product_data` with name `"{title} · {variant}"`, the image URL and metadata `sku`).
-   - If there are any discounts, create a one-off Stripe coupon (`amount_off` = automatic + code discount, `currency: 'cad'`, `duration: 'once'`, `max_redemptions: 1`, name "Bundle & promo savings") and pass it in `discounts`. (Stripe Checkout cannot combine `discounts` with `allow_promotion_codes`, which is why codes are ours.)
-   - `shipping_address_collection: { allowed_countries: ['CA'] }`, `phone_number_collection: { enabled: true }`.
-   - `shipping_options` built from the quote (standard free when unlocked, expedited, pickup if enabled) with `delivery_estimate`.
-   - `automatic_tax: { enabled: TAX_MODE === 'stripe' }`.
-   - `metadata: { orderId, orderNumber }`, `client_reference_id: orderId`, `expires_at` 30 minutes from now.
-   - `success_url: {SITE}/checkout/success?session_id={CHECKOUT_SESSION_ID}`, `cancel_url: {SITE}/bag?checkout=cancelled`.
-6. Return `{ url }`; the client redirects.
+### 9.2 Checkout session (`POST /api/checkout/session`)
+1. Rate-limit by IP (30 per minute; in-memory LRU is acceptable for v1).
+2. Zod-validate `{ lines, promoCode?, email, address?, shippingMethodId?, createAccount?, session? }`. Never accept prices or totals from the client.
+3. Build the quote from canonical data, including the province and the selected shipping method (§9.1). Abort with a friendly 409 if any line is unavailable or clamped.
+4. **First call** (no `session`): create the **pending order** in Sanity (non-personal: order number `GT-` + 6 base32 characters, lines, quote snapshot, amounts and tax lines, `shippingProvince`, `emailHash`, `status: 'pending'`) and the private `customerOrders/{id}` document in Firestore (§10.1), then create a **PaymentIntent**: `currency: 'cad'`, `amount` = the quote total, `automatic_payment_methods: { enabled: true }`, `metadata: { orderId, orderNumber }`, `receipt_email`, and `shipping` (name, phone, address) once known. Return `{ clientSecret, session: { orderId, paymentIntentId, token }, quote }`; `token` is an HMAC over the order and PaymentIntent IDs.
+5. **Later calls** (address, shipping method, code, email or bag changed) carry `session`: verify the token, check the order is still `pending` and the PaymentIntent has not succeeded, re-quote, **update the PaymentIntent amount**, shipping and `receipt_email`, update the pending Sanity order and the Firestore document, and return the new quote. The client then calls `elements.fetchUpdates()`.
+6. The client confirms with `stripe.confirmPayment({ elements, confirmParams: { return_url } })`, where `return_url` is `{SITE}/checkout/success?order={orderNumber}`.
+7. Stock and prices are re-checked at PaymentIntent creation (step 3), on every update, and again in the webhook (§9.3). With no Stripe keys the route returns 503.
+8. The hosted Checkout Session and the one-off coupon are not used.
 
 ### 9.3 Webhook (`POST /api/stripe/webhook`)
 - Verify the signature with the raw body. Store processed `event.id`s on the order to stay idempotent.
-- `checkout.session.completed` (and `checkout.session.async_payment_succeeded`): set the order to `paid`; save the shipping method and amount, tax, totals, the shipping province (for reporting) and the Stripe IDs (no customer name, email, phone or address: see §9.8); **decrement stock** per variant using Sanity patches with `dec`, guarded by an `order.stockDecremented` flag. If any stock goes below 0, set `needsReview: true` and email the owner. Send the order confirmation email.
-- `checkout.session.expired`: set `expired` (no stock change).
-- `charge.refunded`: set `refunded` or `partially_refunded`; the owner decides on restocking manually.
-- Always return 200 after logging unexpected events; return 400 only on a bad signature.
+- `payment_intent.succeeded`: confirm `amount_received` equals the order total (else set `needsReview`), set the order to `paid`; save the shipping method and amount, tax lines, totals, the shipping province and the Stripe IDs (no customer name, email, phone or address in Sanity: see §9.8); mirror the status to `customerOrders`; **decrement stock** per variant using Sanity patches with `dec`, guarded by an `order.stockDecremented` flag. If any stock goes below 0, set `needsReview: true` and email the owner. Send the order confirmation email (customer details come from Firestore, or from the PaymentIntent when Firebase is not configured). If the customer ticked "Create an account", send the account-setup email. Link the order to the customer's account when the buyer is signed in or has a verified account with the same email.
+- `payment_intent.payment_failed`: record the failure code on the order (status stays `pending`; no stock change; no customer email).
+- `payment_intent.canceled`: set `expired` (no stock change).
+- `charge.refunded`: set `refunded` or `partially_refunded` (matched through the PaymentIntent); the owner decides on restocking manually.
+- Return 400 only on a bad signature; return 200 for handled and unexpected events (logged); return **500 when processing a handled event fails, so Stripe retries** (handlers are idempotent on `event.id`).
 
 ### 9.4 Order lifecycle and fulfilment
 `pending → paid → shipped → delivered` (plus `expired`, `cancelled`, `refunded`, `partially_refunded`).
-Studio document action **"Mark as shipped"** asks for carrier (default Canada Post) and tracking number, then calls `/api/admin/ship-order` with the logged-in Studio user's Sanity token (verified server-side, §9.8), which updates the order, reads the customer's email from Stripe and sends the shipping email with a tracking link. The order form also shows a **Customer panel** (name, email, phone, address loaded live from Stripe through `/api/admin/order-customer`, same auth) and an "Open in Stripe" link. The Studio desk structure gives Orders their own section with filtered lists: Needs review, To ship, Shipped, All.
+Studio document action **"Mark as shipped"** asks for carrier (default Canada Post) and tracking number, then calls `/api/admin/ship-order` with the logged-in Studio user's Sanity token (verified server-side, §9.8), which updates the order and its `customerOrders` mirror (status and tracking show in the customer's account), reads the customer's email from Firestore (or the PaymentIntent) and sends the shipping email with a tracking link. The order form also shows a **Customer panel** (name, email, phone, address loaded live from Firestore `customerOrders` by `sanityOrderId` through `/api/admin/order-customer`, same auth, falling back to the Stripe PaymentIntent) and an "Open in Stripe" link. The Studio desk structure gives Orders their own section with filtered lists: Needs review, To ship, Shipped, All.
 
 ### 9.5 Inventory
 - Stock lives on each variant. `null` is untracked (development only). At launch every variant needs a number.
 - Low stock threshold is 3 (site setting). Sold-out variants stay visible but disabled; fully sold-out products sink to the end of listings and get the "Sold out" label.
-- No stock reservation during checkout in v1 (sessions expire in 30 minutes; oversells are flagged per §9.3).
+- No stock reservation during checkout in v1 (oversells are flagged per §9.3).
 
 ### 9.6 Emails (React Email, styled to match the brand: dark header band, serif wordmark, bone body)
-1. **Order confirmation:** order number, items with thumbnails, totals, shipping address, delivery estimate, help link.
+1. **Order confirmation:** order number, items with thumbnails, totals with each tax line by name and the GST/HST number when set, shipping address, delivery estimate, help link.
 2. **Shipping notification:** carrier, tracking link, items.
 3. **Owner new-order alert:** a plain summary with a Studio link.
 4. **Contact form** to the owner (reply-to set to the customer).
 5. **Newsletter welcome** with the WELCOME10 code.
+6. **Account emails** (generated with the Admin SDK, branded, sent through Resend): verify email, reset password, sign-in link, and "finish setting up your account" for guests who ticked Create an account. Links point to our own `/account/action` page.
 Every marketing email carries sender identification, a mailing address and a one-click unsubscribe (CASL).
 
 ### 9.8 Customer data and privacy (non-negotiable)
 Sanity's free plan only offers **public** datasets: anything stored there can be read by anyone who knows the project ID. So:
-- **No personal data in Sanity.** Customer names, emails, phone numbers, addresses and newsletter subscribers never go into Sanity documents. Stripe holds customer and address data; Resend holds subscribers.
-- Orders in Sanity hold only the order number, line snapshot, amounts, status, shipping province, tracking, Stripe IDs and `emailHash` (salted SHA-256 with a server-only `EMAIL_HASH_SALT`).
-- Confirmation and shipping emails read the address from the Stripe Checkout Session at send time.
+- **No personal data in Sanity.** Customer names, emails, phone numbers, addresses and newsletter subscribers never go into Sanity documents.
+- **Firestore is the private store** for profiles, addresses, carts and the customer side of orders (`customerOrders`). Access is by the Admin SDK on the server and by the signed-in customer under Firestore security rules (§10.1). **Resend** holds newsletter contacts. **Stripe** holds payment data and receives the shipping details and receipt email on the PaymentIntent (for payment and fraud checks); it is also the fallback source when Firebase is not configured.
+- Orders in Sanity hold only the order number, line snapshot, amounts and tax lines, status, shipping province, tracking, Stripe IDs and `emailHash` (salted SHA-256 with a server-only `EMAIL_HASH_SALT`).
+- Confirmation and shipping emails read the customer's details from Firestore (or the PaymentIntent) at send time.
 - Admin routes (`/api/admin/*`) authenticate the Studio user: the Studio sends the user's Sanity session token, and the server verifies it against the Sanity API (`/users/me`) and checks project membership. No shared secrets in Studio code.
+- **Account deletion (PIPEDA):** "Delete my account" removes the Firebase Auth user, the profile, addresses and cart, unsubscribes and removes the Resend contact, **anonymises** the customer's `customerOrders` (name, email, phone and address removed; order number, lines, totals, tax and dates kept because tax law requires sales records) and clears `emailHash` on the matching Sanity orders.
 - If the business later moves to a Sanity plan with private datasets, this can be revisited and documented in DECISIONS.md.
 
 ### 9.7 Newsletter (CASL)
-Form: email plus an **unchecked** consent checkbox: "Yes, email me about new drops and offers from Glint & Thread. Unsubscribe anytime." Add the contact to a Resend audience and record the consent (consent text version, timestamp, source) on the Resend contact. Never store subscribers in Sanity (§9.8). Double opt-in is recommended (on by default via a confirm link). The code is shown after confirmation.
+Form: email plus an **unchecked** consent checkbox: "Yes, email me about new drops and offers from Glint & Thread. Unsubscribe anytime." Resend replaced Audiences with global Contacts, Segments, Topics and Properties. On confirmed opt-in the contact gets the consent properties (`consent_text_version`, `consent_at`, `signup_source`, `confirmed_at`), is subscribed to the **Newsletter topic** and added to the **Newsletter subscribers segment** (`npm run setup:resend` creates them and prints the IDs); unsubscribing sets the topic to opt-out. Never store subscribers in Sanity (§9.8). Double opt-in is on by default via a confirm link. The code is shown after confirmation. Signed-in customers manage the same subscription on `/account/preferences`.
+
+### 9.9 Customer accounts (Firebase)
+- **Auth:** email + password, passwordless email link, and Google behind `NEXT_PUBLIC_AUTH_GOOGLE`. Email verification, password reset and sign-out. The server creates users and generates verification, reset and sign-in links with the Admin SDK and sends them through Resend with our templates; our `/account/action` page completes them with the client SDK (which is loaded on auth pages only). No FirebaseUI and no default Firebase styling or emails.
+- **Session:** after sign-in the client posts its ID token to `/api/auth/session`, which exchanges it for a **Firebase session cookie** (`createSessionCookie`, 5-day expiry, `httpOnly`, `secure` in production, `sameSite=lax`) read with `verifySessionCookie` in server components and route handlers. Sign-out revokes refresh tokens and clears the cookie. A non-sensitive `gt_signed_in` hint cookie lets the client know to sync the cart without loading the Firebase SDK.
+- **Pages:** overview; order history (list and detail with status, tracking, tax lines); saved addresses (add, edit, delete, default); profile (name, phone, password); marketing preferences; delete my account.
+- **Cart:** a signed-in customer's bag is stored in Firestore (`users/{uid}/cart/current`) and merged with the local bag on sign-in (union of lines, larger quantity wins), so it follows them across devices.
+- **Guest orders:** guest orders have `uid: null`. When someone later signs up (or signs in) and their email is **verified**, past guest orders with the same email are linked to the account. Guests who tick Create an account get a "finish setting up your account" email after payment.
+- **Header:** shows Account (hidden when Firebase is not configured).
+- Design: the same system as the rest of the site (§4), with the underline inputs and restyled controls.
 
 ## 10. Sanity data model (`sanity/schemaTypes`)
 | Type | Key fields |
@@ -525,11 +575,21 @@ Form: email plus an **unchecked** consent checkbox: "Yes, email me about new dro
 | `collection` | title, slug, mode (rule/manual), rule (tags[], maxPrice, departments[]), products (refs), heroImage, blurb |
 | `promotion` | title, type (`tiered_percent_category` / `buy_x_get_y_cheapest_free`), active, appliesTo (categories refs, exclude product refs), tiers[] or buyQty/getQty, badge text, startsAt/endsAt |
 | `promoCode` | code (uppercase, unique), type (`percent_off_order`), percentOff, firstOrderOnly, active, expiresAt, note |
-| `order` | orderNumber, status, lines (snapshot), amounts (subtotal, discounts, shipping, tax, total), shippingProvince, emailHash (SHA-256 of the lowercased email, for first-order code checks and order-status lookup), shippingMethod, carrier, trackingNumber, stripe IDs, processedEventIds[], stockDecremented, needsReview, notes, timestamps |
+| `order` | orderNumber, status, lines (snapshot), amounts (subtotal, discounts, shipping, tax, total), taxLines (code, label, rate, amount), shippingProvince, emailHash (SHA-256 of the lowercased email, for first-order code checks and order-status lookup), shippingMethod, carrier, trackingNumber, stripe IDs, processedEventIds[], stockDecremented, needsReview, notes, timestamps |
 | `careGuide` | title, slug, body (Portable Text); seed jewellery-care, textile-care, bag-care, tool-care |
 | `page` | title, slug, body (Portable Text), seo |
 | `homePage` (singleton) | announcement messages[], hero (eyebrow, headline, italic tail, sub, image, CTAs), edit products, department mosaic order, brand band, spotlight collection, offers band, story block, newsletter copy |
-| `siteSettings` (singleton) | store name, legal name, business address, contact email, shipping methods and threshold, low-stock threshold, returns policy summary, social links, default SEO, footer sign-off |
+| `siteSettings` (singleton) | store name, legal name, business address, contact email, shipping methods and threshold, **tax table** (per province: components with code, rate and applies-to-shipping flag), low-stock threshold, returns policy summary, social links, default SEO, footer sign-off |
+
+### 10.1 Firestore data model (private store, §9.8)
+| Path | Fields |
+|---|---|
+| `users/{uid}` | firstName, lastName, phone, marketingOptIn (+ consent record), createdAt |
+| `users/{uid}/addresses/{id}` | label, name, line1, line2, city, province, postalCode, phone, isDefault |
+| `users/{uid}/cart/current` | lines (sku, qty, snapshot), promoCode, updatedAt |
+| `customerOrders/{orderId}` | sanityOrderId, orderNumber, uid (nullable), email, name, phone, shippingAddress, stripePaymentIntentId, status, totals (with tax lines), lines (snapshot), carrier and trackingNumber, createdAt |
+
+`firestore.rules`: a signed-in user can read and write only their own `users/{uid}` tree (with field and size validation); `customerOrders` are readable only by the owning `uid` and **never writable from the client** (the server writes them with the Admin SDK); everything else is denied. `firestore.indexes.json` carries the indexes the queries need. Rules are unit-tested with `@firebase/rules-unit-testing` against the Firestore emulator, and deployed with `npm run deploy:rules`.
 
 Studio niceties: a custom price input (dollars ↔ cents), a margin badge on the product form, a "Needs attention" list (products with `verify` items, missing stock, `photoNote`), previews with images, and singletons pinned in the desk structure.
 
@@ -558,10 +618,11 @@ H1 "Small batches, honestly made to shine." Then three short sections: who we ar
 
 ## 12. Canadian compliance (build it in; the owner confirms the legal details)
 1. **Precious Metals Marking Act:** never describe plated items as gold or silver; use the tone words. Only say "stainless steel" where the packaging confirms it.
-2. **Competition Act:** no invented "was" prices; no drip pricing (all mandatory fees except sales tax visible before payment); no fake reviews or urgency.
+2. **Competition Act:** no invented "was" prices; no drip pricing (all mandatory fees visible before payment, and with `TAX_MODE=table` every tax line shown by name before the customer pays); no fake reviews or urgency.
+   **Sales tax:** charge GST/HST/PST/QST only once registered (`TAX_MODE=table`) and show the registration number on receipts.
 3. **Textile Labelling and Advertising Regulations:** consumer textile articles (socks, scarves, hats, pyjamas, leggings, headbands) need bilingual labels with fibre content and dealer identity. Listings show fibre content where known. Products with an unverified fibre `verify` item are flagged in Studio.
-4. **CASL:** express opt-in, unchecked box, consent record, sender ID, mailing address and unsubscribe in every commercial email.
-5. **PIPEDA privacy policy:** what is collected (order, contact and newsletter data), why, processors (Stripe, Sanity, Resend, Vercel), retention, access requests, contact. No third-party ad trackers in v1.
+4. **CASL:** express opt-in, unchecked box (sign-up, checkout and preferences), consent record, sender ID, mailing address and unsubscribe in every commercial email. Account and order emails are transactional.
+5. **PIPEDA privacy policy:** what is collected (account, order, contact and newsletter data), why, processors (Stripe, Google Firebase, Sanity, Resend, Vercel), retention, access and deletion requests (self-service account deletion, §9.8), contact. No third-party ad trackers in v1. Sales records are kept as tax law requires.
 6. **Quebec (Charter of the French Language):** v1 is English. All UI strings live in `messages/en-CA.json` through a tiny `t()` helper so `fr-CA` can be added. Before marketing to Quebec, add French.
 7. **Accessibility:** WCAG 2.1 AA target, plus an accessibility statement page.
 8. **Children's items** (bunny hat, cherry hair ties, mini elastics): no small-parts claims; warn "Not suitable for children under 3" where relevant until verified.
@@ -569,32 +630,33 @@ H1 "Small batches, honestly made to shine." Then three short sections: who we ar
 
 ## 13. SEO, performance, accessibility, security
 
-**SEO:** per-page `generateMetadata` (title template `%s | Glint & Thread`), canonical URLs, Open Graph images (product image on the mat, generated via `opengraph-image.tsx` for collections), JSON-LD (`Organization`, `WebSite` with SearchAction, `Product`, `BreadcrumbList`, `FAQPage`), `sitemap.ts` covering products, categories, collections and pages, and `robots.ts` disallowing `/studio`, `/api`, `/bag`, `/checkout`. Clean slugs. `alt` text required in the CMS.
+**SEO:** per-page `generateMetadata` (title template `%s | Glint & Thread`), canonical URLs, Open Graph images (product image on the mat, generated via `opengraph-image.tsx` for collections), JSON-LD (`Organization`, `WebSite` with SearchAction, `Product`, `BreadcrumbList`, `FAQPage`), `sitemap.ts` covering products, categories, collections and pages, and `robots.ts` disallowing `/studio`, `/api`, `/bag`, `/checkout`, `/account`. Clean slugs. `alt` text required in the CMS.
 
 **Performance:** server components by default; client components only for interactive islands (bag, selectors, filters, menus). No client-side data fetching for first paint. Fonts self-hosted via `next/font`. Images through `next/image` with exact `sizes`. JS budget: under 150 KB gzipped first-load on the PDP. Remove unused Radix packages. No carousels heavier than CSS scroll-snap.
 
 **Accessibility:** semantic landmarks, skip link, visible focus (`champagne-400` 2 px outline, offset 2 px), keyboard support for all menus, drawers, galleries and the zoom viewer; `aria-live` for bag updates; reduced motion; form labels and errors linked by `aria-describedby`; colour never the only signal (variant chips have text); axe-core with zero serious or critical issues.
 
-**Security:** Zod on every input; server-only tokens never imported in client code (`server-only` package); webhook signature checks (Stripe, Sanity); admin API routes authenticate the Studio user's Sanity token (never a shared secret bundled into Studio code); rate limits on checkout, newsletter, contact and order-status; honeypot on forms; security headers (CSP allowing Stripe and Sanity domains, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`); the order-status lookup requires order number + email (matched via `emailHash`) and returns status and tracking only.
+**Security:** Zod on every input; server-only tokens and `firebase-admin` never imported in client code (`server-only` package); Firebase session cookies (`httpOnly`, `secure`, `sameSite=lax`) verified server-side, with fresh sign-in required for password change and account deletion; Firestore security rules (§10.1) tested in CI; webhook signature checks (Stripe, Sanity); amounts are never trusted from the client (PaymentIntent amounts are set by the server); admin API routes authenticate the Studio user's Sanity token (never a shared secret bundled into Studio code); rate limits on checkout, auth, newsletter, contact and order-status; honeypot on forms; security headers (CSP allowing Stripe, Firebase Auth and Sanity domains, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`); the order-status lookup requires order number + email (matched via `emailHash`) and returns status and tracking only.
 
 ## 14. Definition of done
 
 ### 14.1 Functional
 - [ ] Every route in §5.3 renders with real catalogue data in `local` mode and in `sanity` mode.
 - [ ] Filters, sort, search, quick add, variant selection, bag drawer, promo code and free-shipping progress all work.
-- [ ] Stripe test purchase end to end: pending order → paid → stock decremented → confirmation email (or console log) → "Mark as shipped" → shipping email.
-- [ ] Expired session and refund webhooks update the order correctly; replaying a webhook is a no-op.
-- [ ] Pricing engine tests in §9.1 pass; `tsc`, ESLint and Vitest are clean.
+- [ ] Stripe test purchase end to end on `/checkout`: pending order → PaymentIntent → paid → stock decremented → confirmation email (or console log) → "Mark as shipped" → shipping email. Test cards: `4242 4242 4242 4242` succeeds, `4000 0027 6000 3184` requires 3-D Secure, `4000 0000 0000 0002` is declined.
+- [ ] Accounts: sign up → verify → checkout with a saved address → the order appears in `/account`; guest orders link after verification; delete account anonymises orders.
+- [ ] Failed, cancelled and refunded PaymentIntent webhooks update the order correctly; replaying a webhook is a no-op.
+- [ ] Pricing engine tests in §9.1 pass (including tax for every province); Firestore rules tests pass against the emulator; `tsc`, ESLint and Vitest are clean.
 
 ### 14.2 Design QA loop (mandatory, at least two passes)
-1. `npm run shots` (Playwright) captures Home, Jewellery department, Earrings category, a single-variant PDP (`oversized-open-heart-earrings`), a multi-option PDP (`suede-touch-pyjama-set`), bag drawer open with a sock bundle and earrings, search overlay, mobile menu, 404, About, at 390, 768, 1280 and 1440 px (full-page) into `/screenshots/<pass>/`.
+1. `npm run shots` (Playwright) captures Home, Jewellery department, Earrings category, a single-variant PDP (`oversized-open-heart-earrings`), a multi-option PDP (`suede-touch-pyjama-set`), bag drawer open with a sock bundle and earrings, search overlay, mobile menu, 404, About, **checkout** (all three sections), **account** pages and the **auth** pages, at 390, 768, 1280 and 1440 px (full-page) into `/screenshots/<pass>/`.
 2. Open every screenshot and review it against §4 (tokens, type, mats, spacing, anti-template rules, responsive rules). Write the findings to `screenshots/<pass>/REVIEW.md` as a checklist.
 3. Fix everything, re-shoot, re-review. Stop when a pass finds nothing above "nitpick".
 - [ ] Lighthouse mobile thresholds from §2 met on Home, Earrings and PDP.
 - [ ] axe: zero serious or critical issues on the same pages.
 
 ### 14.3 Launch gate (`npm run check:launch` must pass)
-Fails if: any variant has `stock` null; any `[[PLACEHOLDER]]` remains in pages or settings; legal name, address or contact email are missing; `STRIPE_SECRET_KEY` is a test key while `NODE_ENV=production`; `NEXT_PUBLIC_SITE_URL` is localhost; the Sanity webhook secret is unset; any product image lacks alt text. Warns (doesn't fail) on `photoNote` and unresolved `verify` items, listing them.
+Fails if: any variant has `stock` null; any `[[PLACEHOLDER]]` remains in pages or settings; legal name, address or contact email are missing; `STRIPE_SECRET_KEY` or the publishable key is a test key (or `STRIPE_WEBHOOK_SECRET` is unset) while `NODE_ENV=production`; `NEXT_PUBLIC_SITE_URL` is localhost; the Sanity webhook secret is unset; any product image lacks alt text; `EMAIL_HASH_SALT` is missing or the development default in production; any other env var still points at test, sandbox or local values in production (for example `onboarding@resend.dev`, Firebase emulator hosts); `TAX_MODE=table` with an empty `GST_HST_NUMBER`; Firebase is only partly configured, or the Firestore rules file differs from the deployed rules marker. Warns (doesn't fail) on `photoNote` and unresolved `verify` items, listing them.
 
 ## 15. Owner inputs still needed
 1. **Stock counts** per variant (fill `catalog/catalog.csv` → "Stock" column, or enter in Studio).
@@ -602,7 +664,9 @@ Fails if: any variant has `stock` null; any `[[PLACEHOLDER]]` remains in pages o
 3. **Verify items** listed per product (dimensions, fibre content, pack counts). The big ones: are the stainless pendants necklaces or threader earrings; bag materials, sizes and straps; sock fibre content.
 4. **Reshoot** (priority: bags, Everyday Hoops, Figaro necklaces, ear cuff, pouches, bunny hats). Spec: matte black seamless backdrop (no glossy table reflections), soft diffused window light, phone on a tripod, 4:5 portrait, product filling about 70 % of the frame, unboxed, three shots per product (front, detail, on-body or in-hand for scale), ≥ 2000 px on the long edge, consistent white balance.
 5. Legal business name, mailing address, contact email, domain, logo preference (the default is a typeset wordmark), and the About story.
-6. GST/HST registration status (sets `TAX_MODE`).
+6. GST/HST registration status (sets `TAX_MODE`) and the GST/HST number. With `table`, confirm each province's rates and the applies-to-shipping flags with an accountant.
+7. A **Firebase project** (Auth with email/password, email link and optionally Google enabled; Firestore in a Canadian region such as `northamerica-northeast1`; a service account for the Admin SDK) owned by the business. The build team transfers ownership at handover (see PROMPTS.md).
+8. Stripe account in the business's name: publishable and secret keys, and a webhook endpoint subscribed to `payment_intent.succeeded`, `payment_intent.payment_failed`, `payment_intent.canceled` and `charge.refunded`.
 
 ## 16. After launch (v2 backlog)
-French (`fr-CA`), customer accounts and order history, back-in-stock alerts, real reviews (post-purchase, verified only), gift wrap and notes, gift cards, Canada Post API live rates and label printing, US shipping, a lookbook, Instagram feed, abandoned-checkout emails (with consent).
+French (`fr-CA`), wishlists synced to the account, back-in-stock alerts, real reviews (post-purchase, verified only), gift wrap and notes, gift cards, Canada Post API live rates and label printing, US shipping, a lookbook, Instagram feed, abandoned-checkout emails (with consent).
