@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import { allocate, buildQuote, normaliseCode, percentOf } from './engine'
-import type { PricingVariant, Promotion, PromoCode, QuoteInput, ShippingSettings } from './types'
+import type {
+  PricingVariant,
+  Promotion,
+  PromoCode,
+  QuoteInput,
+  ShippingSettings,
+  TieredPercentPromotion,
+} from './types'
 
 // ---------- Fixtures mirroring catalog/products.json ----------
 
@@ -381,7 +388,11 @@ describe('automatic promotions', () => {
   it('gives each unit at most one promotion when promotions overlap', () => {
     const overlapping: Promotion[] = [
       promotions[0],
-      { ...promotions[0], id: 'socks-again', tiers: [{ minQty: 1, percentOff: 50 }] },
+      {
+        ...(promotions[0] as TieredPercentPromotion),
+        id: 'socks-again',
+        tiers: [{ minQty: 1, percentOff: 50 }],
+      },
     ]
     const q = quote([{ sku: 'SOCK-699', qty: 3 }], { promotions: overlapping })
     expect(q.automaticDiscountCents).toBe(419)

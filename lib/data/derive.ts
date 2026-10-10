@@ -330,14 +330,8 @@ export function tokenise(s: string): string[] {
 
 type Searchable = Pick<
   Product,
-  | 'title'
-  | 'tags'
-  | 'categoryTitle'
-  | 'departmentTitle'
-  | 'variants'
-  | 'categorySlug'
-  | 'departmentSlug'
->
+  'title' | 'tags' | 'categoryTitle' | 'departmentTitle' | 'categorySlug' | 'departmentSlug'
+> & { variants: { title: string }[] }
 
 /** Scores a product for a query: title 4, category/department 3, tag 2, variant 1. All terms must match. */
 export function searchScore(product: Searchable, query: string): number {
@@ -379,6 +373,57 @@ export function searchList<T extends Searchable>(
     .sort((a, b) => b.s - a.s || a.i - b.i)
     .map((x) => x.p)
   return typeof limit === 'number' ? scored.slice(0, limit) : scored
+}
+
+// ---------- Search index (client overlay) ----------
+
+export interface SearchItem {
+  slug: string
+  title: string
+  tags: string[]
+  categoryTitle: string
+  departmentTitle: string
+  categorySlug: string
+  departmentSlug: string
+  variants: { title: string }[]
+  priceCents: number
+  minPriceCents: number
+  maxPriceCents: number
+  image: {
+    src: string
+    alt: string
+    width: number
+    height: number
+    blurDataURL?: string
+    lowRes: boolean
+  } | null
+}
+
+export function toSearchItem(p: Product | ProductCard): SearchItem {
+  const img = p.images[0]
+  return {
+    slug: p.slug,
+    title: p.title,
+    tags: p.tags,
+    categoryTitle: p.categoryTitle,
+    departmentTitle: p.departmentTitle,
+    categorySlug: p.categorySlug,
+    departmentSlug: p.departmentSlug,
+    variants: p.variants.map((v) => ({ title: v.title })),
+    priceCents: p.priceCents,
+    minPriceCents: p.minPriceCents,
+    maxPriceCents: p.maxPriceCents,
+    image: img
+      ? {
+          src: img.src,
+          alt: img.alt,
+          width: img.width,
+          height: img.height,
+          blurDataURL: img.blurDataURL,
+          lowRes: img.lowRes,
+        }
+      : null,
+  }
 }
 
 // ---------- Cards ----------

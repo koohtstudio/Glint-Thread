@@ -18,3 +18,11 @@ One line each: decision, then reason.
 - Content page copy lives in `content/*.ts` as a small markdown dialect converted to Portable Text, so local mode and the Sanity seed share one source.
 - Pricing engine marks the paying units of a buy-x-get-y group as promoted too, so overlapping promotions can never reuse them (PRD 9.1 rule 5).
 - First-order-only codes (WELCOME10) need an email in the bag; checkout passes it to Stripe as customer_email so the checked email is the one used, and the webhook re-checks redemptions.
+- Radix primitives are installed as individual @radix-ui/react-* packages (dialog, accordion, slot, navigation-menu, visually-hidden) instead of the radix-ui umbrella, so only used primitives ship (PRD 13 performance).
+- Desktop department nav and mega menu show from 1280 px (xl); below that the header uses the menu sheet, because seven nav items plus a centred wordmark do not fit at 1024 px without crowding.
+- Mega menu uses Radix NavigationMenu (120 ms hover intent, click and keyboard, Escape and outside click close it, route change resets it).
+- Instant search loads a compact static index (`/api/search-index`) once per visit and searches client-side with the same scorer as the server, so results appear without a request per keystroke.
+- Section reveals use `motion` with LazyMotion (features loaded async); hero line reveals and the image settle are pure CSS so they never wait for hydration or delay LCP.
+- Bag lines keep a snapshot (title, image, price) for instant rendering; the server quote replaces totals as soon as it returns.
+- The footer newsletter column links to the home newsletter band on the home page instead of repeating the form.
+- `next/image` uses `preload` instead of the deprecated `priority` prop (Next 16).

@@ -339,3 +339,182 @@
     transform: none !important;
   }
 }
+
+/* Radix-driven enter and exit animations (PRD 4.7): 350ms slides, 250ms accordions. */
+@layer components {
+  .accordion-content[data-state='open'] {
+    animation: accordion-down 250ms var(--ease-gallery);
+  }
+  .accordion-content[data-state='closed'] {
+    animation: accordion-up 250ms var(--ease-gallery);
+  }
+  .sheet-overlay[data-state='open'] {
+    animation: fade-in 350ms var(--ease-gallery);
+  }
+  .sheet-overlay[data-state='closed'] {
+    animation: fade-out 250ms var(--ease-gallery);
+  }
+  .sheet-right[data-state='open'] {
+    animation: slide-in-right 350ms var(--ease-gallery);
+  }
+  .sheet-right[data-state='closed'] {
+    animation: slide-out-right 300ms var(--ease-gallery);
+  }
+  .sheet-left[data-state='open'] {
+    animation: slide-in-left 350ms var(--ease-gallery);
+  }
+  .sheet-left[data-state='closed'] {
+    animation: slide-out-left 300ms var(--ease-gallery);
+  }
+  .sheet-bottom[data-state='open'] {
+    animation: slide-in-bottom 350ms var(--ease-gallery);
+  }
+  .sheet-bottom[data-state='closed'] {
+    animation: slide-out-bottom 300ms var(--ease-gallery);
+  }
+  .toast-in {
+    animation: toast-in 350ms var(--ease-gallery);
+  }
+  .fade-in {
+    animation: fade-in 350ms var(--ease-gallery);
+  }
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+}
+@keyframes slide-out-right {
+  to {
+    transform: translateX(100%);
+  }
+}
+@keyframes slide-in-left {
+  from {
+    transform: translateX(-100%);
+  }
+}
+@keyframes slide-out-left {
+  to {
+    transform: translateX(-100%);
+  }
+}
+@keyframes slide-in-bottom {
+  from {
+    transform: translateY(100%);
+  }
+}
+@keyframes slide-out-bottom {
+  to {
+    transform: translateY(100%);
+  }
+}
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* Hero (PRD 4.7): headline lines reveal with a 70ms stagger; image settles from 1.04 to 1 over 1.6s. CSS-only so it never waits for hydration. */
+@keyframes hero-line {
+  from {
+    opacity: 0;
+    transform: translateY(0.35em);
+  }
+}
+@keyframes hero-settle {
+  from {
+    transform: scale(1.04);
+  }
+}
+.hero-line {
+  display: block;
+  animation: hero-line 900ms var(--ease-gallery) both;
+}
+.hero-settle {
+  animation: hero-settle 1.6s var(--ease-gallery) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-line {
+    animation: fade-in 150ms linear both;
+  }
+  .hero-settle {
+    animation: none;
+  }
+  .sheet-right[data-state],
+  .sheet-left[data-state],
+  .sheet-bottom[data-state],
+  .toast-in {
+    animation-name: fade-in;
+  }
+  .sheet-right[data-state='closed'],
+  .sheet-left[data-state='closed'],
+  .sheet-bottom[data-state='closed'] {
+    animation-name: fade-out;
+  }
+}
+
+@layer components {
+  .search-panel[data-state='open'] {
+    animation: slide-in-top 350ms var(--ease-gallery);
+  }
+  .search-panel[data-state='closed'] {
+    animation: slide-out-top 250ms var(--ease-gallery);
+  }
+  .mega-content[data-state='open'] {
+    animation: fade-in 250ms var(--ease-gallery);
+  }
+  .mega-viewport {
+    transition: height 300ms var(--ease-gallery);
+  }
+  .mega-viewport[data-state='open'] {
+    animation: fade-in 200ms var(--ease-gallery);
+  }
+  .mega-viewport[data-state='closed'] {
+    animation: fade-out 150ms var(--ease-gallery);
+  }
+}
+@keyframes slide-in-top {
+  from {
+    transform: translateY(-100%);
+  }
+}
+@keyframes slide-out-top {
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+/* A link whose underline lives on an inner span, so the hit area can be 44px tall. */
+.link-host:hover .link-anim::after,
+.link-host:focus-visible .link-anim::after {
+  transform: scaleX(1);
+}
