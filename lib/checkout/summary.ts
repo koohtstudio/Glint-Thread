@@ -10,6 +10,8 @@ export interface ConfirmationView {
   email: string | null
   /** succeeded: paid; processing: bank debits and the like; failed: back to checkout. */
   state: 'succeeded' | 'processing' | 'failed'
+  /** False when only the PaymentIntent is known (no order store): show the total alone. */
+  detailed: boolean
   items: { title: string; qty: number; totalCents: number }[]
   subtotalCents: number
   discountCents: number
@@ -53,6 +55,7 @@ export async function loadConfirmation(
     if (fs)
       return {
         ...base,
+        detailed: true,
         items: fs.lines.map((l) => ({
           title: itemTitle(l.title, l.variantTitle),
           qty: l.qty,
@@ -68,6 +71,7 @@ export async function loadConfirmation(
     if (order)
       return {
         ...base,
+        detailed: true,
         items: order.lines.map((l) => ({
           title: itemTitle(l.title, l.variantTitle),
           qty: l.qty,
@@ -82,6 +86,7 @@ export async function loadConfirmation(
       }
     return {
       ...base,
+      detailed: false,
       items: [],
       subtotalCents: pi.amount,
       discountCents: 0,

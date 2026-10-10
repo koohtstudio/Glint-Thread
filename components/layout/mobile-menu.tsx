@@ -7,6 +7,7 @@ import type { Nav } from '@/lib/nav'
 import { useUi } from '@/lib/ui-store'
 import { cx } from '@/lib/cx'
 import { t } from '@/lib/i18n'
+import { accountsConfigured } from '@/lib/public-env'
 import { Sheet } from '@/components/ui/sheet'
 import { PlusIcon, SearchIcon } from '@/components/ui/icons'
 
@@ -126,6 +127,13 @@ export function MobileMenu({ nav }: { nav: Nav }) {
         </nav>
 
         <ul className="mt-auto grid grid-cols-2 gap-x-4 pt-10">
+          {accountsConfigured ? (
+            <li>
+              <Link href="/account" className="flex min-h-11 items-center text-[13px] text-bone-50">
+                {t('nav.account')}
+              </Link>
+            </li>
+          ) : null}
           {FOOTER_LINKS.map((l) => (
             <li key={l.href}>
               <Link href={l.href} className="flex min-h-11 items-center text-[13px] text-bone-300">

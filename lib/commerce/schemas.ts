@@ -32,6 +32,8 @@ export const checkoutSessionSchema = z.object({
   email: z.email().max(254).optional().nullable().or(z.literal('')),
   createAccount: z.boolean().optional().default(false),
   address: checkoutAddressSchema.optional().nullable(),
+  /** The province alone, when the full address is not known yet (wallet sheets share it first). */
+  province,
   shippingMethodId: z.string().trim().max(40).optional().nullable(),
   /** Present on updates: proves the caller created the checkout. */
   session: z

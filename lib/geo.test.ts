@@ -4,6 +4,7 @@ import {
   normalisePhone,
   normalisePostalCode,
   postalCodeMatchesProvince,
+  provinceCodeFrom,
   provinceName,
 } from './geo'
 
@@ -13,6 +14,16 @@ describe('provinces', () => {
     expect(provinceName('qc')).toBe('Quebec')
     expect(provinceName('ZZ')).toBe('ZZ')
     expect(provinceName(null)).toBe('')
+  })
+
+  it('resolves a code or a name, with or without accents, to the code (wallet sheets send either)', () => {
+    expect(provinceCodeFrom('on')).toBe('ON')
+    expect(provinceCodeFrom('Québec')).toBe('QC')
+    expect(provinceCodeFrom(' british columbia ')).toBe('BC')
+    expect(provinceCodeFrom('Ontario')).toBe('ON')
+    expect(provinceCodeFrom('Texas')).toBeNull()
+    expect(provinceCodeFrom('')).toBeNull()
+    expect(provinceCodeFrom(undefined)).toBeNull()
   })
 })
 

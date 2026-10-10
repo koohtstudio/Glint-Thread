@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { connection } from 'next/server'
 import { Suspense } from 'react'
 import { loadConfirmation } from '@/lib/checkout/summary'
+import { env } from '@/lib/env'
 import { formatMoney } from '@/lib/format'
 import { pageMetadata } from '@/lib/seo'
 import { t } from '@/lib/i18n'
@@ -19,6 +21,8 @@ async function Confirmation({
 }: {
   searchParams: PageProps<'/checkout/success'>['searchParams']
 }) {
+  // Everything here is per-request (the PaymentIntent is retrieved with the secret key).
+  await connection()
   const sp = await searchParams
   const pick = (k: string) => (typeof sp[k] === 'string' ? (sp[k] as string) : '')
   const view =
@@ -92,44 +96,55 @@ async function Confirmation({
           {t('success.summary')}{' '}
           <span className="tabular ml-2 text-bone-50">{view.orderNumber}</span>
         </h2>
-        <ul className="mt-6 divide-y divide-line border-y border-line">
-          {view.items.map((item, i) => (
-            <li key={i} className="flex justify-between gap-4 py-3 text-[14px]">
-              <span>
-                {item.title} <span className="tabular text-bone-500">× {item.qty}</span>
-              </span>
-              <span className="price">{formatMoney(item.totalCents)}</span>
-            </li>
-          ))}
-        </ul>
+        {view.detailed ? (
+          <ul className="mt-6 divide-y divide-line border-y border-line">
+            {view.items.map((item, i) => (
+              <li key={i} className="flex justify-between gap-4 py-3 text-[14px]">
+                <span>
+                  {item.title} <span className="tabular text-bone-500">× {item.qty}</span>
+                </span>
+                <span className="price">{formatMoney(item.totalCents)}</span>
+              </li>
+            ))}
+          </ul>
+        ) : null}
         <dl className="mt-4 space-y-2 text-[14px]">
-          <div className="flex justify-between">
-            <dt className="text-bone-300">{t('bag.subtotal')}</dt>
-            <dd className="price">{formatMoney(view.subtotalCents)}</dd>
-          </div>
-          {view.discountCents ? (
-            <div className="flex justify-between">
-              <dt className="text-bone-300">{t('success.discount')}</dt>
-              <dd className="price">{`−${formatMoney(view.discountCents)}`}</dd>
-            </div>
+          {view.detailed ? (
+            <>
+              <div className="flex justify-between">
+                <dt className="text-bone-300">{t('bag.subtotal')}</dt>
+                <dd className="price">{formatMoney(view.subtotalCents)}</dd>
+              </div>
+              {view.discountCents ? (
+                <div className="flex justify-between">
+                  <dt className="text-bone-300">{t('success.discount')}</dt>
+                  <dd className="price">{`−${formatMoney(view.discountCents)}`}</dd>
+                </div>
+              ) : null}
+              <div className="flex justify-between">
+                <dt className="text-bone-300">{t('success.shipping')}</dt>
+                <dd className="price">
+                  {view.shippingCents ? formatMoney(view.shippingCents) : t('checkout.free')}
+                </dd>
+              </div>
+              {view.taxLines.map((line) => (
+                <div key={`${line.code}-${line.ratePercent}`} className="flex justify-between">
+                  <dt className="text-bone-300">{line.label}</dt>
+                  <dd className="price">{formatMoney(line.amountCents)}</dd>
+                </div>
+              ))}
+            </>
           ) : null}
-          <div className="flex justify-between">
-            <dt className="text-bone-300">{t('success.shipping')}</dt>
-            <dd className="price">
-              {view.shippingCents ? formatMoney(view.shippingCents) : t('checkout.free')}
-            </dd>
-          </div>
-          {view.taxLines.map((line) => (
-            <div key={`${line.code}-${line.ratePercent}`} className="flex justify-between">
-              <dt className="text-bone-300">{line.label}</dt>
-              <dd className="price">{formatMoney(line.amountCents)}</dd>
-            </div>
-          ))}
           <div className="flex justify-between border-t border-line pt-3 text-[16px]">
             <dt>{view.state === 'succeeded' ? t('success.paid') : t('success.total')}</dt>
             <dd className="price">{formatMoney(view.totalCents)}</dd>
           </div>
         </dl>
+        {view.detailed && view.taxLines.length && env.GST_HST_NUMBER ? (
+          <p className="mt-4 text-[12px] text-bone-500">
+            {t('checkout.gstHst', { number: env.GST_HST_NUMBER })}
+          </p>
+        ) : null}
       </section>
     </div>
   )

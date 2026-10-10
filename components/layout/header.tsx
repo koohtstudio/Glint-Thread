@@ -9,8 +9,9 @@ import type { Nav, NavDepartment } from '@/lib/nav'
 import { useCart, selectCount } from '@/lib/cart/store'
 import { useUi } from '@/lib/ui-store'
 import { cx } from '@/lib/cx'
+import { accountsConfigured } from '@/lib/public-env'
 import { t } from '@/lib/i18n'
-import { BagIcon, MenuIcon, SearchIcon } from '@/components/ui/icons'
+import { BagIcon, MenuIcon, SearchIcon, UserIcon } from '@/components/ui/icons'
 import { Wordmark } from './wordmark'
 
 /**
@@ -115,6 +116,17 @@ export function Header({ nav }: { nav: Nav }) {
             <SearchIcon />
             <span className="hidden xl:inline">{t('nav.search')}</span>
           </button>
+          {accountsConfigured ? (
+            <Link
+              href="/account"
+              className="hidden h-11 items-center gap-2 px-2 text-[13px] font-medium text-bone-50 sm:flex"
+              aria-label={t('nav.account')}
+              aria-current={pathname.startsWith('/account') ? 'page' : undefined}
+            >
+              <UserIcon />
+              <span className="hidden xl:inline">{t('nav.account')}</span>
+            </Link>
+          ) : null}
           <button
             type="button"
             onClick={openBag}

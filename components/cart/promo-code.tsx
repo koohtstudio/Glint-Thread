@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import { useCart } from '@/lib/cart/store'
 import { t } from '@/lib/i18n'
 import { cx } from '@/lib/cx'
@@ -12,6 +12,7 @@ export function PromoCode() {
   const email = useCart((s) => s.email)
   const quote = useCart((s) => s.quote)
   const setPromo = useCart((s) => s.setPromo)
+  const uid = useId()
   const [open, setOpen] = useState(Boolean(promoCode))
   const [code, setCode] = useState(promoCode ?? '')
   const [mail, setMail] = useState(email ?? '')
@@ -26,7 +27,7 @@ export function PromoCode() {
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        aria-controls="promo-panel"
+        aria-controls={`${uid}-promo-panel`}
         className="flex min-h-12 w-full items-center justify-between text-[14px] text-bone-300 hover:text-bone-50"
       >
         {t('bag.haveCode')}
@@ -35,7 +36,7 @@ export function PromoCode() {
           className={cx('transition-transform duration-250 ease-gallery', open && 'rotate-45')}
         />
       </button>
-      <div id="promo-panel" hidden={!open} className="pb-4">
+      <div id={`${uid}-promo-panel`} hidden={!open} className="pb-4">
         <form
           className="flex items-end gap-3"
           onSubmit={(e) => {
@@ -44,17 +45,17 @@ export function PromoCode() {
           }}
         >
           <div className="flex-1">
-            <label htmlFor="promo-code" className="eyebrow">
+            <label htmlFor={`${uid}-promo-code`} className="eyebrow">
               {t('bag.codeLabel')}
             </label>
             <input
-              id="promo-code"
+              id={`${uid}-promo-code`}
               value={code}
               onChange={(e) => setCode(e.target.value.toUpperCase())}
               autoComplete="off"
               autoCapitalize="characters"
               spellCheck={false}
-              aria-describedby={codeMessage ? 'promo-message' : undefined}
+              aria-describedby={codeMessage ? `${uid}-promo-message` : undefined}
               className="h-11 w-full border-b border-line-strong bg-transparent text-[15px] tracking-[0.06em] uppercase outline-offset-4 focus:border-champagne-400"
             />
           </div>
@@ -86,17 +87,17 @@ export function PromoCode() {
               setPromo(code || promoCode, mail || null)
             }}
           >
-            <label htmlFor="promo-email" className="eyebrow">
+            <label htmlFor={`${uid}-promo-email`} className="eyebrow">
               {t('bag.codeEmailLabel')}
             </label>
             <div className="flex items-end gap-3">
               <input
-                id="promo-email"
+                id={`${uid}-promo-email`}
                 type="email"
                 value={mail}
                 onChange={(e) => setMail(e.target.value)}
                 autoComplete="email"
-                aria-describedby="promo-email-hint"
+                aria-describedby={`${uid}-promo-email-hint`}
                 className="h-11 w-full border-b border-line-strong bg-transparent text-[15px] outline-offset-4 focus:border-champagne-400"
               />
               <button
@@ -106,14 +107,14 @@ export function PromoCode() {
                 {t('bag.codeApply')}
               </button>
             </div>
-            <p id="promo-email-hint" className="mt-2 text-[13px] text-bone-500">
+            <p id={`${uid}-promo-email-hint`} className="mt-2 text-[13px] text-bone-500">
               {t('bag.codeEmailHint')}
             </p>
           </form>
         ) : null}
         {codeMessage && promoCode ? (
           <p
-            id="promo-message"
+            id={`${uid}-promo-message`}
             role="status"
             className={cx(
               'mt-3 text-[13px]',

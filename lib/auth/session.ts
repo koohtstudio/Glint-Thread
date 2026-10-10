@@ -1,6 +1,7 @@
 import 'server-only'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { connection } from 'next/server'
 import { adminAuth, firebaseConfigured } from '@/lib/firebase/admin'
 import { publicEnv } from '@/lib/public-env'
 
@@ -84,6 +85,12 @@ export async function clearSessionCookies() {
 /** The signed-in customer, or null. Checks revocation and reads the live user record (email verification). */
 export async function getSessionUser(): Promise<SessionUser | null> {
   if (!firebaseConfigured()) return null
+  // Token checks read the clock; this makes the render request-time before they run (Cache Components).
+  try {
+    await connection()
+  } catch {
+    /* outside a render (route handlers are always request-time) */
+  }
   const cookie = (await cookies()).get(SESSION_COOKIE)?.value
   if (!cookie) return null
   try {

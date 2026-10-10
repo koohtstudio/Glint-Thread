@@ -10,7 +10,6 @@ import { env, features } from '@/lib/env'
  * firebase-admin is never imported from client code: the `server-only` import above enforces it.
  */
 const APP_NAME = 'glint-and-thread'
-let firestoreReady = false
 
 export function firebaseConfigured(): boolean {
   return features.firebaseAdmin
@@ -49,10 +48,16 @@ export function adminAuth(): Auth {
 
 export function adminDb(): Firestore {
   const db = getFirestore(adminApp())
-  if (!firestoreReady) {
-    // Optional fields are simply left out of documents.
-    db.settings({ ignoreUndefinedProperties: true })
-    firestoreReady = true
+  const g = globalThis as { __gtFirestoreReady?: boolean }
+  if (!g.__gtFirestoreReady) {
+    g.__gtFirestoreReady = true
+    try {
+      // Optional fields are simply left out of documents. `settings()` may run once per Firestore instance, and
+      // dev hot reloads or separately bundled routes can share it, hence the guard and the try.
+      db.settings({ ignoreUndefinedProperties: true })
+    } catch {
+      /* already configured by another module instance */
+    }
   }
   return db
 }

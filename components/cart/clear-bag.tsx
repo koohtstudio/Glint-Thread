@@ -8,7 +8,14 @@ export function ClearBag() {
   const hydrated = useCart((s) => s.hydrated)
   const clear = useCart((s) => s.clear)
   useEffect(() => {
-    if (hydrated) clear()
+    if (!hydrated) return
+    clear()
+    try {
+      // The finished checkout's PaymentIntent must not be picked up by the next one.
+      window.sessionStorage.removeItem('gt-checkout-v1')
+    } catch {
+      /* private mode */
+    }
   }, [hydrated, clear])
   return null
 }

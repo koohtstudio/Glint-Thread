@@ -204,6 +204,8 @@ function customerOrderFromQuote(args: {
 export interface PendingOrderInput {
   quote: Quote
   customer: CustomerDetails
+  /** Province for reporting and tax when only it is known (no full address yet). */
+  province?: string | null
   uid: string | null
   createAccount: boolean
 }
@@ -252,7 +254,7 @@ export async function createPendingOrder(input: PendingOrderInput): Promise<Pend
       promoCode: quote.promoCode?.applied ? quote.promoCode.code : null,
       quoteSnapshot: JSON.stringify(quote),
       emailHash: customer.email ? hashEmail(customer.email) : null,
-      shippingProvince: customer.address?.province ?? null,
+      shippingProvince: input.province ?? customer.address?.province ?? null,
       shippingMethod: quote.shipping?.label ?? null,
       shippingEta: quote.shipping?.eta ?? null,
       processedEventIds: [],
@@ -294,7 +296,7 @@ export async function updatePendingOrder(id: string, input: PendingOrderInput) {
         promoCode: quote.promoCode?.applied ? quote.promoCode.code : null,
         quoteSnapshot: JSON.stringify(quote),
         emailHash: customer.email ? hashEmail(customer.email) : null,
-        shippingProvince: customer.address?.province ?? null,
+        shippingProvince: input.province ?? customer.address?.province ?? null,
         shippingMethod: quote.shipping?.label ?? null,
         shippingEta: quote.shipping?.eta ?? null,
         updatedAt: now(),

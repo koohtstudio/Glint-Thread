@@ -59,7 +59,7 @@ function FieldShell({
 }
 
 const inputBase =
-  'h-12 w-full rounded-none border-0 border-b bg-transparent px-0 text-base transition-[border-color] duration-200 outline-offset-4 focus:border-champagne-400'
+  'h-12 w-full rounded-none border-0 border-b bg-transparent px-0 text-base transition-[border-color] duration-200 focus:border-b-2 focus:border-champagne-400 focus-visible:outline-none'
 
 function describedBy(id: string, hint?: string, error?: string | null) {
   return (
@@ -137,7 +137,7 @@ export function Textarea({ label, hint, error, id, className, ...rest }: Textare
         aria-invalid={error ? true : undefined}
         aria-describedby={describedBy(fieldId, hint, error)}
         className={cx(
-          'min-h-36 w-full resize-y rounded-none border-0 border-b border-line-strong bg-transparent px-0 py-3 text-base leading-relaxed outline-offset-4 focus:border-champagne-400',
+          'min-h-36 w-full resize-y rounded-none border-0 border-b border-line-strong bg-transparent px-0 py-3 text-base leading-relaxed focus:border-b-2 focus:border-champagne-400 focus-visible:outline-none',
           error && 'border-error',
           className,
         )}

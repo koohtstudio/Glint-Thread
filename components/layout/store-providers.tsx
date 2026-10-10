@@ -2,6 +2,7 @@
 
 import type { ReactNode } from 'react'
 import type { Nav } from '@/lib/nav'
+import { useAccountCartSync } from '@/lib/cart/use-account-cart-sync'
 import { useQuoteSync } from '@/lib/cart/use-quote-sync'
 import { MotionProvider } from '@/components/ui/motion'
 import { Toaster } from '@/components/ui/toaster'
@@ -13,6 +14,7 @@ import { SearchOverlay } from './search-overlay'
 
 function QuoteSync() {
   useQuoteSync()
+  useAccountCartSync()
   return null
 }
 

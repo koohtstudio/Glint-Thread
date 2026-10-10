@@ -22,6 +22,20 @@ export const PROVINCES: Province[] = [
 
 export const PROVINCE_CODES = PROVINCES.map((p) => p.code)
 
+/** A province code ("on", "ON") or name ("Québec", "quebec") to its code; null when it is not a Canadian province. */
+export function provinceCodeFrom(input: string | null | undefined): string | null {
+  if (!input) return null
+  const upper = input.trim().toUpperCase()
+  if (PROVINCE_CODES.includes(upper)) return upper
+  const fold = (s: string) =>
+    s
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .trim()
+  return PROVINCES.find((p) => fold(p.name) === fold(input))?.code ?? null
+}
+
 export function provinceName(code: string | null | undefined): string {
   return PROVINCES.find((p) => p.code === code?.toUpperCase())?.name ?? code ?? ''
 }

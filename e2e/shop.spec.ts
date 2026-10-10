@@ -81,16 +81,22 @@ test.describe('shopping journey', () => {
       '−$11.99',
     )
 
-    // No Stripe keys in this environment: checkout is disabled and says so.
+    // Checkout is enabled when Stripe is configured; without keys, explain that it is not ready.
     const checkout = drawer.getByTestId('checkout-button')
-    await expect(checkout).toBeDisabled()
-    await expect(checkout).toHaveText('Checkout opens soon')
+    const checkoutHref = await checkout.getAttribute('href')
+    if (checkoutHref) {
+      await expect(checkout).toHaveAttribute('href', '/checkout')
+      await expect(checkout).toHaveText('Checkout')
+    } else {
+      await expect(checkout).toBeDisabled()
+      await expect(checkout).toHaveText('Checkout opens soon')
+    }
 
-    // The API agrees: checkout without keys is a 503.
-    const res = await page.request.post('/api/checkout', {
-      data: { lines: [{ sku: 'GT-EAR-001', qty: 1 }] },
+    // Invalid input is rejected before any pending order or PaymentIntent can be created.
+    const res = await page.request.post('/api/checkout/session', {
+      data: {},
     })
-    expect(res.status()).toBe(503)
+    expect(res.status()).toBe(400)
   })
 
   test('filters are shareable and back-button safe', async ({ page }) => {

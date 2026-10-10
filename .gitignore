@@ -57,3 +57,5 @@ firestore-debug.log
 ui-debug.log
 firebase-debug.log
 .firebase/
+/.next-qa/
+/.next-e2e/

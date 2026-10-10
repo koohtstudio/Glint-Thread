@@ -15,6 +15,10 @@ const eslintConfig = defineConfig([
   },
   globalIgnores([
     '.next/**',
+    '.next-qa/**',
+    '.next-e2e/**',
+    '_smoke*.mjs',
+    'public/fonts/**',
     'out/**',
     'build/**',
     'next-env.d.ts',

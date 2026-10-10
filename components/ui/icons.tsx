@@ -10,6 +10,7 @@ import {
   Plus,
   Search,
   ShoppingBag,
+  User,
   X,
   type LucideProps,
 } from 'lucide-react'
@@ -19,6 +20,7 @@ const base = { size: 20, strokeWidth: 1.5, 'aria-hidden': true, focusable: false
 type IconProps = Omit<LucideProps, 'ref'>
 
 export const SearchIcon = (p: IconProps) => <Search {...base} {...p} />
+export const UserIcon = (p: IconProps) => <User {...base} {...p} />
 export const BagIcon = (p: IconProps) => <ShoppingBag {...base} {...p} />
 export const CloseIcon = (p: IconProps) => <X {...base} {...p} />
 export const PlusIcon = (p: IconProps) => <Plus {...base} {...p} />

@@ -54,6 +54,7 @@ export async function handleCheckoutSession(input: CheckoutSessionInput): Promis
   const user = features.firebaseAdmin ? await getSessionUser() : null
   const email = (user?.email ?? input.email ?? '').trim().toLowerCase() || null
   const address = input.address ?? null
+  const province = address?.province ?? input.province ?? null
   const customer: CustomerDetails = {
     email,
     name: address?.name ?? null,
@@ -65,7 +66,7 @@ export async function handleCheckoutSession(input: CheckoutSessionInput): Promis
     lines: input.lines,
     promoCode: input.promoCode,
     email,
-    province: address?.province ?? null,
+    province,
     shippingMethodId: input.shippingMethodId,
   })
   const blocking = quote.messages.filter((m) => m.sku && BLOCKING_CODES.has(m.code))
@@ -82,7 +83,7 @@ export async function handleCheckoutSession(input: CheckoutSessionInput): Promis
     return jsonError('amount_too_small', t('checkout.error'), 400, { quote })
 
   const createAccount = Boolean(input.createAccount && !user && features.firebaseAdmin)
-  const orderInput = { quote, customer, uid: user?.uid ?? null, createAccount }
+  const orderInput = { quote, customer, province, uid: user?.uid ?? null, createAccount }
   const shipping = shippingForStripe(customer)
 
   // ----- Later calls: update the order and the PaymentIntent -----
@@ -98,11 +99,25 @@ export async function handleCheckoutSession(input: CheckoutSessionInput): Promis
         status: pi.status,
         orderNumber: pi.metadata.orderNumber,
       })
-    await stripe.paymentIntents.update(paymentIntentId, {
-      amount: quote.totalCents,
-      ...(email ? { receipt_email: email } : {}),
-      ...(shipping ? { shipping } : {}),
-    })
+    try {
+      await stripe.paymentIntents.update(paymentIntentId, {
+        amount: quote.totalCents,
+        ...(email ? { receipt_email: email } : {}),
+        ...(shipping ? { shipping } : {}),
+      })
+    } catch (err) {
+      // Payment can succeed between retrieve() above and update(). Treat that race like the
+      // already-processed check instead of logging a Stripe 400 after a successful checkout.
+      if ((err as { code?: string }).code === 'payment_intent_unexpected_state') {
+        const latest = await stripe.paymentIntents.retrieve(paymentIntentId)
+        if (!UPDATABLE.includes(latest.status))
+          return jsonError('already_processed', t('checkout.alreadyPaid'), 409, {
+            status: latest.status,
+            orderNumber: latest.metadata.orderNumber,
+          })
+      }
+      throw err
+    }
     await updatePendingOrder(orderId, orderInput)
     return noStore({
       ok: true,

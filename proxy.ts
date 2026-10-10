@@ -34,6 +34,6 @@ export const config = {
     '/collections/:path*',
     '/shop/:path*',
     // Single-segment content pages, excluding app routes, assets and metadata files.
-    '/((?!api|_next|studio|catalog|dev|shop|products|collections|search|bag|checkout|order-status|newsletter|icon|apple-icon|opengraph-image|sitemap\\.xml|robots\\.txt|manifest\\.webmanifest|favicon\\.ico)[^/.]+)',
+    '/((?!api|_next|studio|catalog|dev|shop|products|collections|search|bag|checkout|account|order-status|newsletter|icon|apple-icon|opengraph-image|sitemap\\.xml|robots\\.txt|manifest\\.webmanifest|favicon\\.ico)[^/.]+)',
   ],
 }
