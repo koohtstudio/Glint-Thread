@@ -1,4 +1,5 @@
 import { defineArrayMember, defineField, defineType } from 'sanity'
+import { CustomerPanel } from '../components/CustomerPanel'
 import { PriceInput } from '../components/PriceInput'
 
 export const promotion = defineType({
@@ -156,23 +157,28 @@ export const order = defineType({
       description: 'Set when stock went below zero or a first-order code was reused.',
     }),
     defineField({ name: 'notes', type: 'text', rows: 3 }),
+    // No personal data in Sanity (PRD 9.8): the customer's name, email, phone and address stay in Stripe.
     defineField({
-      name: 'customer',
-      type: 'object',
+      name: 'customerPanel',
+      title: 'Customer',
+      type: 'string',
       readOnly: true,
-      fields: [
-        defineField({ name: 'email', type: 'string' }),
-        defineField({ name: 'name', type: 'string' }),
-        defineField({ name: 'phone', type: 'string' }),
-      ],
+      description: 'Loaded live from Stripe, never stored here.',
+      components: { input: CustomerPanel },
     }),
     defineField({
-      name: 'shippingAddress',
-      type: 'object',
+      name: 'shippingProvince',
+      type: 'string',
       readOnly: true,
-      fields: ['line1', 'line2', 'city', 'province', 'postalCode', 'country'].map((n) =>
-        defineField({ name: n, type: 'string' }),
-      ),
+      description: 'Two-letter province code, for reporting.',
+    }),
+    defineField({
+      name: 'emailHash',
+      type: 'string',
+      readOnly: true,
+      hidden: true,
+      description:
+        'Salted SHA-256 of the email, for order lookup and first-order codes. Not reversible.',
     }),
     defineField({ name: 'shippingMethod', type: 'string', readOnly: true }),
     defineField({ name: 'shippingEta', type: 'string', readOnly: true }),
@@ -252,37 +258,12 @@ export const order = defineType({
       n: 'orderNumber',
       status: 'status',
       total: 'amounts.totalCents',
-      email: 'customer.email',
+      province: 'shippingProvince',
       review: 'needsReview',
     },
-    prepare: ({ n, status, total, email, review }) => ({
+    prepare: ({ n, status, total, province, review }) => ({
       title: `${n ?? 'Order'} · $${((total ?? 0) / 100).toFixed(2)}`,
-      subtitle: `${review ? 'NEEDS REVIEW · ' : ''}${status}${email ? ` · ${email}` : ''}`,
+      subtitle: `${review ? 'NEEDS REVIEW · ' : ''}${status}${province ? ` · ${province}` : ''}`,
     }),
   },
-})
-
-export const subscriber = defineType({
-  name: 'subscriber',
-  type: 'document',
-  fields: [
-    defineField({ name: 'email', type: 'string', readOnly: true }),
-    defineField({
-      name: 'status',
-      type: 'string',
-      options: { list: ['pending', 'confirmed', 'unsubscribed'] },
-    }),
-    defineField({
-      name: 'consentText',
-      type: 'text',
-      readOnly: true,
-      rows: 2,
-      description: 'The exact wording the person agreed to (CASL record).',
-    }),
-    defineField({ name: 'consentAt', type: 'datetime', readOnly: true }),
-    defineField({ name: 'source', type: 'string', readOnly: true }),
-    defineField({ name: 'confirmedAt', type: 'datetime', readOnly: true }),
-    defineField({ name: 'unsubscribedAt', type: 'datetime', readOnly: true }),
-  ],
-  preview: { select: { title: 'email', subtitle: 'status' } },
 })

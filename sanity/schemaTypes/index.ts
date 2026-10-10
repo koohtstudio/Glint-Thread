@@ -1,7 +1,7 @@
 import { altImage, callout, faq, link, richText, seo, shippingMethod } from './objects'
 import { product, variant } from './product'
 import { category, collection, department } from './taxonomy'
-import { order, promoCode, promotion, subscriber } from './commerce'
+import { order, promoCode, promotion } from './commerce'
 import { careGuide, homePage, page, siteSettings } from './content'
 
 export const schemaTypes = [
@@ -22,7 +22,6 @@ export const schemaTypes = [
   promotion,
   promoCode,
   order,
-  subscriber,
   careGuide,
   page,
   homePage,

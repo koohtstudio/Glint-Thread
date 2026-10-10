@@ -1,39 +1,67 @@
 import 'server-only'
-import { createClient } from '@sanity/client'
 import { env } from '@/lib/env'
-import { safeEqual } from '@/lib/tokens'
 
 /**
- * Authorises admin actions (PRD 9.4). Accepts either ADMIN_ACTION_SECRET (scripts, automation) or
- * the signed-in Studio user's Sanity token, verified against the Sanity API and required to hold an
- * administrator or editor role. The secret itself never ships in the Studio's browser bundle.
+ * Authorises /api/admin/* (PRD 9.8): the Studio sends the signed-in user's Sanity token; the server
+ * verifies it against the Sanity API (`/users/me` on this project) and requires project membership.
+ * There is no shared secret, so nothing sensitive ships in Studio code.
  */
+export interface AdminUser {
+  id: string
+  email: string | null
+  roles: string[]
+}
+
+type Fetch = typeof fetch
+
+export async function verifySanityUser(
+  token: string,
+  projectId: string,
+  apiVersion: string,
+  fetchImpl: Fetch = fetch,
+): Promise<AdminUser | null> {
+  if (!token || !/^[\w.-]{20,}$/.test(token)) return null
+  try {
+    const res = await fetchImpl(`https://${projectId}.api.sanity.io/v${apiVersion}/users/me`, {
+      headers: { Authorization: `Bearer ${token}` },
+      cache: 'no-store',
+    })
+    if (!res.ok) return null
+    const user = (await res.json()) as {
+      id?: string
+      email?: string
+      role?: string
+      roles?: { name: string }[]
+      projectId?: string
+    }
+    const roles = [
+      ...(user.roles ?? []).map((r) => r.name),
+      ...(user.role ? [user.role] : []),
+    ].filter(Boolean)
+    // Project membership: a member of this project has at least one role on it; anonymous users have none.
+    if (!user.id || roles.length === 0) return null
+    return { id: user.id, email: user.email ?? null, roles }
+  } catch {
+    return null
+  }
+}
+
 export async function authoriseAdmin(
   request: Request,
-): Promise<{ ok: true; by: string } | { ok: false }> {
-  const bearer = request.headers
+  fetchImpl: Fetch = fetch,
+): Promise<{ ok: true; user: AdminUser } | { ok: false }> {
+  const token = request.headers
     .get('authorization')
     ?.replace(/^Bearer\s+/i, '')
     .trim()
-  if (!bearer) return { ok: false }
-  if (env.ADMIN_ACTION_SECRET && safeEqual(bearer, env.ADMIN_ACTION_SECRET))
-    return { ok: true, by: 'secret' }
-  if (!env.NEXT_PUBLIC_SANITY_PROJECT_ID) return { ok: false }
-  try {
-    const user = await createClient({
-      projectId: env.NEXT_PUBLIC_SANITY_PROJECT_ID,
-      dataset: env.NEXT_PUBLIC_SANITY_DATASET,
-      apiVersion: env.NEXT_PUBLIC_SANITY_API_VERSION,
-      token: bearer,
-      useCdn: false,
-    }).request<{ id?: string; email?: string; roles?: { name: string }[]; role?: string }>({
-      uri: '/users/me',
-    })
-    const roles = [...(user.roles ?? []).map((r) => r.name), user.role].filter(Boolean)
-    if (user.id && roles.some((r) => r === 'administrator' || r === 'editor'))
-      return { ok: true, by: user.email ?? user.id }
-  } catch {
-    /* invalid token */
-  }
-  return { ok: false }
+  if (!token || !env.NEXT_PUBLIC_SANITY_PROJECT_ID) return { ok: false }
+  const user = await verifySanityUser(
+    token,
+    env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+    env.NEXT_PUBLIC_SANITY_API_VERSION,
+    fetchImpl,
+  )
+  // Viewers can look but not act.
+  if (!user || user.roles.every((r) => r === 'viewer')) return { ok: false }
+  return { ok: true, user }
 }

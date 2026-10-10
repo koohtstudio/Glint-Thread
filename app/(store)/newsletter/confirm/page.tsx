@@ -24,15 +24,24 @@ async function Confirm({
   searchParams: PageProps<'/newsletter/confirm'>['searchParams']
 }) {
   const sp = await searchParams
-  const email = typeof sp.email === 'string' ? sp.email.toLowerCase() : ''
-  const token = typeof sp.token === 'string' ? sp.token : ''
-  if (!email || !verifyToken('confirm', email, token)) {
+  const str = (v: unknown) => (typeof v === 'string' ? v : '')
+  const email = str(sp.email).toLowerCase()
+  const token = str(sp.token)
+  const consentAt = str(sp.at)
+  const source = str(sp.src)
+  const version = str(sp.v)
+  if (
+    !email ||
+    !consentAt ||
+    !verifyToken('confirm', email, token, `${consentAt}|${source}|${version}`)
+  ) {
     return <p className="t-lede mt-8">{t('newsletter.invalidLink')}</p>
   }
-  const state = await confirmSubscriber(email)
+  // The consent record (wording version, time of the tick, source) goes to Resend only (PRD 9.8).
+  const state = await confirmSubscriber(email, { consentVersion: version, consentAt, source })
   const code =
     (await getPromoCodes()).find((c) => c.code === 'WELCOME10' && c.active)?.code ?? 'WELCOME10'
-  if (state === 'confirmed') {
+  if (state === 'confirmed' || state === 'logged') {
     const unsubscribeUrl = absoluteUrl(
       `/newsletter/unsubscribe?email=${encodeURIComponent(email)}&token=${signToken('unsubscribe', email)}`,
     )

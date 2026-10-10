@@ -7,6 +7,8 @@ import type { Quote } from '@/lib/pricing/types'
 import { generateOrderNumber, skuKey } from '@/lib/order-number'
 import { absoluteUrl } from '@/lib/public-env'
 import { emailShell, sendEmail } from '@/lib/email/send'
+import { hashEmail } from '@/lib/email-hash'
+import { getStripe } from '@/lib/stripe'
 import {
   OrderConfirmationEmail,
   OwnerOrderEmail,
@@ -16,9 +18,13 @@ import type { EmailLine } from '@/lib/email/templates/order-items'
 
 /**
  * Order lifecycle (PRD 9.2 to 9.4): pending -> paid -> shipped -> delivered (+ expired, cancelled,
- * refunded, partially_refunded). Orders live in Sanity under private `orders.` IDs, so they are never
- * readable without a token. Without a write token the store degrades: checkout still works, and
- * webhooks send emails from the Stripe session but cannot store the order.
+ * refunded, partially_refunded).
+ *
+ * Privacy (PRD 9.8): Sanity's free plan only has public datasets, so orders hold NO personal data:
+ * no name, email, phone or address. Only the order number, line snapshot, amounts, status, shipping
+ * province, tracking, Stripe IDs and a salted `emailHash`. Emails read the customer's details from the
+ * Stripe Checkout Session at send time. Without a Sanity write token the store degrades: checkout still
+ * works and webhooks send emails from the Stripe session, but orders are not stored.
  */
 
 export type OrderStatus =
@@ -62,15 +68,10 @@ export interface OrderDoc {
   }
   promoCode: string | null
   quoteSnapshot: string
-  customer?: { email?: string | null; name?: string | null; phone?: string | null }
-  shippingAddress?: {
-    line1?: string | null
-    line2?: string | null
-    city?: string | null
-    province?: string | null
-    postalCode?: string | null
-    country?: string | null
-  }
+  /** Salted SHA-256 of the lowercased email (lib/email-hash.ts). Never the email itself. */
+  emailHash?: string | null
+  /** Two-letter province code for reporting; the full address stays in Stripe. */
+  shippingProvince?: string | null
   shippingMethod?: string | null
   shippingEta?: string | null
   carrier?: string | null
@@ -95,23 +96,25 @@ async function client() {
   return sanityWriteClient()
 }
 
-/** Paid redemptions of codes by this email, for first-order-only checks (PRD 7.4). */
+/** Paid redemptions of codes by this email, for first-order-only checks (PRD 7.4), matched on emailHash. */
 export async function findCodeRedemptions(
   email: string,
 ): Promise<{ code: string; email: string }[]> {
   if (!features.sanityWrite) return []
-  const rows = await (
+  const codes = await (
     await client()
-  ).fetch<{ code: string | null; email: string }[]>(
-    `*[_type == "order" && status in ["paid","shipped","delivered","partially_refunded"] && lower(customer.email) == $email && defined(promoCode)]{ "code": promoCode, "email": customer.email }`,
-    { email: email.toLowerCase() },
+  ).fetch<(string | null)[]>(
+    `*[_type == "order" && status in ["paid","shipped","delivered","partially_refunded"] && emailHash == $hash && defined(promoCode)].promoCode`,
+    { hash: hashEmail(email) },
   )
-  return rows.filter((r): r is { code: string; email: string } => Boolean(r.code))
+  // Rows found belong to this email (same hash), so the email is echoed back for the pricing engine.
+  return codes.filter((c): c is string => Boolean(c)).map((code) => ({ code, email }))
 }
 
 /** Step 4 of checkout: snapshot the quote as a pending order. */
 export async function createPendingOrder(
   quote: Quote,
+  email?: string | null,
 ): Promise<{ id: string; orderNumber: string; persisted: boolean }> {
   const id = `orders.${randomUUID()}`
   const orderNumber = generateOrderNumber()
@@ -148,6 +151,7 @@ export async function createPendingOrder(
       totalCents: quote.discountedSubtotalCents,
     },
     promoCode: quote.promoCode?.applied ? quote.promoCode.code : null,
+    emailHash: email ? hashEmail(email) : null,
     quoteSnapshot: JSON.stringify(quote),
     processedEventIds: [],
     stockDecremented: false,
@@ -180,12 +184,39 @@ async function getOrder(id: string): Promise<OrderDoc | null> {
   return (await client()).getDocument<OrderDoc>(id).then((d) => d ?? null)
 }
 
-function addressLines(a: OrderDoc['shippingAddress']): string[] {
+interface CustomerDetails {
+  email: string | null
+  name: string | null
+  phone: string | null
+  address: {
+    line1?: string | null
+    line2?: string | null
+    city?: string | null
+    state?: string | null
+    postal_code?: string | null
+    country?: string | null
+  } | null
+}
+
+/** The customer's details straight from Stripe. Used for emails and the Studio panel, never stored. */
+export function customerFromSession(session: Stripe.Checkout.Session): CustomerDetails {
+  const shipping = session.collected_information?.shipping_details
+  return {
+    email: session.customer_details?.email ?? session.customer_email ?? null,
+    name: shipping?.name ?? session.customer_details?.name ?? null,
+    phone: session.customer_details?.phone ?? null,
+    address: shipping?.address ?? session.customer_details?.address ?? null,
+  }
+}
+
+function addressLines(c: CustomerDetails): string[] {
+  const a = c.address
   if (!a) return []
   return [
+    c.name,
     a.line1,
     a.line2,
-    [a.city, a.province, a.postalCode].filter(Boolean).join(' '),
+    [a.city, a.state, a.postal_code].filter(Boolean).join(' '),
     a.country === 'CA' ? 'Canada' : a.country,
   ].filter((x): x is string => Boolean(x))
 }
@@ -204,27 +235,15 @@ function studioUrl(id: string) {
   return absoluteUrl(`/studio/structure/orders;${encodeURIComponent(id)}`)
 }
 
-function fromSession(session: Stripe.Checkout.Session) {
-  const shipping = session.collected_information?.shipping_details
+/** Non-personal order facts from a session: safe to store in Sanity. */
+export function orderFactsFromSession(session: Stripe.Checkout.Session) {
+  const customer = customerFromSession(session)
   const rate = session.shipping_cost?.shipping_rate
   const rateObj = rate && typeof rate === 'object' ? rate : null
   const est = rateObj?.delivery_estimate
   return {
-    customer: {
-      email: session.customer_details?.email ?? session.customer_email ?? null,
-      name: session.customer_details?.name ?? shipping?.name ?? null,
-      phone: session.customer_details?.phone ?? null,
-    },
-    shippingAddress: shipping
-      ? {
-          line1: shipping.address.line1,
-          line2: shipping.address.line2,
-          city: shipping.address.city,
-          province: shipping.address.state,
-          postalCode: shipping.address.postal_code,
-          country: shipping.address.country,
-        }
-      : undefined,
+    emailHash: customer.email ? hashEmail(customer.email) : null,
+    shippingProvince: customer.address?.state ?? null,
     shippingMethod: rateObj?.display_name ?? null,
     shippingEta:
       est?.minimum && est?.maximum
@@ -252,7 +271,8 @@ export async function markOrderPaid(
   session: Stripe.Checkout.Session,
   eventId: string,
 ): Promise<'processed' | 'duplicate' | 'pending_payment' | 'not_stored'> {
-  const info = fromSession(session)
+  const info = orderFactsFromSession(session)
+  const customer = customerFromSession(session)
   const paid = session.payment_status === 'paid' || session.payment_status === 'no_payment_required'
   const orderId = session.metadata?.orderId ?? session.client_reference_id
   const shell = await emailShell()
@@ -266,14 +286,14 @@ export async function markOrderPaid(
       qty: li.quantity ?? 1,
       lineTotalCents: li.amount_total,
     }))
-    if (info.customer.email)
+    if (customer.email)
       await sendEmail({
-        to: info.customer.email,
+        to: customer.email,
         subject: `Order ${session.metadata?.orderNumber ?? ''} confirmed`,
         react: OrderConfirmationEmail({
           order: {
             orderNumber: session.metadata?.orderNumber ?? session.id.slice(-8),
-            customerName: info.customer.name,
+            customerName: customer.name,
             lines,
             subtotalCents: session.amount_subtotal ?? 0,
             discountCents: info.amounts.discountCents,
@@ -282,7 +302,7 @@ export async function markOrderPaid(
             totalCents: info.amounts.totalCents,
             shippingMethod: info.shippingMethod,
             eta: info.shippingEta,
-            address: addressLines(info.shippingAddress),
+            address: addressLines(customer),
           },
           shell,
         }),
@@ -307,8 +327,9 @@ export async function markOrderPaid(
       .setIfMissing({ processedEventIds: [] })
       .append('processedEventIds', [eventId])
       .set({
-        customer: info.customer,
-        ...(info.shippingAddress ? { shippingAddress: info.shippingAddress } : {}),
+        // Non-personal facts only (PRD 9.8): no name, email, phone or address.
+        emailHash: info.emailHash ?? order.emailHash ?? null,
+        shippingProvince: info.shippingProvince,
         shippingMethod: info.shippingMethod,
         shippingEta: info.shippingEta,
         'amounts.shippingCents': info.amounts.shippingCents,
@@ -363,12 +384,12 @@ export async function markOrderPaid(
       )
       if (negatives > 0) reasons.push('Stock went below zero on at least one variant.')
     }
-    if (order.promoCode && info.customer.email) {
+    if (order.promoCode && info.emailHash) {
       const code = (await getPromoCodes()).find((c) => c.code === order.promoCode)
       if (code?.firstOrderOnly) {
         const prior = await sanity.fetch<number>(
-          `count(*[_type == "order" && _id != $id && status in ["paid","shipped","delivered"] && lower(customer.email) == $email && promoCode == $code])`,
-          { id: order._id, email: info.customer.email.toLowerCase(), code: order.promoCode },
+          `count(*[_type == "order" && _id != $id && status in ["paid","shipped","delivered"] && emailHash == $hash && promoCode == $code])`,
+          { id: order._id, hash: info.emailHash, code: order.promoCode },
         )
         if (prior > 0) reasons.push(`${order.promoCode} was already used by this email.`)
       }
@@ -382,14 +403,14 @@ export async function markOrderPaid(
 
     if (firstPayment) {
       const lines = emailLines(order.lines)
-      if (info.customer.email)
+      if (customer.email)
         await sendEmail({
-          to: info.customer.email,
+          to: customer.email,
           subject: `Order ${order.orderNumber} confirmed`,
           react: OrderConfirmationEmail({
             order: {
               orderNumber: order.orderNumber,
-              customerName: info.customer.name,
+              customerName: customer.name,
               lines,
               subtotalCents: order.amounts.subtotalCents,
               discountCents: info.amounts.discountCents || order.amounts.discountCents,
@@ -398,7 +419,7 @@ export async function markOrderPaid(
               totalCents: info.amounts.totalCents,
               shippingMethod: info.shippingMethod,
               eta: info.shippingEta,
-              address: addressLines(info.shippingAddress),
+              address: addressLines(customer),
             },
             shell,
           }),
@@ -410,7 +431,7 @@ export async function markOrderPaid(
           react: OwnerOrderEmail({
             orderNumber: order.orderNumber,
             totalCents: info.amounts.totalCents,
-            customer: [info.customer.name, info.customer.email].filter(Boolean).join(', '),
+            customer: [customer.name, customer.email].filter(Boolean).join(', '),
             lines,
             studioUrl: studioUrl(order._id),
             needsReview,
@@ -498,9 +519,11 @@ export async function shipOrder(orderId: string, carrier: string, trackingNumber
       updatedAt: now,
     })
     .commit()
-  if (order.customer?.email)
+  // The customer's email is read from Stripe at send time (PRD 9.8), never stored on the order.
+  const customer = await customerForOrder(order)
+  if (customer?.email)
     await sendEmail({
-      to: order.customer.email,
+      to: customer.email,
       subject: `Order ${order.orderNumber} has shipped`,
       react: ShippingEmail({
         orderNumber: order.orderNumber,
@@ -511,17 +534,44 @@ export async function shipOrder(orderId: string, carrier: string, trackingNumber
         shell: await emailShell(),
       }),
     })
-  return { ok: true as const, orderNumber: order.orderNumber }
+  else
+    console.warn(
+      `[orders] shipped ${order.orderNumber} but could not read the customer email from Stripe`,
+    )
+  return { ok: true as const, orderNumber: order.orderNumber, emailed: Boolean(customer?.email) }
 }
 
-/** Order status lookup (PRD 13): requires number + email, returns minimal data. */
+/** Loads the order's customer details live from Stripe (Studio Customer panel, shipping email). */
+export async function customerForOrder(
+  order: Pick<OrderDoc, 'stripe'>,
+): Promise<(CustomerDetails & { stripeUrl: string | null }) | null> {
+  const stripe = getStripe()
+  const sessionId = order.stripe?.checkoutSessionId
+  if (!stripe || !sessionId) return null
+  const session = await stripe.checkout.sessions.retrieve(sessionId)
+  const pi =
+    typeof session.payment_intent === 'string'
+      ? session.payment_intent
+      : (session.payment_intent?.id ?? null)
+  const base = `https://dashboard.stripe.com${session.livemode ? '' : '/test'}`
+  return {
+    ...customerFromSession(session),
+    stripeUrl: pi ? `${base}/payments/${pi}` : `${base}/checkout/sessions/${session.id}`,
+  }
+}
+
+export async function getOrderById(id: string): Promise<OrderDoc | null> {
+  return getOrder(id)
+}
+
+/** Order status lookup (PRD 13): order number + email, matched via emailHash; status and tracking only. */
 export async function lookupOrder(orderNumber: string, email: string) {
   const order = await (
     await client()
-  ).fetch<OrderDoc | null>(
-    `*[_type == "order" && orderNumber == $n && lower(customer.email) == $e][0]`,
-    { n: orderNumber.trim().toUpperCase(), e: email.trim().toLowerCase() },
-  )
+  ).fetch<OrderDoc | null>(`*[_type == "order" && orderNumber == $n && emailHash == $h][0]`, {
+    n: orderNumber.trim().toUpperCase(),
+    h: hashEmail(email),
+  })
   if (!order || order.status === 'pending') return null
   return {
     orderNumber: order.orderNumber,

@@ -28,7 +28,7 @@ export const envSchema = z.object({
   RESEND_AUDIENCE_ID: optional,
   EMAIL_FROM: z.string().default('Glint & Thread <orders@example.ca>'),
   OWNER_EMAIL: optional,
-  ADMIN_ACTION_SECRET: optional,
+  EMAIL_HASH_SALT: optional,
   DEV_DEFAULT_STOCK: z.coerce.number().int().min(0).default(10),
 })
 

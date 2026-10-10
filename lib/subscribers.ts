@@ -1,99 +1,74 @@
 import 'server-only'
-import { env, features } from '@/lib/env'
+import { env } from '@/lib/env'
 
 /**
- * Newsletter subscribers (PRD 9.7). Stored in Sanity as `subscriber` documents with the exact consent
- * wording and time (CASL). Contacts are added to a Resend segment after confirmation.
+ * Newsletter contacts live only in Resend (PRD 9.7, 9.8): never in Sanity. The CASL consent record
+ * (consent text version, timestamp, source) is stored as properties on the Resend contact.
+ * Without RESEND_API_KEY the contact is logged to the console instead.
  */
-export interface SubscriberInput {
-  email: string
-  consentText: string
+export const CONSENT_VERSION = 'newsletter-consent-v1'
+
+export interface ConsentRecord {
+  consentVersion: string
+  consentAt: string
   source: string
 }
 
-const idFor = (email: string) =>
-  `subscriber.${Buffer.from(email.toLowerCase()).toString('base64url')}`
+const PROPERTIES = ['consent_version', 'consent_at', 'consent_source', 'confirmed_at'] as const
 
-async function client() {
-  const { sanityWriteClient } = await import('@/sanity/lib/server-client')
-  return sanityWriteClient()
+async function resendClient() {
+  const { Resend } = await import('resend')
+  return new Resend(env.RESEND_API_KEY)
 }
 
-export async function upsertPendingSubscriber(input: SubscriberInput) {
-  if (!features.sanityWrite) {
-    console.info(`[newsletter] (no Sanity) pending subscriber ${input.email} from ${input.source}`)
-    return
-  }
-  const now = new Date().toISOString()
-  await (
-    await client()
-  )
-    .transaction()
-    .createIfNotExists({
-      _id: idFor(input.email),
-      _type: 'subscriber',
-      email: input.email.toLowerCase(),
-      status: 'pending',
-    })
-    .patch(idFor(input.email), (p) =>
-      p
-        .set({ consentText: input.consentText, consentAt: now, source: input.source })
-        .setIfMissing({ status: 'pending' }),
-    )
-    .commit()
+let propertiesReady: Promise<void> | null = null
+/** Creates the custom contact properties once per process; "already exists" errors are ignored. */
+function ensureProperties(resend: Awaited<ReturnType<typeof resendClient>>) {
+  propertiesReady ??= Promise.all(
+    PROPERTIES.map((key) =>
+      resend.contactProperties.create({ key, type: 'string' }).catch(() => null),
+    ),
+  ).then(() => undefined)
+  return propertiesReady
 }
 
-export async function confirmSubscriber(email: string): Promise<'confirmed' | 'already'> {
-  let state: 'confirmed' | 'already' = 'confirmed'
-  if (features.sanityWrite) {
-    const sanity = await client()
-    const doc = await sanity.getDocument<{ status: string }>(idFor(email))
-    if (doc?.status === 'confirmed') state = 'already'
-    await sanity
-      .transaction()
-      .createIfNotExists({
-        _id: idFor(email),
-        _type: 'subscriber',
-        email: email.toLowerCase(),
-        status: 'pending',
-      })
-      .patch(idFor(email), (p) =>
-        p.set({ status: 'confirmed', confirmedAt: new Date().toISOString() }),
-      )
-      .commit()
+/** Called from the double opt-in confirm link: adds or updates the contact with its consent record. */
+export async function confirmSubscriber(
+  email: string,
+  consent: ConsentRecord,
+): Promise<'confirmed' | 'logged'> {
+  const properties = {
+    consent_version: consent.consentVersion,
+    consent_at: consent.consentAt,
+    consent_source: consent.source,
+    confirmed_at: new Date().toISOString(),
   }
-  if (env.RESEND_API_KEY && state === 'confirmed') {
-    try {
-      const { Resend } = await import('resend')
-      const resend = new Resend(env.RESEND_API_KEY)
-      await resend.contacts.create({
-        email,
-        unsubscribed: false,
-        ...(env.RESEND_AUDIENCE_ID ? { segments: [{ id: env.RESEND_AUDIENCE_ID }] } : {}),
-      })
-    } catch (err) {
-      console.error('[newsletter] could not add Resend contact', err)
-    }
+  if (!env.RESEND_API_KEY) {
+    console.info(`[newsletter] (no Resend) confirmed ${email}`, properties)
+    return 'logged'
   }
-  return state
+  const resend = await resendClient()
+  await ensureProperties(resend)
+  const created = await resend.contacts.create({
+    email,
+    unsubscribed: false,
+    properties,
+    ...(env.RESEND_AUDIENCE_ID ? { segments: [{ id: env.RESEND_AUDIENCE_ID }] } : {}),
+  })
+  if (created.error) {
+    // Existing contact: update consent and resubscribe.
+    const updated = await resend.contacts.update({ email, unsubscribed: false, properties })
+    if (updated.error) console.error('[newsletter] could not save Resend contact', updated.error)
+  }
+  return 'confirmed'
 }
 
 export async function unsubscribe(email: string) {
-  if (features.sanityWrite) {
-    await (
-      await client()
-    )
-      .patch(idFor(email))
-      .set({ status: 'unsubscribed', unsubscribedAt: new Date().toISOString() })
-      .commit()
-      .catch(() => null)
+  if (!env.RESEND_API_KEY) {
+    console.info(`[newsletter] (no Resend) unsubscribed ${email}`)
+    return
   }
-  if (env.RESEND_API_KEY) {
-    try {
-      const { Resend } = await import('resend')
-      await new Resend(env.RESEND_API_KEY).contacts.update({ email, unsubscribed: true })
-    } catch (err) {
-      console.error('[newsletter] could not unsubscribe Resend contact', err)
-    }
-  }
+  const resend = await resendClient()
+  const res = await resend.contacts.update({ email, unsubscribed: true })
+  if (res.error) console.error('[newsletter] could not unsubscribe Resend contact', res.error)
 }

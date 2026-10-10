@@ -412,7 +412,7 @@ TAX_MODE=none                         # none | stripe
 RESEND_API_KEY=
 EMAIL_FROM="Glint & Thread <orders@example.ca>"
 OWNER_EMAIL=
-ADMIN_ACTION_SECRET=                  # Studio action -> /api/admin/ship-order
+EMAIL_HASH_SALT=                      # long random string, server only
 DEV_DEFAULT_STOCK=10
 ```
 When Stripe keys are missing, the Checkout button renders disabled with "Checkout opens soon" and the API returns 503. When Resend is missing, emails are logged to the console.
@@ -482,14 +482,14 @@ type Quote = {
 
 ### 9.3 Webhook (`POST /api/stripe/webhook`)
 - Verify the signature with the raw body. Store processed `event.id`s on the order to stay idempotent.
-- `checkout.session.completed` (and `checkout.session.async_payment_succeeded`): set the order to `paid`; save the customer email, name and phone, shipping address, shipping method and amount, tax, totals and the Stripe IDs; **decrement stock** per variant using Sanity patches with `dec`, guarded by an `order.stockDecremented` flag. If any stock goes below 0, set `needsReview: true` and email the owner. Send the order confirmation email.
+- `checkout.session.completed` (and `checkout.session.async_payment_succeeded`): set the order to `paid`; save the shipping method and amount, tax, totals, the shipping province (for reporting) and the Stripe IDs (no customer name, email, phone or address: see §9.8); **decrement stock** per variant using Sanity patches with `dec`, guarded by an `order.stockDecremented` flag. If any stock goes below 0, set `needsReview: true` and email the owner. Send the order confirmation email.
 - `checkout.session.expired`: set `expired` (no stock change).
 - `charge.refunded`: set `refunded` or `partially_refunded`; the owner decides on restocking manually.
 - Always return 200 after logging unexpected events; return 400 only on a bad signature.
 
 ### 9.4 Order lifecycle and fulfilment
 `pending → paid → shipped → delivered` (plus `expired`, `cancelled`, `refunded`, `partially_refunded`).
-Studio document action **"Mark as shipped"** asks for carrier (default Canada Post) and tracking number, then calls `/api/admin/ship-order` with `ADMIN_ACTION_SECRET`, which updates the order and sends the shipping email with a tracking link. The Studio desk structure gives Orders their own section with filtered lists: Needs review, To ship, Shipped, All.
+Studio document action **"Mark as shipped"** asks for carrier (default Canada Post) and tracking number, then calls `/api/admin/ship-order` with the logged-in Studio user's Sanity token (verified server-side, §9.8), which updates the order, reads the customer's email from Stripe and sends the shipping email with a tracking link. The order form also shows a **Customer panel** (name, email, phone, address loaded live from Stripe through `/api/admin/order-customer`, same auth) and an "Open in Stripe" link. The Studio desk structure gives Orders their own section with filtered lists: Needs review, To ship, Shipped, All.
 
 ### 9.5 Inventory
 - Stock lives on each variant. `null` is untracked (development only). At launch every variant needs a number.
@@ -504,8 +504,16 @@ Studio document action **"Mark as shipped"** asks for carrier (default Canada Po
 5. **Newsletter welcome** with the WELCOME10 code.
 Every marketing email carries sender identification, a mailing address and a one-click unsubscribe (CASL).
 
+### 9.8 Customer data and privacy (non-negotiable)
+Sanity's free plan only offers **public** datasets: anything stored there can be read by anyone who knows the project ID. So:
+- **No personal data in Sanity.** Customer names, emails, phone numbers, addresses and newsletter subscribers never go into Sanity documents. Stripe holds customer and address data; Resend holds subscribers.
+- Orders in Sanity hold only the order number, line snapshot, amounts, status, shipping province, tracking, Stripe IDs and `emailHash` (salted SHA-256 with a server-only `EMAIL_HASH_SALT`).
+- Confirmation and shipping emails read the address from the Stripe Checkout Session at send time.
+- Admin routes (`/api/admin/*`) authenticate the Studio user: the Studio sends the user's Sanity session token, and the server verifies it against the Sanity API (`/users/me`) and checks project membership. No shared secrets in Studio code.
+- If the business later moves to a Sanity plan with private datasets, this can be revisited and documented in DECISIONS.md.
+
 ### 9.7 Newsletter (CASL)
-Form: email plus an **unchecked** consent checkbox: "Yes, email me about new drops and offers from Glint & Thread. Unsubscribe anytime." Store a `subscriber` document (email, consentText, consentAt, source, status) and add the contact to a Resend audience. Double opt-in is recommended (on by default via a confirm link). The code is shown after confirmation.
+Form: email plus an **unchecked** consent checkbox: "Yes, email me about new drops and offers from Glint & Thread. Unsubscribe anytime." Add the contact to a Resend audience and record the consent (consent text version, timestamp, source) on the Resend contact. Never store subscribers in Sanity (§9.8). Double opt-in is recommended (on by default via a confirm link). The code is shown after confirmation.
 
 ## 10. Sanity data model (`sanity/schemaTypes`)
 | Type | Key fields |
@@ -517,8 +525,7 @@ Form: email plus an **unchecked** consent checkbox: "Yes, email me about new dro
 | `collection` | title, slug, mode (rule/manual), rule (tags[], maxPrice, departments[]), products (refs), heroImage, blurb |
 | `promotion` | title, type (`tiered_percent_category` / `buy_x_get_y_cheapest_free`), active, appliesTo (categories refs, exclude product refs), tiers[] or buyQty/getQty, badge text, startsAt/endsAt |
 | `promoCode` | code (uppercase, unique), type (`percent_off_order`), percentOff, firstOrderOnly, active, expiresAt, note |
-| `order` | orderNumber, status, lines (snapshot), amounts (subtotal, discounts, shipping, tax, total), customer (email, name, phone), shippingAddress, shippingMethod, carrier, trackingNumber, stripe IDs, processedEventIds[], stockDecremented, needsReview, notes, timestamps |
-| `subscriber` | email, status, consentText, consentAt, source, confirmedAt |
+| `order` | orderNumber, status, lines (snapshot), amounts (subtotal, discounts, shipping, tax, total), shippingProvince, emailHash (SHA-256 of the lowercased email, for first-order code checks and order-status lookup), shippingMethod, carrier, trackingNumber, stripe IDs, processedEventIds[], stockDecremented, needsReview, notes, timestamps |
 | `careGuide` | title, slug, body (Portable Text); seed jewellery-care, textile-care, bag-care, tool-care |
 | `page` | title, slug, body (Portable Text), seo |
 | `homePage` (singleton) | announcement messages[], hero (eyebrow, headline, italic tail, sub, image, CTAs), edit products, department mosaic order, brand band, spotlight collection, offers band, story block, newsletter copy |
@@ -568,7 +575,7 @@ H1 "Small batches, honestly made to shine." Then three short sections: who we ar
 
 **Accessibility:** semantic landmarks, skip link, visible focus (`champagne-400` 2 px outline, offset 2 px), keyboard support for all menus, drawers, galleries and the zoom viewer; `aria-live` for bag updates; reduced motion; form labels and errors linked by `aria-describedby`; colour never the only signal (variant chips have text); axe-core with zero serious or critical issues.
 
-**Security:** Zod on every input; server-only tokens never imported in client code (`server-only` package); webhook signature checks (Stripe, Sanity); `ADMIN_ACTION_SECRET` for Studio actions; rate limits on checkout, newsletter, contact and order-status; honeypot on forms; security headers (CSP allowing Stripe and Sanity domains, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`); the order-status lookup requires order number + email and returns minimal data.
+**Security:** Zod on every input; server-only tokens never imported in client code (`server-only` package); webhook signature checks (Stripe, Sanity); admin API routes authenticate the Studio user's Sanity token (never a shared secret bundled into Studio code); rate limits on checkout, newsletter, contact and order-status; honeypot on forms; security headers (CSP allowing Stripe and Sanity domains, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`); the order-status lookup requires order number + email (matched via `emailHash`) and returns status and tracking only.
 
 ## 14. Definition of done
 

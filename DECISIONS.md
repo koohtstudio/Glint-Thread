@@ -29,14 +29,23 @@ One line each: decision, then reason.
 - Param-driven pages (shop, collections, products, content pages) export `instant = false`: every param is prerendered by generateStaticParams, so a blocking navigation is served from cache and needs no skeleton fallback (Next 16 instant-navigation validation).
 - The home hero starts below the header instead of under it: the PRD's default hero image is white earring cards on black, and the transparent header's wordmark would sit over white card stock. The header is still transparent at the top of the home page and turns ink-950/85 with blur after 24 px.
 - The Stripe webhook returns 500 (not 200) when processing a handled event fails, so Stripe retries; handlers are idempotent on event ID, so retries are safe. Unexpected event types still get 200, bad signatures 400.
-- /api/admin/ship-order accepts ADMIN_ACTION_SECRET (scripts) or the signed-in Studio user's Sanity token verified via /users/me with an administrator or editor role. Embedding the secret in the Studio would publish it in browser JS.
-- Newsletter confirm and unsubscribe links are stateless HMAC tokens (NEWSLETTER_TOKEN_SECRET, falling back to ADMIN_ACTION_SECRET, then a dev-only constant outside production), so double opt-in works even before Sanity is connected.
 - Resend deprecated audiences for segments; RESEND_AUDIENCE_ID is passed as the segment ID when adding confirmed subscribers.
 - The Sanity seed uses createIfNotExists by default so re-running never overwrites prices, stock or copy edited in the Studio; `--force` switches to createOrReplace.
-- Orders use private `orders.<uuid>` document IDs so they are never readable through the public CDN or without a token.
-- Studio uses token login (`auth.loginMethod: 'token'`) so the "Mark as shipped" action can send the user's token to the server for verification.
+- Orders use private `orders.<uuid>` document IDs as defence in depth; they hold no personal data anyway (PRD 9.8).
 - `@sanity/icons` v5 changed its export shape (one module per icon); Studio icons were dropped rather than pinning an old major, Sanity's defaults are used.
 - A root `sanity.config.ts` re-exports `sanity/sanity.config.ts` so the Sanity CLI finds it for schema extract and TypeGen (`npm run typegen` writes `sanity.types.ts`).
 - In Sanity mode, null stock uses DEV_DEFAULT_STOCK outside production and is treated as untracked in production; the launch check blocks launch while any stock is null.
 - OG images are generated with next/og in Instrument Serif; the OFL-licensed TTFs are vendored in assets/fonts because the OG renderer cannot read the woff2 files next/font serves.
 - robots.txt also disallows /dev, /newsletter and /search (internal, transactional or thin pages) in addition to the PRD list.
+- Adding to the bag opens the drawer (with the new line highlighted) instead of also showing a toast; toasts are kept for stock adjustments, cancelled checkout and errors.
+- proxy.ts returns a real 404 for unknown product, collection, shop and page slugs using a cached /api/route-index, because Cache Components streams a 200 for params outside generateStaticParams.
+- Privacy (PRD 9.8): orders in Sanity hold only order number, line snapshot, amounts, status, shippingProvince, tracking, Stripe IDs and `emailHash`; the `subscriber` type is gone. Sanity's free plan only has public datasets.
+- `emailHash` is SHA-256 of `EMAIL_HASH_SALT:` + the trimmed, lowercased email (lib/email-hash.ts). Order-status lookup and the WELCOME10 first-order check match on it. Outside production a fixed dev salt is used so local mode works with zero env vars; the launch check requires the real salt.
+- The pending order stores `emailHash` when the bag supplied an email (first-order codes); the webhook sets it from the Stripe session email. The plain email is never written.
+- Confirmation and shipping emails read the customer's email, name and address from the Stripe Checkout Session at send time; shipping email retrieves the session by its stored ID. The owner alert email still includes the customer's name and email (it goes to the owner's inbox, not Sanity).
+- /api/admin/* (ship-order, order-customer) authenticate only the Studio user's Sanity token: verified against `https://<projectId>.api.sanity.io/v<api>/users/me`, requiring at least one project role (membership); viewer-only users are refused. ADMIN_ACTION_SECRET is removed. Studio uses token login so the token is available to send.
+- Studio Customer panel is a read-only, never-written `customerPanel` field on the order with a custom input that loads details live from Stripe via /api/admin/order-customer; the "Open in Stripe" link picks the test or live dashboard from the `cs_test_`/`cs_live_` session prefix, so it works before loading.
+- Newsletter double opt-in signs the consent timestamp, source and consent text version (`newsletter-consent-v1` = the checkbox wording in messages/en-CA.json) into the confirm link; on confirmation they are written as properties on the Resend contact (`consent_version`, `consent_at`, `consent_source`, `confirmed_at`). Nothing is stored before confirmation.
+- Newsletter link tokens are HMACs keyed from EMAIL_HASH_SALT with a separate purpose label, so no extra secret env var is needed.
+- The privacy policy page now says contact and shipping details live in Stripe and the newsletter list in Resend, matching the data flows.
+- `npm run typegen` deletes the stale `sanity/extract.json` first because the Sanity CLI refuses to overwrite it.

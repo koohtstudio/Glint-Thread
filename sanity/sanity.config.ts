@@ -37,12 +37,7 @@ export default defineConfig({
     },
     newDocumentOptions: (prev, { creationContext }) =>
       creationContext.type === 'global'
-        ? prev.filter(
-            (t) =>
-              !SINGLETONS.includes(t.templateId) &&
-              t.templateId !== 'order' &&
-              t.templateId !== 'subscriber',
-          )
+        ? prev.filter((t) => !SINGLETONS.includes(t.templateId) && t.templateId !== 'order')
         : prev,
   },
 })

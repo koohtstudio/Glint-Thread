@@ -190,9 +190,9 @@ Berets, bucket hats and caps are one size, with adjustable backs on the baseball
 
 ## What we collect
 
-- Order information: your name, email, phone number, shipping address, the items you bought and what you paid. Card details are handled by Stripe and never reach us.
+- Order information: your name, email, phone number and shipping address are collected and kept by Stripe, our payment processor. Our own order record holds only the order number, the items, what you paid, your province and a one-way scrambled code of your email (so you can look up your order). Card details are handled by Stripe and never reach us.
 - Contact messages: your name, email and what you write to us.
-- Newsletter: your email, the consent wording you agreed to, and when.
+- Newsletter: your email, the consent wording you agreed to, and when, kept by Resend, our email provider.
 - Basic site analytics: anonymous, cookieless page view counts through Vercel Analytics. No advertising trackers.
 
 Your bag is saved in your own browser (local storage), not on our servers.
@@ -203,9 +203,9 @@ To process and ship your order, send order and shipping emails, answer your ques
 
 ## Who helps us
 
-- Stripe (payments)
-- Sanity (our order and content database)
-- Resend (email delivery)
+- Stripe (payments, and your contact and shipping details)
+- Sanity (our product catalogue and anonymous order records, with no names, emails or addresses)
+- Resend (email delivery and the newsletter list)
 - Vercel (website hosting and cookieless analytics)
 - Canada Post (delivery)
 

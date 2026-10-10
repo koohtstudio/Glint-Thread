@@ -92,7 +92,6 @@ export const structure: StructureResolver = (S) =>
       S.divider(),
       S.documentTypeListItem('promotion').title('Promotions'),
       S.documentTypeListItem('promoCode').title('Promo codes'),
-      S.documentTypeListItem('subscriber').title('Subscribers'),
       S.divider(),
       S.documentTypeListItem('page').title('Pages'),
       S.documentTypeListItem('careGuide').title('Care guides'),

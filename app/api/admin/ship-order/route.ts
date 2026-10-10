@@ -21,12 +21,12 @@ export async function POST(request: Request) {
   if (!parsed.success)
     return Response.json({ error: 'invalid', issues: parsed.error.issues }, { status: 400 })
   const result = await shipOrder(
-    parsed.data.orderId,
+    parsed.data.orderId.replace(/^drafts\./, ''),
     parsed.data.carrier,
     parsed.data.trackingNumber,
   )
   console.info(
-    `[admin] ship-order ${parsed.data.orderId} by ${auth.by}: ${result.ok ? 'ok' : result.error}`,
+    `[admin] ship-order ${parsed.data.orderId} by ${auth.user.email ?? auth.user.id}: ${result.ok ? 'ok' : result.error}`,
   )
   return Response.json(result, { status: result.ok ? 200 : 409 })
 }

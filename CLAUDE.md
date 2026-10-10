@@ -43,6 +43,13 @@ e2e/                     Playwright specs
 - The site must run with zero env vars. Stripe, Sanity, Resend are gated by env and degrade:
   no Stripe -> checkout button "Checkout opens soon", `/api/checkout` 503; no Resend -> emails log.
 - Never render `photoNote`, `verify` or `unitCost` on the storefront.
+- **No customer PII in Sanity (PRD 9.8)**: the dataset is public on the free plan. Orders store only order number,
+  lines, amounts, status, `shippingProvince`, tracking, Stripe IDs and `emailHash` (`lib/email-hash.ts`, salted
+  with server-only `EMAIL_HASH_SALT`). Names, emails, phones, addresses live in Stripe; newsletter contacts and
+  their consent record live in Resend. Emails read customer details from the Stripe session at send time.
+  `lib/orders.privacy.test.ts` must keep passing.
+- `/api/admin/*` authenticate the Studio user's Sanity token via `users/me` + project membership
+  (`lib/admin-auth.ts`). Never add a shared secret to Studio code.
 - UI strings go in `messages/en-CA.json` (fr-CA ready). Content copy lives in `content/`.
 
 ## Design tokens (PRD 4.2). Use only these; no default Tailwind colours.

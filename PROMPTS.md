@@ -43,6 +43,7 @@ OPERATING RULES
 7. The site must fully work in DATA_SOURCE=local with no environment keys at all. Sanity, Stripe and Resend code must be complete, but gated behind env vars and degrading gracefully exactly as PRD 8.4 describes.
 8. Design quality is the top priority after correctness. Follow PRD section 4 to the letter: the dark "jewellery box at night" concept, the exact colour tokens, Instrument Serif + Manrope, the image mat treatment, asymmetric editorial layouts, restrained motion. Treat PRD 4.8 (anti-template bans) as hard failures. Restyle every Radix/shadcn primitive so no default styling survives.
 9. Copy: Canadian English, sentence case, no em dashes, no emoji, no banned words (PRD 3.2). Use the core copy from PRD 3.3 verbatim. Product claims must use gold-tone / silver-tone wording exactly as the catalogue does.
+10. Privacy: PRD 9.8 is non-negotiable. No customer names, emails, phones, addresses or subscribers in Sanity (the free plan's datasets are public).
 
 MILESTONES (do them in order; each ends with tests passing and a commit)
 M1 Foundation. Next.js App Router + TypeScript strict + Tailwind v4 with @theme tokens from PRD 4.2, fonts via next/font, Zod-validated env (lib/env.ts), en-CA CAD money formatter (lib/format.ts), messages/en-CA.json with a tiny t() helper, ESLint/Prettier, CLAUDE.md, DECISIONS.md, .env.example from PRD 8.4.
@@ -52,7 +53,7 @@ M4 Design system. All components in PRD 4.6 (buttons, links, mats, product card,
 M5 Global layout. Announcement bar (crossfade, pauses on hover/focus), header (transparent over hero, blurred on scroll), desktop mega menu, mobile menu sheet, footer, bag drawer with free-shipping progress and promo savings, instant search overlay. Full keyboard and screen-reader support.
 M6 Pages. Every route in PRD 5.3: home (all 11 sections in PRD 6.1), shop/department/category/collection listings with URL-param filters, sort, load more and editorial tiles (PRD 6.2), product page with gallery, zoom viewer, variants, sticky mobile bar, accordions, "Pairs well with", recently viewed (PRD 6.3), bag page, search, checkout success, order status, content pages seeded with PRD section 11 copy using [[PLACEHOLDER]] markers for owner facts, branded 404 and error pages.
 M7 Commerce. /api/quote, /api/checkout (pending order, Stripe Checkout Session with a one-off coupon for discounts, CA-only shipping, shipping options, TAX_MODE), /api/stripe/webhook (idempotent, stock decrement, needsReview), React Email templates styled to the brand (PRD 9.6), newsletter with CASL consent and double opt-in, contact form, order-status lookup, /api/admin/ship-order, rate limiting, honeypots. Without Stripe keys the checkout button shows "Checkout opens soon" and the API returns 503; without Resend, emails log to the console.
-M8 Sanity. All schemas in PRD 10, Studio embedded at /studio with the desk structure (singletons pinned, Orders section with Needs review / To ship / Shipped / All, a Needs attention list), dollars<->cents price input, margin badge, the "Mark as shipped" document action, the sanity adapter with GROQ + cache tags, /api/revalidate with signature check, TypeGen, and scripts/seed-sanity.ts (idempotent, deterministic IDs, uploads images, --dry-run works with no keys).
+M8 Sanity. All schemas in PRD 10, Studio embedded at /studio with the desk structure (singletons pinned, Orders section with Needs review / To ship / Shipped / All, a Needs attention list), dollars<->cents price input, margin badge, the "Mark as shipped" document action and the live Customer panel (both authenticated with the Studio user's Sanity token, per PRD 9.8; no customer personal data stored in Sanity), the sanity adapter with GROQ + cache tags, /api/revalidate with signature check, TypeGen, and scripts/seed-sanity.ts (idempotent, deterministic IDs, uploads images, --dry-run works with no keys).
 M9 SEO, accessibility, performance, security. Metadata and title template, canonical URLs, JSON-LD (Organization, WebSite, Product, BreadcrumbList, FAQPage), sitemap, robots, OG images, security headers with a CSP that allows Stripe and Sanity, server-only guards on secrets, reduced-motion support, focus styles, skip link.
 M10 QA and design review loop. Vitest suite green. Playwright e2e: home -> category -> filter -> PDP -> choose variant -> add to bag -> bag shows the sock bundle discount and earring B2G1 correctly -> checkout button state. scripts/screenshots.ts (npm run shots) capturing the pages and widths listed in PRD 14.2. Then run the review loop: open EVERY screenshot yourself, critique it against PRD section 4 like a demanding creative director (alignment, spacing rhythm, type scale, hierarchy, mats, image sizing, empty space, anti-template bans, mobile thumb reach, overflow), write screenshots/<pass>/REVIEW.md, fix everything, re-shoot. Do at least two full passes. Run Lighthouse (mobile) and axe on Home, Earrings and a PDP and fix until PRD section 2 targets are met or document exactly why not.
 M11 Handover. README.md with run instructions (npm run dev, test, shots, seed, check:launch), scripts/check-launch.ts per PRD 14.3, and a final report.
@@ -106,7 +107,7 @@ Act as a demanding creative director at a premium jewellery brand who is about t
 
 ## Prompt 4: launch
 
-Before pasting: buy or choose a domain, create a **GitHub** account and a **Vercel** account, and activate your Stripe account for live payments (business details and bank account).
+Before pasting: buy or choose a domain, create a **GitHub** account and a **Vercel** account (a store is commercial use, so it needs Vercel **Pro**, not the free Hobby plan), and activate your Stripe account for live payments (business details and bank account).
 
 ```text
 Read CLAUDE.md and DECISIONS.md first. We are launching. Guide me step by step and do every part you can do yourself.
@@ -143,6 +144,16 @@ I'm adding new products. Here are the photos (in catalog/new/) and my notes: [na
 **Swap in reshot photos**
 ```text
 New photos are in catalog/reshoot/, named by product slug (slug-01.jpg, slug-02.jpg...). Process them like the catalogue images, replace the images on those products in Sanity (keep alt text, update it if the shot changed), clear their photoNote, and show me before/after screenshots of each affected PDP and the listing grids.
+```
+
+**Hand over to the client's live Stripe account** (when the store owner's Stripe account is activated and they've invited you as a team member)
+```text
+Read CLAUDE.md and DECISIONS.md first. We're switching payments from my Stripe sandbox to the store owner's live Stripe account, so money goes to them. I have Developer access to their account.
+1. Tell me exactly how to create a restricted live key in THEIR account with only the permissions this app uses (Checkout Sessions write, Coupons write, read on Checkout Sessions, Customers and Payment Intents, plus anything else you find in the code), and list those permissions from the code so I can tick them.
+2. Walk me through creating the live webhook endpoint in their account (https://<domain>/api/stripe/webhook with checkout.session.completed, checkout.session.async_payment_succeeded, checkout.session.expired, charge.refunded), Checkout branding to match the site, payment methods (cards, Apple Pay, Google Pay) and Stripe Tax only if they're GST/HST registered.
+3. List the exact Vercel production env vars to replace (STRIPE_SECRET_KEY, NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY, STRIPE_WEBHOOK_SECRET, TAX_MODE) and confirm nothing else in the code or Sanity references my sandbox (search for acct_ IDs, sandbox URLs, test keys).
+4. After I redeploy: run a real low-value purchase, confirm the payment shows in THEIR Stripe dashboard, the order is paid in Studio and emails go out, then refund it and confirm the refund webhook.
+5. Update OWNER_GUIDE.md with how they see payouts, issue refunds and handle disputes in their Stripe dashboard.
 ```
 
 **Add French (fr-CA)**

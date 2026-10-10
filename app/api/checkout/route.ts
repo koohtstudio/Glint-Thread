@@ -59,7 +59,7 @@ export async function POST(request: Request) {
     )
   }
 
-  const order = await createPendingOrder(quote)
+  const order = await createPendingOrder(quote, parsed.data.email)
   const discountCents = quote.automaticDiscountCents + quote.codeDiscountCents
   const taxed = env.TAX_MODE === 'stripe'
   const publicImages = publicEnv.siteUrl.startsWith('https://')

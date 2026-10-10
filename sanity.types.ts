@@ -234,21 +234,6 @@ export type Slug = {
   source?: string
 }
 
-export type Subscriber = {
-  _id: string
-  _type: 'subscriber'
-  _createdAt: string
-  _updatedAt: string
-  _rev: string
-  email?: string
-  status?: 'pending' | 'confirmed' | 'unsubscribed'
-  consentText?: string
-  consentAt?: string
-  source?: string
-  confirmedAt?: string
-  unsubscribedAt?: string
-}
-
 export type Order = {
   _id: string
   _type: 'order'
@@ -267,19 +252,9 @@ export type Order = {
     | 'partially_refunded'
   needsReview?: boolean
   notes?: string
-  customer?: {
-    email?: string
-    name?: string
-    phone?: string
-  }
-  shippingAddress?: {
-    line1?: string
-    line2?: string
-    city?: string
-    province?: string
-    postalCode?: string
-    country?: string
-  }
+  customerPanel?: string
+  shippingProvince?: string
+  emailHash?: string
   shippingMethod?: string
   shippingEta?: string
   carrier?: 'Canada Post' | 'Purolator' | 'UPS' | 'FedEx'
@@ -655,7 +630,6 @@ export type AllSanitySchemaTypes =
   | Page
   | RichText
   | Slug
-  | Subscriber
   | Order
   | PromoCode
   | CategoryReference

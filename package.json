@@ -23,7 +23,7 @@
     "shots": "tsx scripts/screenshots.ts",
     "seed": "tsx scripts/seed-sanity.ts",
     "seed:dry": "tsx scripts/seed-sanity.ts --dry-run",
-    "typegen": "sanity schema extract --path=sanity/extract.json && sanity typegen generate",
+    "typegen": "node -e \"require('fs').rmSync('sanity/extract.json',{force:true})\" && sanity schema extract --path=sanity/extract.json && sanity typegen generate",
     "check:launch": "tsx scripts/check-launch.ts",
     "ci": "npm run typecheck && npm run lint && npm run test"
   },
