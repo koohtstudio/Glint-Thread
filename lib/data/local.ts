@@ -9,6 +9,7 @@ import { homeDefaults } from '@/content/home'
 import { collectionEditorial, departmentEditorial } from '@/content/merch'
 import { pageSeeds } from '@/content/pages'
 import { siteDefaults } from '@/content/site'
+import { defaultTaxTable } from '@/content/tax'
 import { markdownToPortableText } from '@/lib/content/portable'
 import type { PricingVariant, Promotion, PromoCode } from '@/lib/pricing/types'
 import {
@@ -210,6 +211,7 @@ export function createLocalAdapter(options: LocalAdapterOptions = {}): DataAdapt
     contactEmail: siteDefaults.contactEmail,
     freeShippingThresholdCents: catalog.shipping.freeShippingThresholdCents,
     shippingMethods: catalog.shipping.methods.map((m) => ({ ...m, enabled: m.enabled ?? true })),
+    taxTable: defaultTaxTable,
     pickupAddress: siteDefaults.pickupAddress,
     lowStockThreshold: siteDefaults.lowStockThreshold,
     returnsSummary: siteDefaults.returnsSummary,

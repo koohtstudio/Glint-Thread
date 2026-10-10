@@ -2,6 +2,7 @@
  * Pricing engine (PRD 9.1). Pure TypeScript: no I/O, no framework, integer cents only.
  * Used by /api/quote (bag), /api/checkout (Stripe session) and the webhook re-check.
  */
+import { calculateTax } from './tax'
 import type {
   BuyXGetYPromotion,
   PricingVariant,
@@ -297,6 +298,17 @@ export function buildQuote(input: QuoteInput): Quote {
       }
     })
 
+  // Rule 8: tax on the discounted subtotal (plus shipping where flagged) for the chosen province.
+  const shipping = lines.length
+    ? (shippingOptions.find((o) => o.id === input.shippingMethodId) ?? null)
+    : null
+  const shippingCents = shipping?.amountCents ?? 0
+  const taxMode = input.taxMode ?? 'none'
+  const tax =
+    taxMode === 'table'
+      ? calculateTax(input.taxTable, input.province, discountedSubtotalCents, shippingCents)
+      : { lines: [], totalCents: 0 }
+
   return {
     lines: lines.map(({ promotedUnits: _p, variant: _v, ...line }) => line),
     itemCount: lines.reduce((sum, l) => sum + l.qty, 0),
@@ -307,6 +319,11 @@ export function buildQuote(input: QuoteInput): Quote {
     promotions,
     promoCode,
     shippingOptions,
+    shipping,
+    taxMode,
+    taxLines: tax.lines,
+    taxCents: tax.totalCents,
+    totalCents: discountedSubtotalCents + shippingCents + tax.totalCents,
     freeShipping: {
       thresholdCents: threshold,
       remainingCents: Math.max(0, threshold - discountedSubtotalCents),

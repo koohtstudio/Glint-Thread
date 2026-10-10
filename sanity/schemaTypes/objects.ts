@@ -155,3 +155,69 @@ export const shippingMethod = defineType({
     }),
   },
 })
+
+const PROVINCES = ['AB', 'BC', 'MB', 'NB', 'NL', 'NS', 'NT', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT']
+
+/** One tax component of a province (PRD 7.6): code, rate and whether it applies to shipping. */
+export const taxComponent = defineType({
+  name: 'taxComponent',
+  title: 'Tax component',
+  type: 'object',
+  fields: [
+    defineField({
+      name: 'code',
+      type: 'string',
+      options: { list: ['GST', 'HST', 'PST', 'RST', 'QST'] },
+      validation: (r) => r.required(),
+    }),
+    defineField({
+      name: 'ratePercent',
+      title: 'Rate (%)',
+      type: 'number',
+      description: 'For example 5, 13 or 9.975',
+      validation: (r) => r.required().min(0).max(30),
+    }),
+    defineField({
+      name: 'appliesToShipping',
+      title: 'Applies to shipping',
+      type: 'boolean',
+      initialValue: true,
+    }),
+  ],
+  preview: {
+    select: { code: 'code', rate: 'ratePercent', ship: 'appliesToShipping' },
+    prepare: ({ code, rate, ship }) => ({
+      title: `${code} ${rate}%`,
+      subtitle: ship ? 'Applies to shipping' : 'Merchandise only',
+    }),
+  },
+})
+
+export const provinceTax = defineType({
+  name: 'provinceTax',
+  title: 'Province tax',
+  type: 'object',
+  fields: [
+    defineField({
+      name: 'province',
+      type: 'string',
+      options: { list: PROVINCES },
+      validation: (r) => r.required(),
+    }),
+    defineField({
+      name: 'components',
+      type: 'array',
+      of: [defineArrayMember({ type: 'taxComponent' })],
+      validation: (r) => r.required().min(1),
+    }),
+  ],
+  preview: {
+    select: { province: 'province', components: 'components' },
+    prepare: ({ province, components }) => ({
+      title: province,
+      subtitle: (components ?? [])
+        .map((c: { code: string; ratePercent: number }) => `${c.code} ${c.ratePercent}%`)
+        .join(' + '),
+    }),
+  },
+})

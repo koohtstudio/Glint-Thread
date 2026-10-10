@@ -61,7 +61,8 @@ export const PROMO_CODES_QUERY = defineQuery(
 export const SETTINGS_QUERY = defineQuery(`*[_type == "siteSettings" && _id == "siteSettings"][0] {
   storeName, legalName, businessAddress, contactEmail, freeShippingThreshold, pickupAddress, lowStockThreshold,
   returnsSummary, footerSignOff, seo, "social": social[]{ label, href },
-  "shippingMethods": shippingMethods[]{ id, label, priceCents, freeOverThreshold, eta, enabled }
+  "shippingMethods": shippingMethods[]{ id, label, priceCents, freeOverThreshold, eta, enabled },
+  "taxRows": taxTable[]{ province, "components": components[]{ code, ratePercent, appliesToShipping } }
 }`)
 
 export const HOME_QUERY = defineQuery(`*[_type == "homePage" && _id == "homePage"][0] {

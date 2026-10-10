@@ -228,15 +228,47 @@ export const order = defineType({
         money('totalCents', 'Total'),
       ],
     }),
+    defineField({
+      name: 'taxLines',
+      type: 'array',
+      readOnly: true,
+      of: [
+        defineArrayMember({
+          type: 'object',
+          name: 'taxLine',
+          fields: [
+            defineField({ name: 'code', type: 'string' }),
+            defineField({ name: 'label', type: 'string' }),
+            defineField({ name: 'ratePercent', type: 'number' }),
+            money('amountCents', 'Amount'),
+          ],
+          preview: {
+            select: { title: 'label', cents: 'amountCents' },
+            prepare: ({ title, cents }) => ({
+              title,
+              subtitle: `$${((cents ?? 0) / 100).toFixed(2)}`,
+            }),
+          },
+        }),
+      ],
+    }),
     defineField({ name: 'promoCode', type: 'string', readOnly: true }),
     defineField({
       name: 'stripe',
       type: 'object',
       readOnly: true,
       fields: [
-        defineField({ name: 'checkoutSessionId', type: 'string' }),
         defineField({ name: 'paymentIntentId', type: 'string' }),
-        defineField({ name: 'couponId', type: 'string' }),
+        defineField({
+          name: 'livemode',
+          type: 'boolean',
+          description: 'false means Stripe test mode.',
+        }),
+        defineField({
+          name: 'lastPaymentError',
+          type: 'string',
+          description: 'Last decline or failure code from Stripe.',
+        }),
       ],
     }),
     defineField({

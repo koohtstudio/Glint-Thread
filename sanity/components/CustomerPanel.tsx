@@ -26,8 +26,8 @@ interface Customer {
 export function CustomerPanel(props: StringInputProps) {
   const client = useClient({ apiVersion })
   const orderId = useFormValue(['_id']) as string | undefined
-  const sessionId = useFormValue(['stripe', 'checkoutSessionId']) as string | undefined
   const paymentIntentId = useFormValue(['stripe', 'paymentIntentId']) as string | undefined
+  const livemode = useFormValue(['stripe', 'livemode']) as boolean | undefined
   const [state, setState] = useState<'idle' | 'loading' | 'error'>('idle')
   const [error, setError] = useState<string | null>(null)
   const [customer, setCustomer] = useState<Customer | null>(null)
@@ -56,24 +56,20 @@ export function CustomerPanel(props: StringInputProps) {
     }
   }, [client, orderId])
 
-  if (!sessionId) {
+  if (!paymentIntentId) {
     return (
       <Card padding={3} radius={2} tone="transparent" border>
         <Text size={1} muted>
-          No Stripe checkout yet. Customer details appear here once the order is paid.
+          No payment started yet. Customer details appear here once the order exists.
         </Text>
       </Card>
     )
   }
 
   const a = customer?.address
-  // Session IDs start cs_test_ or cs_live_, which tells us which Stripe dashboard to open.
-  const dashboard = `https://dashboard.stripe.com${sessionId.startsWith('cs_live_') ? '' : '/test'}`
-  const stripeUrl =
-    customer?.stripeUrl ??
-    (paymentIntentId
-      ? `${dashboard}/payments/${paymentIntentId}`
-      : `${dashboard}/checkout/sessions/${sessionId}`)
+  // The order records whether the PaymentIntent was live or test, which picks the Stripe dashboard.
+  const dashboard = `https://dashboard.stripe.com${livemode ? '' : '/test'}`
+  const stripeUrl = customer?.stripeUrl ?? `${dashboard}/payments/${paymentIntentId}`
   return (
     <Card padding={4} radius={2} border>
       <Stack gap={3}>
@@ -99,7 +95,8 @@ export function CustomerPanel(props: StringInputProps) {
           </>
         ) : (
           <Text size={1} muted>
-            Name, email, phone and address are kept in Stripe, not in the Studio.
+            Name, email, phone and address are kept in Firestore (and on the Stripe payment), not in
+            the Studio.
           </Text>
         )}
         {error ? (

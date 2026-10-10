@@ -1,4 +1,14 @@
-import { altImage, callout, faq, link, richText, seo, shippingMethod } from './objects'
+import {
+  altImage,
+  callout,
+  faq,
+  link,
+  provinceTax,
+  richText,
+  seo,
+  shippingMethod,
+  taxComponent,
+} from './objects'
 import { product, variant } from './product'
 import { category, collection, department } from './taxonomy'
 import { order, promoCode, promotion } from './commerce'
@@ -13,6 +23,8 @@ export const schemaTypes = [
   richText,
   faq,
   shippingMethod,
+  taxComponent,
+  provinceTax,
   variant,
   // documents
   product,

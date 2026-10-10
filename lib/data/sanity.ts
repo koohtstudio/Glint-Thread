@@ -3,8 +3,9 @@ import type { SanityClient } from '@sanity/client'
 import { careGuides as defaultCare } from '@/content/care'
 import { homeDefaults } from '@/content/home'
 import { siteDefaults } from '@/content/site'
+import { defaultTaxTable } from '@/content/tax'
 import { env } from '@/lib/env'
-import type { PricingVariant, Promotion, PromoCode } from '@/lib/pricing/types'
+import type { PricingVariant, Promotion, PromoCode, TaxComponent } from '@/lib/pricing/types'
 import {
   colourFromLabel,
   deriveColours,
@@ -295,9 +296,10 @@ export function createSanityAdapter(client?: SanityClient): DataAdapter {
   }
 
   const settings = async (): Promise<SiteSettings> => {
-    type Row = Partial<SiteSettings> & {
+    type Row = Omit<Partial<SiteSettings>, 'taxTable'> & {
       freeShippingThreshold?: number
       seo?: { title?: string; description?: string }
+      taxRows?: { province: string; components: TaxComponent[] | null }[] | null
     }
     const s = await query<Row | null>(SETTINGS_QUERY)
     return {
@@ -310,6 +312,9 @@ export function createSanityAdapter(client?: SanityClient): DataAdapter {
         ...m,
         enabled: m.enabled ?? true,
       })),
+      taxTable: s?.taxRows?.length
+        ? Object.fromEntries(s.taxRows.map((r) => [r.province, r.components ?? []]))
+        : defaultTaxTable,
       pickupAddress: s?.pickupAddress ?? null,
       lowStockThreshold: s?.lowStockThreshold ?? siteDefaults.lowStockThreshold,
       returnsSummary: s?.returnsSummary ?? siteDefaults.returnsSummary,

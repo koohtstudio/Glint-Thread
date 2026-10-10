@@ -17,6 +17,7 @@ export default defineConfig({
       provider: 'v8',
       include: [
         'lib/pricing/engine.ts',
+        'lib/pricing/tax.ts',
         'lib/format.ts',
         'lib/data/local.ts',
         'lib/data/derive.ts',
@@ -24,6 +25,7 @@ export default defineConfig({
       reporter: ['text', 'html'],
       thresholds: {
         'lib/pricing/engine.ts': { branches: 100, functions: 100, lines: 100, statements: 100 },
+        'lib/pricing/tax.ts': { branches: 100, functions: 100, lines: 100, statements: 100 },
       },
     },
   },

@@ -3,9 +3,9 @@
  * Money is integer cents. Studio-only fields (photoNote, verify, unitCost) are deliberately absent.
  */
 import type { PortableTextBlock } from '@portabletext/types'
-import type { Promotion, PromoCode, ShippingMethod } from '@/lib/pricing/types'
+import type { Promotion, PromoCode, ShippingMethod, TaxTable } from '@/lib/pricing/types'
 
-export type { Promotion, PromoCode, ShippingMethod }
+export type { Promotion, PromoCode, ShippingMethod, TaxTable }
 
 export type Cents = number
 
@@ -158,6 +158,8 @@ export interface SiteSettings {
   contactEmail: string
   freeShippingThresholdCents: Cents
   shippingMethods: ShippingMethod[]
+  /** Province tax components (PRD 7.6); only used when TAX_MODE=table. */
+  taxTable: TaxTable
   pickupAddress: string | null
   lowStockThreshold: number
   returnsSummary: string[]

@@ -72,6 +72,9 @@ export interface ShippingSettings {
   methods: ShippingMethod[]
 }
 
+import type { TaxLine, TaxTable } from './tax'
+export type { TaxCode, TaxComponent, TaxLine, TaxTable } from './tax'
+
 export interface QuoteLineInput {
   sku: string
   qty: number
@@ -92,6 +95,13 @@ export interface QuoteInput {
   now?: Date
   /** Maximum quantity per line (PRD 9.1 rule 1). */
   maxQtyPerLine?: number
+  /** Two-letter province code from the shipping address; drives tax (rule 8). */
+  province?: string | null
+  /** The selected shipping method; null or unknown means none chosen yet. */
+  shippingMethodId?: string | null
+  /** `none` (small supplier) charges no tax; `table` uses `taxTable`. Defaults to `none`. */
+  taxMode?: 'none' | 'table'
+  taxTable?: TaxTable
 }
 
 export type QuoteMessageCode =
@@ -150,6 +160,13 @@ export interface Quote {
   promotions: { id: string; title: string; discountCents: number }[]
   promoCode: { code: string; applied: boolean; percentOff: number; requiresEmail: boolean } | null
   shippingOptions: ShippingOption[]
+  /** The selected shipping method, or null until one is chosen. */
+  shipping: ShippingOption | null
+  taxMode: 'none' | 'table'
+  taxLines: TaxLine[]
+  taxCents: number
+  /** Discounted subtotal + shipping + tax. */
+  totalCents: number
   freeShipping: { thresholdCents: number; remainingCents: number; unlocked: boolean }
   messages: QuoteMessage[]
 }
